@@ -1,0 +1,116 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+}
+
+ext {
+    mapkitApiKey = getMapkitApiKey()
+    apiKey = getApiKey()
+}
+
+private String getMapkitApiKey() {
+    Properties properties = new Properties()
+    if (rootProject.file("maps.properties").exists()) {
+        properties.load(rootProject.file("maps.properties").newDataInputStream())
+    }
+    return properties.getProperty("MAPKIT_API_KEY", "")
+}
+
+private String getApiKey() {
+    Properties properties = new Properties()
+    if (rootProject.file("keyapi.properties").exists()) {
+        properties.load(rootProject.file("keyapi.properties").newDataInputStream())
+    }
+    return properties.getProperty("API_KEY", "")
+}
+
+android {
+    namespace 'ru.netology.nework'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "ru.netology.nework"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "MAPKIT_API_KEY", "\"${mapkitApiKey}\""
+        buildConfigField "String", "API_KEY", "\"${apiKey}\""
+    }
+
+    buildFeatures.viewBinding = true
+    android.buildFeatures.buildConfig true
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", '"http://94.228.125.136:8080"'
+        }
+        debug {
+            manifestPlaceholders.usesCleartextTraffic = true
+            buildConfigField "String", "BASE_URL", '"http://94.228.125.136:8080"'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    def okhttp_version = "4.12.0"
+    def glide_version = "4.16.0"
+    def retrofit_version = "2.9.0"
+    def retrofitGson_version = "2.9.0"
+    def okhttpLogging_version = "4.12.0"
+    def coroutines_version = "1.7.3"
+    def coordinatorLayout_version = "1.2.0"
+    def room_version = "2.6.0-alpha02"
+    def imagepicker_version = "2.1"
+    def maps_yandex_version = "4.5.1-lite"
+
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    implementation 'androidx.fragment:fragment-ktx:1.7.0'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.activity:activity-ktx:1.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'androidx.room:room-runtime:2.6.1'
+    kapt 'androidx.room:room-compiler:2.6.1'
+
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitGson_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLogging_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$coordinatorLayout_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
+    implementation "com.yandex.android:maps.mobile:$maps_yandex_version"
+}

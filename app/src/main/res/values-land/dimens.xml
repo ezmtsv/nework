@@ -1,0 +1,12 @@
+<resources>
+    <dimen name="min_space">5dp</dimen>
+    <dimen name="fab_margin">48dp</dimen>
+    <dimen name="common_spacing">48dp</dimen>
+    <dimen name="menu_size">164dp</dimen>
+    <dimen name="posts_avatar_size">164dp</dimen>
+    <dimen name="favorite_size">78dp</dimen>
+    <dimen name="view_spacing">150dp</dimen>
+    <dimen name="count_spacing">5dp</dimen>
+    <dimen name="icon_button_padding">24dp</dimen>
+    <dimen name="icon_button_min_size">144dp</dimen>
+</resources>

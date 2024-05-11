@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/photo"
+        android:enabled="true"
+        android:icon="@drawable/photo_camera_24"
+        android:title="@string/add_photo" />
+    <item
+        android:id="@+id/add_file"
+        android:enabled="true"
+        android:icon="@drawable/attach_24"
+        android:title="@string/add_file" />
+    <item
+        android:id="@+id/add_users"
+        android:enabled="true"
+        android:icon="@drawable/ic_users_24"
+        android:title="@string/add_users" />
+    <item
+        android:id="@+id/add_geo"
+        android:enabled="true"
+        android:icon="@drawable/location_24"
+        android:title="@string/add_geo" />
+</menu>

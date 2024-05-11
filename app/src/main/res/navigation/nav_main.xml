@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/screenPosts">
+    <fragment
+        android:id="@+id/screenPosts"
+        android:name="ru.netology.nework.activity.ScreenPosts"
+        android:label="ScreenPosts"
+        tools:layout="@layout/screen_posts"/>
+    <dialog
+        android:id="@+id/dialogAuth"
+        android:name="ru.netology.nework.dialog.DialogAuth"
+        android:label="DialogAuth"
+        tools:layout="@layout/fragment_dialog"/>
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="ru.netology.nework.activity.AuthFragment"
+        android:label="AuthFragment"
+        tools:layout="@layout/auth_fragment"
+        />
+
+    <fragment
+        android:id="@+id/userAccount"
+        android:name="ru.netology.nework.activity.UserAccount"
+        android:label="UserAccount"
+        tools:layout="@layout/user_account"/>
+    <fragment
+        android:id="@+id/regFragment"
+        android:name="ru.netology.nework.activity.RegFragment"
+        android:label="RegFragment"
+        tools:layout="@layout/reg_fragment"/>
+    <fragment
+        android:id="@+id/postView"
+        android:name="ru.netology.nework.activity.PostView"
+        android:label="PostView"
+        tools:layout="@layout/post_view"/>
+    <fragment
+        android:id="@+id/screenUsers"
+        android:name="ru.netology.nework.activity.ScreenUsers"
+        android:label="ScreenUsers"
+        tools:layout="@layout/screen_users"/>
+    <fragment
+        android:id="@+id/newPostFrag"
+        android:name="ru.netology.nework.activity.NewPostFrag"
+        android:label="new_post"
+        tools:layout="@layout/new_post" />
+</navigation>
