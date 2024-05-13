@@ -45,8 +45,15 @@ class AuthViewModel @Inject constructor(
             try {
                 _dataState.value = FeedModelState(loading = true)
                 val user = repository.userReg(login, pass, name, upload) // send to server
+//                user?.let {
+//                    appAuth.setAuth(user?.id, login, pass, user.token)
+//                }
                 user?.let {
-                    appAuth.setAuth(user.id, login, pass, user.token)
+                    if (user.id != 0L && user.token != null) {
+                        appAuth.run {
+                            appAuth.setAuth(user.id, login, pass, user.token)
+                        }
+                    }
                 }
                 _dataState.value = FeedModelState()
             } catch (e: Exception) {
@@ -74,12 +81,22 @@ class AuthViewModel @Inject constructor(
             try {
                 _dataState.value = FeedModelState(loading = true)
                 val user = repository.userAuth(login, pass) // send to server
-                user?.let {
-                    appAuth.setAuth(user.id, login, pass, user.token)
+
+//                user?.let {
+//                    appAuth.setAuth(user.id, login, pass, user.token)
+//                }
+
+                if (user?.id != 0L && user?.token != null) {
+                    val myAcc = repositoryUser.getUser(user.id)
+                    appAuth.run {
+                        appAuth.setAuth(user.id, login, pass, user.token)
+                        appAuth.saveMyAcc(myAcc)
+                    }
                 }
+
                 myID = user?.id
                 userAuth = true
-                println(user)
+                //println(user)
                 _dataState.value = FeedModelState(statusAuth = userAuth)
             } catch (e: Exception) {
                 userAuth = false
@@ -101,31 +118,25 @@ class AuthViewModel @Inject constructor(
             }
 
         }
-        appAuth.authState.value.myId?.let {
-            getMyAcc(it)
-        }
-
     }
 
-    private fun getMyAcc(id: Long) {
+    fun getMyAcc(): UserResponse = appAuth.getMyAcc()
+    fun deleteAuth() {
         viewModelScope.launch {
             try {
                 _dataState.value = FeedModelState(loading = true)
-                val myAcc = repositoryUser.getUser(id)
-                //println("myAcc $myAcc")
-                appAuth.saveMyAcc(myAcc)
+                repository.signOut()
+                appAuth.run {
+                    appAuth.removeAuth()
+                }
+                myID = null
+                userAuth = false
                 _dataState.value = FeedModelState(statusAuth = userAuth)
-            } catch (e: Exception) {
-                if (e.javaClass.name == "ru.netology.nework.error.ApiError404") {
-                    _dataState.value = FeedModelState(error404 = true)
-                    println(e.javaClass.name)
-                } else _dataState.value = FeedModelState(error = true)
-
+            } catch (e: Exception){
+                println(e.printStackTrace())
             }
 
         }
     }
-
-    fun getMyAcc(): UserResponse = appAuth.getMyAcc()
 
 }

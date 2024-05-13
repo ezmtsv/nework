@@ -16,16 +16,13 @@ import ru.netology.nework.R
 import ru.netology.nework.activity.AppActivity.Companion.idArg
 import ru.netology.nework.adapter.AdapterScreenPosts
 import ru.netology.nework.adapter.OnIteractionListener
-import ru.netology.nework.auth.AppAuth
 import ru.netology.nework.databinding.ScreenPostsBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Post
-import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_IN
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
 import ru.netology.nework.viewmodel.PostsViewModel
-import javax.inject.Inject
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,20 +30,20 @@ import javax.inject.Inject
 
 class ScreenPosts : Fragment() {
     val viewModel: PostsViewModel by viewModels()
+    var binding: ScreenPostsBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-
-        val binding = ScreenPostsBinding.inflate(inflater, container, false)
-
-        binding.bottomNavigation.selectedItemId = R.id.screenPosts
+        binding = ScreenPostsBinding.inflate(inflater, container, false)
+//        val binding = ScreenPostsBinding.inflate(inflater, container, false)
+        binding?.bottomNavigation?.selectedItemId = R.id.screenPosts
 
         fun showBar(txt: String) {
             Snackbar.make(
-                binding.root,
+                binding?.root!!,
                 txt,
                 Snackbar.LENGTH_LONG
             ).show()
@@ -100,19 +97,20 @@ class ScreenPosts : Fragment() {
                 )
             }
         })
-        binding.list.adapter = adapter
+        binding?.list?.adapter = adapter
 
         viewModel.data.observe(viewLifecycleOwner) { posts ->
             val state = adapter.currentList.size < posts.size
             adapter.submitList(posts)
-            if (state) binding.list.smoothScrollToPosition(0)
+            if (state) binding?.list?.smoothScrollToPosition(0)
         }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
-            binding.progress.isVisible = state.loading
-            binding.swipeRefreshLayout.isRefreshing = state.refreshing
+            binding?.progress?.isVisible = state.loading
+            binding?.swipeRefreshLayout?.isRefreshing = state.refreshing
+
             if (state.errorNetWork) {
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
                     .setAction(R.string.retry_loading) { viewModel.loadPosts() }
                     .show()
             }
@@ -127,21 +125,24 @@ class ScreenPosts : Fragment() {
                 showBar("Неправильный формат файла!")
             }
 
+//            if(!state.statusAuth){
+//                showBar("Выход из аккаунта!") выполнен вход
+//            }
+
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             viewModel.loadPosts()
         }
-        binding.swipeRefreshLayout.setColorSchemeResources(
+        binding?.swipeRefreshLayout?.setColorSchemeResources(
             android.R.color.holo_blue_bright,
             android.R.color.holo_green_light,
             android.R.color.holo_red_light,
         )
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
+        binding?.bottomNavigation?.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_posts -> {
-                    println("click POSTS")
                     viewModel.loadPosts()
                     true
                 }
@@ -163,7 +164,7 @@ class ScreenPosts : Fragment() {
 
         }
 
-        binding.fab.setOnClickListener {
+        binding?.fab?.setOnClickListener {
             if (userAuth) {
                 findNavController().navigate(
                     R.id.newPostFrag
@@ -178,12 +179,16 @@ class ScreenPosts : Fragment() {
 
         }
 
-        return binding.root
-
+        return binding?.root!!
     }
 
     override fun onStart() {
         viewModel.loadPosts()
         super.onStart()
+    }
+
+    override fun onResume() {
+        binding?.bottomNavigation?.selectedItemId = R.id.menu_posts
+        super.onResume()
     }
 }

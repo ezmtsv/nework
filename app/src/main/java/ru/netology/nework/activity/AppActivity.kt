@@ -6,12 +6,14 @@ import android.view.Gravity
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
 
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
 import ru.netology.nework.databinding.ActivityAppBinding
@@ -32,6 +34,7 @@ import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
 class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShowFragment {
     private var actionBar: ActionBar? = null
     private var imageView: ImageView? = null
+    val viewModel: AuthViewModel by viewModels()
 
     companion object {
         var Bundle.idArg: Long by LongEditArg
@@ -43,8 +46,6 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         super.onCreate(savedInstanceState)
         val binding = ActivityAppBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val viewModel: AuthViewModel by viewModels()
 
         actionBar = supportActionBar
         imageView = ImageView(this)
@@ -98,13 +99,13 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
                         }
 
                         R.id.signout -> {
-                            DialogAuth.newInstance(DIALOG_OUT, "Вы хотите удалить регистрацию?")
+                            DialogAuth.newInstance(DIALOG_OUT, "Выйти из аккаунта?")
                                 .show(supportFragmentManager, "TAG")
                             true
                         }
 
                         R.id.account -> {
-                            if(userAuth) {
+                            if (userAuth) {
                                 val myAcc = viewModel.getMyAcc()
 //                                println("myAcc $myAcc")
                                 findNavController(R.id.nav_host_fragment).navigate(
@@ -130,12 +131,13 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
     override fun returnDialogValue(select: Int) {
         when (select) {
             DIALOG_OUT -> {
-//                viewModel.deleteAuth()
-//                Toast.makeText(
-//                    this@AppActivity,
-//                    getString(R.string.registration__removed), Toast.LENGTH_LONG
-//                )
-//                    .show()
+                viewModel.deleteAuth()
+                Toast.makeText(
+                    this@AppActivity,
+                    "Вы вышли из аккаунта.", Toast.LENGTH_LONG
+                )
+                    .show()
+
             }
 
             DIALOG_IN -> {
@@ -179,6 +181,5 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
             imageView?.visibility = View.VISIBLE
         }
     }
-
 
 }

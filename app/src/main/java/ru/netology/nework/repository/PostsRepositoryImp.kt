@@ -2,14 +2,23 @@ package ru.netology.nework.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.Response
@@ -307,6 +316,23 @@ class PostsRepositoryImp @Inject constructor(
             throw ApiError404("404")
         } catch (e: Exception) {
             throw UnknownError
+        }
+    }
+
+    override suspend fun signOut() {
+        try {
+            CoroutineScope(Dispatchers.Default).launch {
+                _posts.flowOn(Dispatchers.IO).collect {
+                    val posts = it.map { post ->
+                        post.copy(postOwner = false)
+                    }
+                    dao.insert(posts.toEntity())
+                    this.cancel()
+                }
+
+            }
+        } catch (e: Exception) {
+            throw DbError
         }
     }
 

@@ -60,7 +60,7 @@ class AdapterPostView @Inject constructor(
     fun bind(post: Post) {
         yandexMapsKitFactory = MapKitFactory.getInstance()
         mapView = binding.map
-
+println("postOwner ${post.postOwner}")
         binding.apply {
             author.text = post.author
             published.text = AndroidUtils.getTimePublish(post.published)

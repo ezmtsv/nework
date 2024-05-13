@@ -26,7 +26,7 @@ import ru.netology.nework.viewmodel.UsersViewModel
 @AndroidEntryPoint
 
 class ScreenUsers : Fragment() {
-
+    var binding: ScreenUsersBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,10 +34,8 @@ class ScreenUsers : Fragment() {
     ): View {
 
         val viewModel: UsersViewModel by viewModels()
-        val binding = ScreenUsersBinding.inflate(layoutInflater)
-
-        binding.bottomNavigationUsers.selectedItemId = R.id.menu_users
-
+        binding = ScreenUsersBinding.inflate(layoutInflater)
+        binding?.bottomNavigationUsers?.selectedItemId = R.id.menu_users
         val adapter = AdapterUsersList(object : ListenerSelectionUser {
             override fun selectUser(user: UserResponse?) {
                 val id = user?.id
@@ -55,23 +53,23 @@ class ScreenUsers : Fragment() {
 
         fun showBar(txt: String) {
             Snackbar.make(
-                binding.root,
+                binding?.root!!,
                 txt,
                 Snackbar.LENGTH_LONG
             ).show()
         }
 
-        binding.listUsers.adapter = adapter
+        binding?.listUsers?.adapter = adapter
 
         viewModel.listUsers.observe(viewLifecycleOwner) { users ->
             adapter.submitList(users)
         }
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
-            binding.progress.isVisible = state.loading
-            binding.swipeRefreshLayout.isRefreshing = state.refreshing
+            binding?.progress?.isVisible = state.loading
+            binding?.swipeRefreshLayout?.isRefreshing = state.refreshing
 
             if (state.error) {
-                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
                     .setAction(R.string.retry_loading) { viewModel.loadUsers() }
                     .show()
             }
@@ -81,10 +79,10 @@ class ScreenUsers : Fragment() {
             }
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             viewModel.loadUsers()
         }
-        binding.swipeRefreshLayout.setColorSchemeResources(
+        binding?.swipeRefreshLayout?.setColorSchemeResources(
             android.R.color.holo_blue_bright,
             android.R.color.holo_green_light,
             android.R.color.holo_red_light,
@@ -92,7 +90,7 @@ class ScreenUsers : Fragment() {
 
 
 
-        binding.bottomNavigationUsers.setOnItemSelectedListener { item ->
+        binding?.bottomNavigationUsers?.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_posts -> {
                     findNavController().navigate(
@@ -103,8 +101,6 @@ class ScreenUsers : Fragment() {
 
                 R.id.menu_events -> {
                     println("click EVENTS")
-//                    val myAccount = viewModel.getUser(68)
-//                    println("myACC $myAccount")
                     true
                 }
 
@@ -112,7 +108,12 @@ class ScreenUsers : Fragment() {
             }
         }
 
-        return binding.root
+        return binding?.root!!
+    }
+
+    override fun onResume() {
+        binding?.bottomNavigationUsers?.selectedItemId = R.id.menu_users
+        super.onResume()
     }
 
 }

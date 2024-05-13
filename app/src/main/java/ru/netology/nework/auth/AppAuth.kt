@@ -59,25 +59,14 @@ class AppAuth @Inject constructor(
 
     }
 
-//    @Synchronized
-//    fun removeAuth() {
-//        _authState.value = AuthState(null, null)
-//        with(prefs.edit()) {
-//            clear()
-//            commit()
-//        }
-//        sendPushAuth(_authState.value)
-//    }
-
-//    fun sendPushAuth(auth: AuthState) {
-//        CoroutineScope(Dispatchers.Default).launch {
-//            try {
-//
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
-//    }
+    @Synchronized
+    fun removeAuth() {
+        _authState.value = AuthState()
+        with(prefs.edit()) {
+            clear()
+            commit()
+        }
+    }
 
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 

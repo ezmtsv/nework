@@ -22,4 +22,5 @@ interface PostsRepository {
     suspend fun savePost(post: Post)
     suspend fun upload(upload: MediaUpload): Media
     suspend fun deletePost(post: Post)
+    suspend fun signOut()
 }

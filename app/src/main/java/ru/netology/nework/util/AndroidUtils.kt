@@ -51,39 +51,30 @@ object AndroidUtils {
     fun getTimePublish(str: String?): String {
         //"2023-10-17T13:01:59.846Z"
         str?.let{
-            var dd = ""
-            var mm = ""
-            var yyyy= ""
-            var hh = ""
-            var min = ""
-            var count = 0
-            for(i in str) {
-                if(count < 4) yyyy+= i
-                else if (count<7 && i != '-')mm+=i
-                else if(count<10 && i != '-')dd+=i
-                else if(count in 11..12)hh+=i
-                else if(count in 14..15)min+=i
-                count++
+            try {
+                val yyyy = it.subSequence(0, 4)
+                val mm = it.subSequence(5, 7)
+                val dd = it.subSequence(8, 10)
+                val hh = it.subSequence(11, 13)
+                val min = it.subSequence(14, 16)
+                return "$dd.$mm.$yyyy  $hh:$min"
+            } catch (e: Exception) {
+                println(e.printStackTrace())
             }
-            return "$dd.$mm.$yyyy  $hh:$min"
         }
         return " "
     }
 
     fun getTimeJob(str: String?): String{
         str?.let{
-            var dd = ""
-            var mm = ""
-            var yyyy= ""
-            var count = 0
-            for(i in str) {
-                if(count < 4) yyyy+= i
-                else if (count<7 && i != '-')mm+=i
-                else if(count<10 && i != '-')dd+=i
-                else if(count >11) break
-                count++
+            try {
+                val yyyy = it.subSequence(0, 4)
+                val mm = it.subSequence(5, 7)
+                val dd = it.subSequence(8, 10)
+                return "$dd.$mm.$yyyy"
+            } catch (e: Exception) {
+                println(e.printStackTrace())
             }
-            return "$dd.$mm.$yyyy"
         }
         return "НВ"
     }

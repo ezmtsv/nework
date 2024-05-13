@@ -1,6 +1,7 @@
 package ru.netology.nework.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +24,10 @@ import ru.netology.nework.adapter.AdapterScreenPosts
 import ru.netology.nework.adapter.ListenerSelectionJobs
 import ru.netology.nework.adapter.OnIteractionListener
 import ru.netology.nework.databinding.UserAccountBinding
+import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Post
 import ru.netology.nework.error.UnknownError
+import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 
@@ -75,11 +78,26 @@ class UserAccount : Fragment() {
 
         val adapterPosts = AdapterScreenPosts(object : OnIteractionListener {
             override fun onLike(post: Post) {
-                TODO("Not yet implemented")
+                if (AuthViewModel.userAuth) {
+                    viewModelPosts.like(post, !post.likedByMe)
+                } else {
+                    DialogAuth.newInstance(
+                        AuthViewModel.DIALOG_IN,
+                        "Для установки лайков нужна авторизация, выполнить вход?"
+                    )
+                        .show(childFragmentManager, "TAG")
+                }
             }
 
             override fun onShare(post: Post) {
-                TODO("Not yet implemented")
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                    type = "text/plain"
+                }
+                val shareIntent =
+                    Intent.createChooser(intent, "Share Post")
+                startActivity(shareIntent)
             }
 
             override fun onEdit(post: Post) {
