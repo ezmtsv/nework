@@ -60,7 +60,7 @@ class AdapterPostView @Inject constructor(
     fun bind(post: Post) {
         yandexMapsKitFactory = MapKitFactory.getInstance()
         mapView = binding.map
-println("postOwner ${post.postOwner}")
+println("post Id ${post.id} postAttach ${post.attachment}")
         binding.apply {
             author.text = post.author
             published.text = AndroidUtils.getTimePublish(post.published)
@@ -82,7 +82,7 @@ println("postOwner ${post.postOwner}")
             post.coords?.let { layMaps.visibility = View.VISIBLE }
 
             post.attachment?.let {
-                when (it.attachmentType) {
+                when (it.type) {
                     AttachmentType.IMAGE, null -> {
                         imageView.visibility = View.VISIBLE
                         Glide.with(imageView)

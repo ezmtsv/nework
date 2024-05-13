@@ -57,7 +57,7 @@ class PostViewHolder(
             }
             imageView.visibility = View.GONE
             post.attachment?.let {
-                when (it.attachmentType) {
+                when (it.type) {
                     AttachmentType.IMAGE, null -> {
                         imageView.visibility = View.VISIBLE
                         Glide.with(imageView)

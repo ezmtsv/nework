@@ -119,6 +119,7 @@ class PostsViewModel @Inject constructor(
                     return@launch
                 }
                 repository.savePost(post)
+                _dataState.value = FeedModelState()
 
             } catch (e: Exception) {
                 when (e.javaClass.name) {

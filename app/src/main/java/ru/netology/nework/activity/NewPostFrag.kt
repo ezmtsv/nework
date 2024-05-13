@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.core.view.MenuProvider
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -23,7 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
 import ru.netology.nework.databinding.NewPostBinding
-import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Post
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.error.UnknownError
@@ -31,8 +31,11 @@ import ru.netology.nework.media.MediaUpload
 import ru.netology.nework.util.AndroidUtils.focusAndShowKeyboard
 import ru.netology.nework.viewmodel.PostsViewModel
 
+const val MAX_SIZE_FILE = 15_728_640L
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
+
 
 class NewPostFrag : Fragment() {
     private var upload: MediaUpload? = null
@@ -44,7 +47,8 @@ class NewPostFrag : Fragment() {
     ): View {
         val binding = NewPostBinding.inflate(layoutInflater)
         val viewModel: PostsViewModel by viewModels()
-        var typeAttach:AttachmentType? = null
+        var typeAttach: AttachmentType? = null
+        var lastStateLoading = false
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -54,16 +58,10 @@ class NewPostFrag : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
                     R.id.save -> {
-//                        post?.let { viewModel.savePost(it) }
                         if (!binding.content.text.isNullOrBlank()) {
-//                            val txt = binding.content.text.toString()
-//                            val post = Post(id = 0, authorId = 0, content = txt)
-//                            viewModel.savePost(post, typeAttach)
-
                             val txt = binding.content.text.toString()
                             val post = Post(id = 0, authorId = 0, content = txt)
                             viewModel.savePost(post, upload, typeAttach)
-                            findNavController().navigateUp()
                         } else {
                             context?.toast("Для создания поста нужен контент!")
                         }
@@ -83,7 +81,7 @@ class NewPostFrag : Fragment() {
         val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
                 ImagePicker.RESULT_ERROR -> {
-                    println("resultCode ${it.resultCode}")
+//                    println("resultCode ${it.resultCode}")
                     Snackbar.make(
                         binding.root,
                         ImagePicker.getError(it.data),
@@ -93,9 +91,16 @@ class NewPostFrag : Fragment() {
 
                 Activity.RESULT_OK -> {
                     val uri: Uri? = it.data?.data
-                    viewModel.changePhoto(uri, uri?.toFile())
-                    upload = MediaUpload(uri?.toFile())
+                    val file = uri?.toFile()
+                    if (file?.length()!! < MAX_SIZE_FILE) {
+                        viewModel.changePhoto(uri, file)
+                        upload = MediaUpload(file)
+                        binding.btnClear.visibility = View.VISIBLE
+                    } else {
+                        context?.toast("Размер вложения превышает максимально допустимый 15Мб!")
+                    }
                 }
+
                 Activity.RESULT_CANCELED -> {
                     upload = null
                 }
@@ -104,7 +109,7 @@ class NewPostFrag : Fragment() {
 
         binding.bottomNavigationNewPost.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.add_file -> {
+                R.id.add_pic -> {
                     ImagePicker.with(this)
                         .galleryOnly()
                         .crop()
@@ -132,11 +137,16 @@ class NewPostFrag : Fragment() {
                     true
                 }
 
+                R.id.add_file -> {
+
+                    true
+                }
+
                 else -> false
             }
         }
 
-        viewModel.photo.observe(viewLifecycleOwner){
+        viewModel.photo.observe(viewLifecycleOwner) {
             if (it == viewModel.noPhoto) {
                 binding.photo.visibility = View.GONE
                 binding.content.focusAndShowKeyboard()
@@ -149,8 +159,16 @@ class NewPostFrag : Fragment() {
             binding.photo.setImageURI(it.uri)
         }
 
-        binding.btnClear.setOnClickListener{
+        viewModel.dataState.observe(viewLifecycleOwner) {
+            if(it.loading) binding.btnClear.visibility = View.GONE
+            if (!it.loading && lastStateLoading) findNavController().navigateUp()
+            binding.progress.isVisible = it.loading
+            lastStateLoading = it.loading
+        }
+
+        binding.btnClear.setOnClickListener {
             viewModel.clearPhoto()
+            it.visibility = View.GONE
             upload = null
         }
 
