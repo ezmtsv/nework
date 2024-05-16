@@ -108,10 +108,6 @@ class UserAccount : Fragment() {
                 TODO("Not yet implemented")
             }
 
-            override fun openLinkVideo(post: Post) {
-                TODO("Not yet implemented")
-            }
-
             override fun openCardPost(post: Post) {
                 findNavController().navigate(
                     R.id.postView,

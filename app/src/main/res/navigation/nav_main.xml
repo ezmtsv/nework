@@ -46,4 +46,9 @@
         android:name="ru.netology.nework.activity.NewPostFrag"
         android:label="new_post"
         tools:layout="@layout/new_post" />
+    <fragment
+        android:id="@+id/spacePhoto"
+        android:name="ru.netology.nework.activity.SpacePhoto"
+        android:label="fragment_space_photo"
+        tools:layout="@layout/fragment_space_photo" />
 </navigation>

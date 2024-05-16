@@ -7,14 +7,21 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKit
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.map.MapObjectTapListener
+import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.mapview.MapView
+import com.yandex.runtime.image.ImageProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostViewBinding
 import ru.netology.nework.dto.Post
+import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.util.AndroidUtils
 import javax.inject.Inject
@@ -22,29 +29,52 @@ import javax.inject.Inject
 
 interface OnIteractionListenerPostView {
     fun onLike(post: Post)
-    fun onShare(post: Post)
     fun onEdit(post: Post)
     fun onRemove(post: Post)
-    fun openLinkVideo(post: Post)
-    fun openCardPost(id: Long)
+    fun playAudio(link: String)
+    fun playVideo(link: String)
+    fun openSpacePhoto(post: Post)
 }
 
 class AdapterPostView @Inject constructor(
     private val binding: PostViewBinding,
     private val onListener: OnIteractionListenerPostView,
-    private val listMentions: List<Post>,
+    private val listMentions: List<UserResponse>,
     @ApplicationContext
     private val context: Context
 ) {
 
     private var mapView: MapView
     private var yandexMapsKitFactory: MapKit? = null
+    private lateinit var mapObjectCollection: MapObjectCollection
+    private lateinit var placemarkMapObject: PlacemarkMapObject
+
+//    private var startLocation = Point(59.9402, 30.315)
+    private var zoomValue: Float = 16.5f
 
     init {
         yandexMapsKitFactory = MapKitFactory.getInstance()
         mapView = binding.map
         yandexMapsKitFactory?.onStart()
         mapView.onStart()
+//        moveToStartLocation(startLocation)
+//        setMarkerInStartLocation(startLocation)
+    }
+
+    private fun moveToStartLocation(point: Point) {
+        mapView.map.move(
+            CameraPosition(point, zoomValue, 0.0f, 0.0f),
+            Animation(Animation.Type.SMOOTH, 2f),
+            null
+        )
+    }
+
+    private fun setMarkerInStartLocation(startLocation: Point) {
+        val marker = R.drawable.ic_pin_black_png // Добавляем ссылку на картинку
+        mapObjectCollection = mapView.map.mapObjects // Инициализируем коллекцию различных объектов на карте
+        placemarkMapObject = mapObjectCollection.addPlacemark(startLocation, ImageProvider.fromResource(context, marker)) // Добавляем метку со значком
+        placemarkMapObject.opacity = 0.5f // Устанавливаем прозрачность метке
+        placemarkMapObject.setText("Здесь!") // Устанавливаем текст сверху метки
     }
 
     private val placemarkTapListener = MapObjectTapListener { _, point ->
@@ -60,7 +90,8 @@ class AdapterPostView @Inject constructor(
     fun bind(post: Post) {
         yandexMapsKitFactory = MapKitFactory.getInstance()
         mapView = binding.map
-println("post Id ${post.id} postAttach ${post.attachment}")
+//        println("post Id ${post.id} postAttach ${post.attachment}")
+//        println("post likeOwnerIds ${post.likeOwnerIds}, post mentionIds ${post.mentionIds}, users ${post.users}")
         binding.apply {
             author.text = post.author
             published.text = AndroidUtils.getTimePublish(post.published)
@@ -77,9 +108,19 @@ println("post Id ${post.id} postAttach ${post.attachment}")
             }
             jobPlace.text = post.authorJob ?: "В поиске работы"
             imageView.visibility = View.GONE
-
+            layAudio.visibility = View.GONE
             layMaps.visibility = View.GONE
-            post.coords?.let { layMaps.visibility = View.VISIBLE }
+            play.visibility = View.GONE
+            post.coords?.let {
+                layMaps.visibility = View.VISIBLE
+                val startLocation = Point(post.coords.lat!!, post.coords.longCr!!)
+                moveToStartLocation(startLocation)
+                setMarkerInStartLocation(startLocation)
+            }
+
+            imageView.setOnClickListener {
+                onListener.openSpacePhoto(post)
+            }
 
             post.attachment?.let {
                 when (it.type) {
@@ -94,11 +135,18 @@ println("post Id ${post.id} postAttach ${post.attachment}")
                     }
 
                     AttachmentType.VIDEO -> {
+                        videoView.visibility = View.VISIBLE
+                        play.visibility = View.VISIBLE
 
+                        play.setOnClickListener {
+                            onListener.playVideo(post.attachment.url)
+                            play.visibility = View.GONE
+                        }
                     }
 
                     AttachmentType.AUDIO -> {
-
+                        layAudio.visibility = View.VISIBLE
+                        playAudio.setOnClickListener { onListener.playAudio(post.attachment.url) }
                     }
 
                     else -> return
@@ -114,20 +162,13 @@ println("post Id ${post.id} postAttach ${post.attachment}")
                 .circleCrop()
                 .into(avatar)
 
-            listUsers.visibility = View.GONE
-            if(post.mentionIds?.size!! > 0){
-                layMentions.setOnClickListener{
-                    println("post ${post.mentionIds}")
-                    val users =
-                        listOf("user1", "user2", "user1", "user2", "user1", "user2", "user1", "user2")
-                    val adapter = ArrayAdapter<String>(context, android.R.layout.simple_gallery_item, users)
-                    listUsers.adapter = adapter
-                    if(listUsers.isVisible)listUsers.visibility = View.GONE
-                    else listUsers.visibility = View.VISIBLE
-                }
-
-            }
-
+//            listUsers.visibility = View.GONE
+//            if (post.mentionIds?.size!! > 0) {
+//                layMentions.setOnClickListener {
+//                    if (listUsers.isVisible) listUsers.visibility = View.GONE
+//                    else listUsers.visibility = View.VISIBLE
+//                }
+//            }
 
 
             transparentImage.setOnTouchListener(View.OnTouchListener { view, motionEvent ->

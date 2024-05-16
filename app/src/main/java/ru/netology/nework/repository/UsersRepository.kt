@@ -7,8 +7,8 @@ import ru.netology.nework.dto.UserResponse
 
 interface UsersRepository {
     val allUsers: Flow<List<UserResponse>>
-//    val userJob: Flow<List<Job>>
     val allUsersJob: Flow<List<Job>>
+    suspend fun getMentionsUsers(userId: Long, mention: UsersRepositoryImpl.GetMentionUser)
     suspend fun getUsers()
     suspend fun getUser(id: Long): UserResponse
     suspend fun getJobs(id: Long)

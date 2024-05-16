@@ -31,6 +31,7 @@ import ru.netology.nework.viewmodel.PostsViewModel
 class ScreenPosts : Fragment() {
     val viewModel: PostsViewModel by viewModels()
     var binding: ScreenPostsBinding? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,7 +53,7 @@ class ScreenPosts : Fragment() {
         val adapter = AdapterScreenPosts(object : OnIteractionListener {
             override fun onLike(post: Post) {
                 if (userAuth) {
-                   viewModel.like(post, !post.likedByMe)
+                    viewModel.like(post, !post.likedByMe)
                 } else {
                     DialogAuth.newInstance(
                         DIALOG_IN,
@@ -63,9 +64,10 @@ class ScreenPosts : Fragment() {
             }
 
             override fun onShare(post: Post) {
+                val txtShare = (post.attachment?.url?: post.content).toString()
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
+                    putExtra(Intent.EXTRA_TEXT, txtShare)
                     type = "text/plain"
                 }
                 val shareIntent =
@@ -84,11 +86,8 @@ class ScreenPosts : Fragment() {
                 //viewModel.loadPosts()
             }
 
-            override fun openLinkVideo(post: Post) {
-
-            }
-
             override fun openCardPost(post: Post) {
+
                 findNavController().navigate(
                     R.id.postView,
                     Bundle().apply {
@@ -96,13 +95,17 @@ class ScreenPosts : Fragment() {
                     }
                 )
             }
+
         })
         binding?.list?.adapter = adapter
 
+//binding?.list?.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->  }
+
+
         viewModel.data.observe(viewLifecycleOwner) { posts ->
-            val state = adapter.currentList.size < posts.size
+//            val newPost = adapter.currentList.size < posts.size
             adapter.submitList(posts)
-            if (state) binding?.list?.smoothScrollToPosition(0)
+//            if (newPost) binding?.list?.smoothScrollToPosition(0)
         }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->

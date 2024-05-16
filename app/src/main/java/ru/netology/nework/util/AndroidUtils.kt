@@ -79,6 +79,13 @@ object AndroidUtils {
         return "НВ"
     }
 
+    fun getTimeTrack(time: Int): String =
+        if (time == 0) {
+            "....."
+        } else {
+            "  ${time / 1000 / 60}:${time / 1000 % 60} мин."
+        }
+
 }
 
 object StringArg : ReadWriteProperty<Bundle, String?> {

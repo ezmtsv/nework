@@ -28,6 +28,40 @@
                 android:visibility="gone"
                 app:constraint_referenced_ids="photo, btn_clear" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/select_attach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/material_on_primary_disabled"
+                android:layout_marginTop="@dimen/common_spacing"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/common_spacing">
+
+                    <Button
+                        android:id="@+id/attach_audio"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="@integer/material_motion_duration_long_1"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/common_spacing"
+                        android:text="AUDIO" />
+
+                    <Button
+                        android:id="@+id/attach_video"
+                        android:layout_width="wrap_content"
+                        android:layout_margin="@dimen/common_spacing"
+                        android:layout_weight="@integer/material_motion_duration_long_1"
+                        android:layout_height="wrap_content"
+                        android:text="VIDEO" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <ImageView
                 android:id="@+id/photo"
                 android:layout_width="match_parent"
@@ -40,8 +74,8 @@
                 android:id="@+id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/photo"
                 android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/photo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -50,11 +84,11 @@
                 android:id="@+id/btn_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/remove"
-                app:layout_constraintTop_toTopOf="@id/photo"
                 android:layout_marginTop="@dimen/common_spacing"
+                android:text="@string/remove"
                 app:layout_constraintEnd_toEndOf="@id/photo"
-                app:layout_constraintStart_toStartOf="@id/photo" />
+                app:layout_constraintStart_toStartOf="@id/photo"
+                app:layout_constraintTop_toTopOf="@id/photo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

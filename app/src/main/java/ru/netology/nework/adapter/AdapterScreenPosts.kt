@@ -20,7 +20,6 @@ interface OnIteractionListener {
     fun onShare(post: Post)
     fun onEdit(post: Post)
     fun onRemove(post: Post)
-    fun openLinkVideo(post: Post)
     fun openCardPost(post: Post)
 }
 
@@ -52,10 +51,12 @@ class PostViewHolder(
             icLike.setOnClickListener {
                 onIteractionListener.onLike(post)
             }
-            icShare.setOnClickListener{
+            icShare.setOnClickListener {
                 onIteractionListener.onShare(post)
             }
             imageView.visibility = View.GONE
+            playAudio.visibility = View.GONE
+            play.visibility = View.GONE
             post.attachment?.let {
                 when (it.type) {
                     AttachmentType.IMAGE, null -> {
@@ -69,11 +70,12 @@ class PostViewHolder(
                     }
 
                     AttachmentType.VIDEO -> {
-                        println("post ${post.id} VIDEO")
+                        videoView.visibility = View.VISIBLE
+
                     }
 
                     AttachmentType.AUDIO -> {
-                        println("post ${post.id} AUDIO")
+                        playAudio.visibility = View.VISIBLE
                     }
 
                     else -> return

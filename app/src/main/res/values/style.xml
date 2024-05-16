@@ -11,6 +11,14 @@
         <item name="android:insetTop">0dp</item>
     </style>
 
+    <style name="Widget.AppTheme.playButtonBig" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="iconTint">@color/color_button_play</item>
+        <item name="android:minWidth">0dp</item>
+
+        <item name="android:insetTop">0dp</item>
+        <item name="android:padding">3dp</item>
+    </style>
+
     <style name="Widget.AppTheme.IconMenu" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="iconTint">@color/icon_button_tint</item>
         <item name="iconPadding">0dp</item>

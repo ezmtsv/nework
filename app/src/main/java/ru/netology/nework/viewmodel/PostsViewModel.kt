@@ -9,31 +9,35 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Post
+import ru.netology.nework.dto.User
+import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.media.Media
 import ru.netology.nework.media.MediaUpload
 import ru.netology.nework.media.PhotoModel
 import ru.netology.nework.model.FeedModelState
 import ru.netology.nework.repository.PostsRepository
+import ru.netology.nework.repository.UsersRepository
+import ru.netology.nework.repository.UsersRepositoryImpl
 import java.io.File
 import javax.inject.Inject
-import kotlin.math.sin
 
 
 @HiltViewModel
 @ExperimentalCoroutinesApi
 
 class PostsViewModel @Inject constructor(
-    private val repository: PostsRepository
+    private val repository: PostsRepository,
+    private val repoUsers: UsersRepository,
 ) : ViewModel() {
 
-//    val data: LiveData<FeedModel> = repository.postsBd
-//        .map(::FeedModel)
-//        .catch { it.printStackTrace() }
-//        .asLiveData(Dispatchers.Default)
+//    private val _userMentions = MutableLiveData<List<UserResponse>>()
+//    val userMentions: LiveData<List<UserResponse>>
+//        get() = _userMentions
 
     val noPhoto = PhotoModel()
     private val _photo = MutableLiveData(noPhoto)
@@ -47,10 +51,6 @@ class PostsViewModel @Inject constructor(
     private val _userWall = MutableLiveData<List<Post>>()
     val userWall: LiveData<List<Post>>
         get() = _userWall
-//    val userWall: LiveData<List<Post>>
-//        get() = repository.userWall
-
-//    val userWall: LiveData<List<Post>> = repository.userWall.asLiveData(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -203,6 +203,24 @@ class PostsViewModel @Inject constructor(
         list?.let { _userWall.value = it }
 
     }
+
+
+//    fun getMentionsUsers(id: Long) {
+//        viewModelScope.launch {
+//            for (i in 60..70) {
+//
+//                repoUsers.getMentionsUsers(
+//                    i.toLong(),
+//                    object : UsersRepositoryImpl.GetMentionUser {
+//                        override fun getUser(user: UserResponse) {
+//                            println(user)
+//                        }
+//                    })
+//            }
+//
+//        }
+//
+//    }
 
 //    fun getMentionIds(post: Post) {
 //        var posts = data.value?.map { it }

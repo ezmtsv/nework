@@ -2,6 +2,7 @@ package ru.netology.nework.activity
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +31,7 @@ import ru.netology.nework.error.UnknownError
 import ru.netology.nework.media.MediaUpload
 import ru.netology.nework.util.AndroidUtils.focusAndShowKeyboard
 import ru.netology.nework.viewmodel.PostsViewModel
+import java.io.InputStream
 
 const val MAX_SIZE_FILE = 15_728_640L
 
@@ -91,13 +93,30 @@ class NewPostFrag : Fragment() {
 
                 Activity.RESULT_OK -> {
                     val uri: Uri? = it.data?.data
-                    val file = uri?.toFile()
-                    if (file?.length()!! < MAX_SIZE_FILE) {
-                        viewModel.changePhoto(uri, file)
-                        upload = MediaUpload(file)
-                        binding.btnClear.visibility = View.VISIBLE
-                    } else {
-                        context?.toast("Размер вложения превышает максимально допустимый 15Мб!")
+                    when (typeAttach) {
+                        AttachmentType.IMAGE -> {
+                            val file = uri?.toFile()
+//                            file?.let {
+//                                println("file.name ${file.name}  file.length() ${file.length()} typeAttach $typeAttach")
+//                            }
+                            if (file?.length()!! < MAX_SIZE_FILE) {
+                                viewModel.changePhoto(uri, file)
+                                upload = MediaUpload(file)
+                                binding.btnClear.visibility = View.VISIBLE
+                            } else {
+                                context?.toast("Размер вложения превышает максимально допустимый 15Мб!")
+                            }
+                        }
+
+                        AttachmentType.AUDIO -> {
+
+                        }
+
+                        AttachmentType.VIDEO -> {
+
+                        }
+
+                        else -> {}
                     }
                 }
 
@@ -107,9 +126,12 @@ class NewPostFrag : Fragment() {
             }
         }
 
+
+
         binding.bottomNavigationNewPost.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_pic -> {
+                    typeAttach = AttachmentType.IMAGE
                     ImagePicker.with(this)
                         .galleryOnly()
                         .crop()
@@ -129,6 +151,7 @@ class NewPostFrag : Fragment() {
                 }
 
                 R.id.photo -> {
+                    typeAttach = AttachmentType.IMAGE
                     ImagePicker.with(this)
                         .cameraOnly()
                         .crop()
@@ -138,13 +161,29 @@ class NewPostFrag : Fragment() {
                 }
 
                 R.id.add_file -> {
-
+                    binding.selectAttach.visibility = View.VISIBLE
                     true
                 }
 
                 else -> false
             }
         }
+
+
+        with(binding) {
+
+            attachAudio.setOnClickListener {
+                typeAttach = AttachmentType.AUDIO
+                launcher.launch(getIntent())
+                selectAttach.visibility = View.GONE
+            }
+            attachVideo.setOnClickListener {
+                typeAttach = AttachmentType.VIDEO
+                launcher.launch(getIntent())
+                selectAttach.visibility = View.GONE
+            }
+        }
+
 
         viewModel.photo.observe(viewLifecycleOwner) {
             if (it == viewModel.noPhoto) {
@@ -160,7 +199,7 @@ class NewPostFrag : Fragment() {
         }
 
         viewModel.dataState.observe(viewLifecycleOwner) {
-            if(it.loading) binding.btnClear.visibility = View.GONE
+            if (it.loading) binding.btnClear.visibility = View.GONE
             if (!it.loading && lastStateLoading) findNavController().navigateUp()
             binding.progress.isVisible = it.loading
             lastStateLoading = it.loading
@@ -197,6 +236,34 @@ class NewPostFrag : Fragment() {
 
     }
 
+    private fun getIntent() = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        addCategory(Intent.CATEGORY_OPENABLE)
+        type = "*/*" // That's needed for some reason, crashes otherwise
+        putExtra(
+            // List all file types you want the user to be able to select
+            Intent.EXTRA_MIME_TYPES, arrayOf(
+//                "text/html", // .html
+//                "text/plain", // .txt
+//                "application/pdf",
+                "audio/mpeg",
+                "video/mp4",
+            )
+        )
+
+    }
+
     private fun Context.toast(message: CharSequence) =
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    //            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+//                addCategory(Intent.CATEGORY_OPENABLE)
+//                type = "*/*" // That's needed for some reason, crashes otherwise
+//                putExtra(
+//                    // List all file types you want the user to be able to select
+//                    Intent.EXTRA_MIME_TYPES, arrayOf(
+//                        "text/html", // .html
+//                        "text/plain" // .txt
+//                    )
+//                )
+//                launcher.launch(this)
+//            }
 }

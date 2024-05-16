@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.dao.JobDao
 import ru.netology.nework.dao.UserDao
@@ -26,6 +29,7 @@ import ru.netology.nework.entity.toEntity
 import ru.netology.nework.error.ApiError
 import ru.netology.nework.error.ApiError403
 import ru.netology.nework.error.ApiError404
+import ru.netology.nework.error.DbError
 import ru.netology.nework.error.NetworkError
 import ru.netology.nework.error.UnknownError
 import java.io.IOException
@@ -45,10 +49,6 @@ class UsersRepositoryImpl @Inject constructor(
     private val _allUsers = daoUser.getAllUsers().map(List<UserResponseEntity>::toDto)
     override val allUsers: Flow<List<UserResponse>>
         get() = _allUsers
-
-    //    private var _userJob = MutableLiveData<List<Job>>()
-//    override val userJob: Flow<List<Job>>
-//        get() = _userJob.asFlow()
 
 //    private var _userJob = MutableStateFlow<List<Job>>(emptyList<Job>())
 //    override val userJob: Flow<List<Job>>
@@ -116,15 +116,23 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
-//    override suspend fun getJobsBD(id: Long) {
-//        try {
-//            daoJob.getAllJobs(id).map(List<JobEntity>::toDto).flowOn(Dispatchers.Default)
-//                .collect { job ->
-//                    job.forEach { println(it) }
-//                    _userJob.update { job }
-//                }
-//        } catch (e: Exception) {
-//            println("EXCEPTION BASE DATA")
-//        }
-//    }
+    interface GetMentionUser {
+        fun getUser(user: UserResponse)
+    }
+
+    override suspend fun getMentionsUsers(userId: Long, mention: GetMentionUser) {
+        try {
+            CoroutineScope(Dispatchers.Default).launch {
+
+                val user = daoUser.getUser(userId).map { it.toDto() }
+                user.flowOn(Dispatchers.IO).collect {
+                    mention.getUser(it)
+                    this.cancel()
+                }
+            }
+        } catch (e: Exception) {
+            throw DbError
+        }
+    }
+
 }

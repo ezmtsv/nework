@@ -95,34 +95,54 @@
                 android:autoLink="web"
                 android:paddingTop="@dimen/common_spacing"
                 android:paddingBottom="@dimen/common_spacing"
-                app:layout_constraintBottom_toTopOf="@id/image_view"
+                app:layout_constraintBottom_toTopOf="@id/centre_skin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrier"
                 tools:text="@sample/posts.json/data/content" />
 
-            <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="360dp"
-                android:layout_height="250dp"
+            <FrameLayout
+                android:id="@+id/centre_skin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing"
-                android:contentDescription="@string/preview_video"
-                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/barrierContent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/content"
-                tools:srcCompat="@drawable/avatar_user" />
+                app:layout_constraintTop_toBottomOf="@+id/content">
 
-            <ImageButton
-                android:id="@+id/play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/play_arrow_24"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/image_view"
-                app:layout_constraintEnd_toEndOf="@id/image_view"
-                app:layout_constraintStart_toStartOf="@id/image_view"
-                app:layout_constraintTop_toTopOf="@id/image_view" />
+                <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="360dp"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="@dimen/common_spacing"
+                    android:contentDescription="@string/preview_video"
+                    android:visibility="visible"
+                    tools:srcCompat="@drawable/avatar_user" />
+
+                <ImageButton
+                    android:id="@+id/play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_arrow_24"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/play_audio"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="@dimen/common_spacing"
+                    android:src="@drawable/play_circle_70"
+                    android:visibility="gone" />
+
+                <VideoView
+                    android:id="@+id/video_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:visibility="gone"
+                    />
+
+            </FrameLayout>
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierContent"
@@ -141,7 +161,7 @@
                 android:contentDescription="@string/description_post_like"
                 app:icon="@drawable/ic_like_selector"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/image_view"
+                app:layout_constraintTop_toBottomOf="@id/centre_skin"
                 tools:text="@sample/posts.json/data/likes" />
 
             <com.google.android.material.button.MaterialButton
@@ -154,7 +174,7 @@
                 android:contentDescription="@string/description_post_share"
                 app:icon="@drawable/ic_share_24"
                 app:layout_constraintStart_toEndOf="@id/icLike"
-                app:layout_constraintTop_toBottomOf="@id/image_view"
+                app:layout_constraintTop_toBottomOf="@id/centre_skin"
                 tools:text="@sample/posts.json/data/Reposts" />
 
 

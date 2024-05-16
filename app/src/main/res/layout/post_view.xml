@@ -69,13 +69,58 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="avatar,work_place" />
 
-            <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="370dp"
-                android:layout_height="280dp"
+            <FrameLayout
+                android:id="@+id/centre_skin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing"
-                app:layout_constraintTop_toBottomOf="@id/barrier"
-                tools:srcCompat="@drawable/avatar_user" />
+                app:layout_constraintTop_toBottomOf="@id/barrier">
+
+                <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="370dp"
+                    android:layout_height="280dp"
+                    android:layout_marginTop="@dimen/common_spacing"
+                    tools:srcCompat="@drawable/avatar_user" />
+                <LinearLayout
+                    android:id="@+id/lay_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/play_audio"
+                        style="@style/Widget.AppTheme.playButtonBig"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="@dimen/common_spacing"
+                        android:checkable="true"
+                        android:foreground="@drawable/selector_button_big" />
+
+                    <TextView
+                        android:id="@+id/duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_spacing"
+                        android:layout_gravity="bottom"
+                        android:text="..." />
+                </LinearLayout>
+                <VideoView
+                    android:id="@+id/video_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:visibility="gone"
+                    />
+                <ImageButton
+                    android:id="@+id/play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/play_arrow_24"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/published"
@@ -84,7 +129,7 @@
                 android:layout_marginStart="@dimen/common_spacing"
                 android:layout_marginTop="@dimen/common_spacing"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/image_view"
+                app:layout_constraintTop_toBottomOf="@id/centre_skin"
                 tools:text="@sample/posts.json/data/published" />
 
             <TextView
@@ -114,15 +159,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/job_place" />
 
-            <ListView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_users"
                 android:layout_width="200dp"
                 android:layout_height="0dp"
-
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/mention_users_lay"/>
 
             <LinearLayout
                 android:id="@+id/lay_favorite"
@@ -148,7 +192,7 @@
                         android:contentDescription="@string/description_post_like"
                         app:icon="@drawable/ic_like_selector"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/image_view"
+                        app:layout_constraintTop_toBottomOf="@id/centre_skin"
                         tools:text="@sample/posts.json/data/likes" />
 
                 </LinearLayout>

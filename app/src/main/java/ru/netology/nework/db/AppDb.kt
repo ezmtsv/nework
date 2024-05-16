@@ -45,16 +45,30 @@ class DataConvertorList {
         Gson().fromJson<List<Long>?>(str, listType)
 }
 
+//class DataConvertorAdditionalProp {
+//    private val type = object : TypeToken<UserPreview?>() {}.type
+//
+//    @TypeConverter
+//    fun toGson(obj: UserPreview?): String =
+//        Gson().toJson(obj)
+//
+//    @TypeConverter
+//    fun fromGson(str: String): UserPreview? =
+//        Gson().fromJson<UserPreview?>(str, type)
+//
+//
+//}
+
 class DataConvertorAdditionalProp {
-    private val type = object : TypeToken<UserPreview?>() {}.type
+    private val type = object : TypeToken<Map<String, String>?>() {}.type
 
     @TypeConverter
-    fun toGson(obj: UserPreview?): String =
+    fun toGson(obj: Map<String, String>?): String =
         Gson().toJson(obj)
 
     @TypeConverter
-    fun fromGson(str: String): UserPreview? =
-        Gson().fromJson<UserPreview?>(str, type)
+    fun fromGson(str: String): Map<String, String>? =
+        Gson().fromJson<Map<String, String>?>(str, type)
 
 
 }
