@@ -6,23 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.yandex.mapkit.geometry.Point
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Post
-import ru.netology.nework.dto.User
-import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.media.Media
-import ru.netology.nework.media.MediaUpload
 import ru.netology.nework.media.PhotoModel
 import ru.netology.nework.model.FeedModelState
+import ru.netology.nework.model.NewPostStatusModel
 import ru.netology.nework.repository.PostsRepository
-import ru.netology.nework.repository.UsersRepository
-import ru.netology.nework.repository.UsersRepositoryImpl
 import java.io.File
 import javax.inject.Inject
 
@@ -32,7 +29,7 @@ import javax.inject.Inject
 
 class PostsViewModel @Inject constructor(
     private val repository: PostsRepository,
-    private val repoUsers: UsersRepository,
+//    private val repoUsers: UsersRepository,
 ) : ViewModel() {
 
 //    private val _userMentions = MutableLiveData<List<UserResponse>>()
@@ -47,6 +44,13 @@ class PostsViewModel @Inject constructor(
     val data: LiveData<List<Post>> = repository.postsBd
         .asLiveData(Dispatchers.IO)
 
+    private val _location = MutableLiveData<Point>()
+    val location: LiveData<Point>
+        get() = _location
+
+    private val _newPostStatusModel = MutableLiveData<NewPostStatusModel>()
+    val newPostStatusModel: LiveData<NewPostStatusModel>
+        get() = _newPostStatusModel
 
     private val _userWall = MutableLiveData<List<Post>>()
     val userWall: LiveData<List<Post>>
@@ -91,26 +95,61 @@ class PostsViewModel @Inject constructor(
         }
     }
 
-    fun savePost(post: Post, upload: MediaUpload?, typeAttach: AttachmentType?) {
+//    fun savePost(post: Post, upload: MediaUpload?, typeAttach: AttachmentType?) {
+//        _dataState.value = FeedModelState(loading = true)
+//        viewModelScope.launch {
+//            try {
+//                typeAttach?.let {
+//                    when (typeAttach) {
+//                        AttachmentType.IMAGE -> {
+//
+//                        }
+//
+//                        AttachmentType.VIDEO -> {
+//
+//                        }
+//
+//                        AttachmentType.AUDIO -> {
+//
+//                        }
+//                    }
+//                    upload?.let {
+//                        val media: Media = repository.upload(upload)
+//                        val postWithAttachment =
+//                            post.copy(attachment = Attachment(media.url, typeAttach))
+//                        repository.savePost(postWithAttachment)
+//                        _dataState.value = FeedModelState()
+//                    }
+//                    return@launch
+//                }
+//                repository.savePost(post)
+//                _dataState.value = FeedModelState()
+//
+//            } catch (e: Exception) {
+//                when (e.javaClass.name) {
+//                    "ru.netology.nework.error.ApiError403" -> {
+//                        _dataState.value = FeedModelState(error403 = true)
+//                    }
+//
+//                    "ru.netology.nework.error.ApiError415" -> {
+//                        _dataState.value = FeedModelState(error415 = true)
+//                    }
+//
+//                    else -> {
+//                        _dataState.value = FeedModelState(error = true)
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    fun savePost(post: Post, media: MultipartBody.Part?, typeAttach: AttachmentType?) {
         _dataState.value = FeedModelState(loading = true)
         viewModelScope.launch {
             try {
                 typeAttach?.let {
-                    when (typeAttach) {
-                        AttachmentType.IMAGE -> {
-
-                        }
-
-                        AttachmentType.VIDEO -> {
-
-                        }
-
-                        AttachmentType.AUDIO -> {
-
-                        }
-                    }
-                    upload?.let {
-                        val media: Media = repository.upload(upload)
+                    media?.let {
+                        val media: Media = repository.upload(media)
                         val postWithAttachment =
                             post.copy(attachment = Attachment(media.url, typeAttach))
                         repository.savePost(postWithAttachment)
@@ -204,7 +243,13 @@ class PostsViewModel @Inject constructor(
 
     }
 
+    fun setStatusNewPostFrag(newStatus: NewPostStatusModel) {
+        _newPostStatusModel.value = newStatus
+    }
 
+    fun setLocation(point: Point) {
+        _location.value = point
+    }
 //    fun getMentionsUsers(id: Long) {
 //        viewModelScope.launch {
 //            for (i in 60..70) {

@@ -10,33 +10,29 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.MediaController
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.activity.AppActivity.Companion.idArg
+import ru.netology.nework.activity.AppActivity.Companion.listUserArg
 import ru.netology.nework.activity.AppActivity.Companion.uriArg
 import ru.netology.nework.adapter.AdapterPostView
-import ru.netology.nework.adapter.AdapterUserMentions
 import ru.netology.nework.adapter.OnIteractionListenerPostView
 import ru.netology.nework.databinding.PostViewBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Post
-import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.players.MPlayer
 import ru.netology.nework.util.AndroidUtils
 import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
 import ru.netology.nework.viewmodel.PostsViewModel
+import ru.netology.nework.viewmodel.UsersViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
@@ -48,45 +44,10 @@ class PostView : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val viewModel: PostsViewModel by viewModels()
+        val viewModelUsers: UsersViewModel by viewModels()
         val binding = PostViewBinding.inflate(layoutInflater)
         val idPost = arguments?.idArg
         var txtShare = ""
-
-
-
-        val listMentions = listOf(
-            UserResponse(
-                id = 1L, "login1", name = "name1",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/92f2b97a-457d-46f7-be08-ee419ad07230_vNJ6FRcnK.jpg"
-            ),
-            UserResponse(
-                id = 2L, "login2", name = "name2",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/1dcd6992-a0da-441c-908a-085c259c64ae_3ppxigjSA.png"
-            ),
-            UserResponse(
-                id = 3L, "login3", name = "name3",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/9f369605-6b1a-4831-82d8-c794afe1bbe3_5doHTFYFe.jpg"
-            ),
-            UserResponse(
-                id = 4L, "login4", name = "name4",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/92f2b97a-457d-46f7-be08-ee419ad07230_vNJ6FRcnK.jpg"
-            ),
-            UserResponse(
-                id = 5L, "login5", name = "name5",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/2c323c6c-79bd-4562-8bfd-36ef87ac3db9_LAjf3CJuY.jpg"
-            ),
-            UserResponse(
-                id = 6L, "login6", name = "name6",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/d55e8d0b-d46a-4f51-8cd3-58541a51c031_OsdFSRfrb.jpg"
-            ),
-            UserResponse(
-                id = 7L, "login7", name = "name7",
-                avatar = "https://ik.imagekit.io/ube3bjrcz/6ff7919f-1f8c-40fd-ad6e-d9869723e00d_M60-d19_t.jpg"
-            ),
-
-            )
-
-
 
 
         viewModel.data.observe(viewLifecycleOwner) { posts ->
@@ -157,15 +118,23 @@ class PostView : Fragment() {
                                 }
                             )
                         }
-                    }, listMentions, context = cntx).bind(post)
+
+                        override fun showMentionUsers(listUsersId: List<Long>?) {
+                            //val list = viewModelUsers.selectUsers(listOf(65, 66, 67, 68, 69, 70))
+                            val list = listUsersId?.let { viewModelUsers.selectUsers(it) }
+                            findNavController().navigate(
+                                R.id.tmpFrag,
+                                Bundle().apply {
+                                    listUserArg = list
+                                }
+                            )
+                        }
+                    }, context = cntx).bind(post)
                 }
             }
-
-
-//            val adapterUserResponse = AdapterUserMentions()
-//            binding.listUsers.adapter = adapterUserResponse
-//            adapterUserResponse.submitList(listMentions)
         }
+
+        viewModelUsers.listUsers.observe(viewLifecycleOwner) {}
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

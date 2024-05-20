@@ -121,8 +121,8 @@ class ScreenPosts : Fragment() {
             if (state.error403) {
                 userAuth = false
                 myID = null
-
                 showBar("Ошибка авторизации, выполните вход")
+                viewModel.loadPosts()
             }
             if (state.error415) {
                 showBar("Неправильный формат файла!")
@@ -152,6 +152,9 @@ class ScreenPosts : Fragment() {
 
                 R.id.menu_events -> {
                     println("click EVENTS")
+                    findNavController().navigate(
+                        R.id.tmpFrag,
+                    )
                     true
                 }
 

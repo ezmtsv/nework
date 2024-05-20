@@ -16,9 +16,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_spacing"
             android:layout_marginStart="@dimen/common_spacing"
             android:layout_marginEnd="@dimen/common_spacing"
-            android:padding="@dimen/common_spacing">
+            >
 
             <ImageView
                 android:id="@+id/avatar"
@@ -72,10 +73,10 @@
                 style="@style/Widget.AppTheme.IconMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/common_spacing"
+                android:gravity="end"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/description_post_menu"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:icon="@drawable/ic_more_vert_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -91,10 +92,10 @@
                 android:id="@+id/content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/common_spacing"
+                android:layout_marginTop="@dimen/min_space"
                 android:autoLink="web"
-                android:paddingTop="@dimen/common_spacing"
-                android:paddingBottom="@dimen/common_spacing"
+                android:paddingTop="@dimen/min_space"
+                android:paddingBottom="@dimen/min_space"
                 app:layout_constraintBottom_toTopOf="@id/centre_skin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +106,7 @@
                 android:id="@+id/centre_skin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/common_spacing"
+                android:layout_marginTop="@dimen/min_space"
                 app:layout_constraintBottom_toTopOf="@id/barrierContent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/content">
@@ -114,7 +115,7 @@
                     android:id="@+id/image_view"
                     android:layout_width="360dp"
                     android:layout_height="250dp"
-                    android:layout_marginTop="@dimen/common_spacing"
+                    android:layout_marginTop="@dimen/min_space"
                     android:contentDescription="@string/preview_video"
                     android:visibility="visible"
                     tools:srcCompat="@drawable/avatar_user" />

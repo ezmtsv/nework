@@ -70,15 +70,22 @@ class PostViewHolder(
                     }
 
                     AttachmentType.VIDEO -> {
-                        videoView.visibility = View.VISIBLE
-
+                        imageView.visibility = View.VISIBLE
+                        play.visibility = View.VISIBLE
+                        Glide.with(imageView)
+                            .load(post.attachment.url)
+                            .placeholder(R.drawable.ic_loading_100dp)
+                            //.error(R.drawable.ic_error_100dp)
+                            .timeout(180_000)
+                            .into(imageView)
+                        play.setOnClickListener {
+                            onIteractionListener.openCardPost(post)
+                        }
                     }
 
                     AttachmentType.AUDIO -> {
                         playAudio.visibility = View.VISIBLE
                     }
-
-                    else -> return
                 }
 
             }
@@ -96,7 +103,6 @@ class PostViewHolder(
             }
 
             menu.isVisible = post.postOwner
-
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)

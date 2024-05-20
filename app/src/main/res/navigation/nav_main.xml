@@ -51,4 +51,9 @@
         android:name="ru.netology.nework.activity.SpacePhoto"
         android:label="fragment_space_photo"
         tools:layout="@layout/fragment_space_photo" />
+    <fragment
+        android:id="@+id/tmpFrag"
+        android:name="ru.netology.nework.activity.SelectionUsersFrag"
+        android:label="TmpFrag"
+        tools:layout="@layout/selection_users" />
 </navigation>

@@ -1,40 +1,25 @@
 package ru.netology.nework.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.Response
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.dao.PostDao
-import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.User
 import ru.netology.nework.entity.PostEntity
 import ru.netology.nework.entity.toDto
 import ru.netology.nework.entity.toEntity
-import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.error.*
 import ru.netology.nework.media.Media
 import ru.netology.nework.media.MediaUpload
-import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import java.io.IOException
 import javax.inject.Inject
@@ -112,10 +97,17 @@ class PostsRepositoryImp @Inject constructor(
                 }
             }
             val posts = response.body() ?: throw ApiError(response.code(), response.message())
+//            dao.insert(
+//                posts.toEntity()
+//            )
+            val _posts = posts.map {
+                if (myID == it.authorId) {
+                    it.copy(postOwner = true)
+                } else it
+            }
             dao.insert(
-                posts.toEntity()
+                _posts.toEntity()
             )
-
 
             //           _userWall.value = response.body() ?: throw ApiError(response.code(), response.message())
         } catch (e: IOException) {
@@ -268,12 +260,33 @@ class PostsRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun upload(upload: MediaUpload): Media {
+//    override suspend fun upload(upload: MediaUpload): Media {
+//        try {
+//            val media = MultipartBody.Part.createFormData(
+//                "file", upload.file?.name, upload.file?.asRequestBody()!!
+//            )
+//            println("upload media ${media.headers}")
+//            val response = apiService.upload(media)
+//            if (!response.isSuccessful) {
+//                when (response.code()) {
+//                    403 -> throw ApiError403(response.code().toString())
+//                    415 -> throw ApiError415(response.code().toString())
+//                    else -> throw ApiError(response.code(), response.message())
+//                }
+//            }
+//            return response.body() ?: throw ApiError(response.code(), response.message())
+//        } catch (e: ApiError403) {
+//            throw ApiError403("403")
+//        } catch (e: ApiError415) {
+//            throw ApiError415("415")
+//        } catch (e: Exception) {
+//            throw UnknownError
+//        }
+//    }
+
+
+    override suspend fun upload(media: MultipartBody.Part): Media {
         try {
-            val media = MultipartBody.Part.createFormData(
-                "file", upload.file?.name, upload.file?.asRequestBody()!!
-            )
-            println("upload media ${media.headers}")
             val response = apiService.upload(media)
             if (!response.isSuccessful) {
                 when (response.code()) {

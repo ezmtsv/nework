@@ -45,9 +45,7 @@ class AuthViewModel @Inject constructor(
             try {
                 _dataState.value = FeedModelState(loading = true)
                 val user = repository.userReg(login, pass, name, upload) // send to server
-//                user?.let {
-//                    appAuth.setAuth(user?.id, login, pass, user.token)
-//                }
+
                 user?.let {
                     if (user.id != 0L && user.token != null) {
                         appAuth.run {

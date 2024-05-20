@@ -39,5 +39,5 @@ data class Event(
     @SerializedName("type")
     val type: String,
     @SerializedName("users")
-    val users: Users,
+    val users: Map<String, UserPreview>,
 )

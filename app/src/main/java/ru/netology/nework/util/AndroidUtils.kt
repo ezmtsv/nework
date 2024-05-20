@@ -7,7 +7,6 @@ import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserResponse
 import java.lang.reflect.Type
 import kotlin.properties.ReadWriteProperty
@@ -116,5 +115,17 @@ object UserArg : ReadWriteProperty<Bundle, UserResponse?> {
     override fun getValue(thisRef: Bundle, property: KProperty<*>): UserResponse? {
         val listType: Type = object : TypeToken<UserResponse?>() {}.type
         return Gson().fromJson<UserResponse?>(thisRef.getString(property.name), listType)
+    }
+}
+
+object ListUserArg : ReadWriteProperty<Bundle, List<UserResponse>?> {
+
+    override fun setValue(thisRef: Bundle, property: KProperty<*>, value: List<UserResponse>?) {
+        thisRef.putString(property.name, Gson().toJson(value))
+    }
+
+    override fun getValue(thisRef: Bundle, property: KProperty<*>): List<UserResponse>? {
+        val listType: Type = object : TypeToken<List<UserResponse>?>() {}.type
+        return Gson().fromJson<List<UserResponse>?>(thisRef.getString(property.name), listType)
     }
 }

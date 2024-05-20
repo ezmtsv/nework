@@ -159,15 +159,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/job_place" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_users"
-                android:layout_width="200dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/mention_users_lay"/>
-
             <LinearLayout
                 android:id="@+id/lay_favorite"
                 android:layout_width="match_parent"
@@ -177,7 +168,7 @@
                 app:layout_constraintTop_toBottomOf="@id/likers">
 
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -195,7 +186,56 @@
                         app:layout_constraintTop_toBottomOf="@id/centre_skin"
                         tools:text="@sample/posts.json/data/likes" />
 
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/avatar_user_like_1"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="100dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user_like_2"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="140dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user_like_3"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="180dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user_like_4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="220dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user_like_5"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="260dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user_like_6"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="300dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+
+                </FrameLayout>
             </LinearLayout>
 
             <TextView
@@ -217,7 +257,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/mentionaters">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/min_space"
@@ -235,9 +275,55 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/image_view"
                         tools:text="@sample/posts.json/data/likes" />
-
-                </LinearLayout>
-
+                    <ImageView
+                        android:id="@+id/avatar_user1"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="100dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user2"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="140dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user3"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="180dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user4"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="220dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user5"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="260dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                    <ImageView
+                        android:id="@+id/avatar_user6"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="300dp"
+                        android:layout_gravity="bottom"
+                        tools:srcCompat="@drawable/avatar_user"
+                        />
+                </FrameLayout>
             </LinearLayout>
 
             <TextView

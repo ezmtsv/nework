@@ -11,13 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
 import ru.netology.nework.databinding.AuthFragmentBinding
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.viewmodel.AuthViewModel
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class AuthFragment : Fragment() {
 

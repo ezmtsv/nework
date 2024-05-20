@@ -69,7 +69,7 @@ class RegFragment : Fragment() {
         }
 
 
-        viewModel.authState.observe(viewLifecycleOwner) { auth ->
+        viewModel.authState.observe(viewLifecycleOwner) { _ ->
             if (pressBtn) {
                 findNavController().popBackStack()
             }

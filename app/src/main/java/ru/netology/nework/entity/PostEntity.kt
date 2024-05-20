@@ -7,7 +7,6 @@ import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Coordinates
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserPreview
-import ru.netology.nework.dto.Users
 
 
 @Entity(tableName = "PostEntity")
@@ -29,8 +28,8 @@ data class PostEntity(
     val attachment: Attachment?,
     @Embedded
     val coords: Coordinates? = null,
-    @Embedded
-    val users: Users?,
+//    @Embedded
+    val users: Map<String, UserPreview>?,
     val postOwner: Boolean,
 ) {
     fun toDto() = Post(

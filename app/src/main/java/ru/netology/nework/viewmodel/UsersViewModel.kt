@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.netology.nework.dto.Job
-import ru.netology.nework.dto.UserPreview
 import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.model.FeedModelState
 import ru.netology.nework.repository.UsersRepository
@@ -27,7 +26,7 @@ class UsersViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-//    private val _listUsers = MutableLiveData<List<UserResponse>>()
+    //    private val _listUsers = MutableLiveData<List<UserResponse>>()
     val listUsers: LiveData<List<UserResponse>> = usersRepo.allUsers.asLiveData(Dispatchers.Default)
 
 
@@ -91,6 +90,15 @@ class UsersViewModel @Inject constructor(
         user?.let {
             _userAccount.value = it
         }
+    }
 
+    fun selectUsers(list: List<Long>): List<UserResponse>? {
+        val users = mutableListOf<UserResponse>()
+        listUsers.value?.let {
+            for (i in listUsers.value!!) {
+                if (list.contains(i.id)) users.add(i)
+            }
+        }
+        return users ?: null
     }
 }

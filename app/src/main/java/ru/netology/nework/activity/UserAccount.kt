@@ -105,7 +105,7 @@ class UserAccount : Fragment() {
             }
 
             override fun onRemove(post: Post) {
-                TODO("Not yet implemented")
+                viewModelPosts.removePost(post)
             }
 
             override fun openCardPost(post: Post) {

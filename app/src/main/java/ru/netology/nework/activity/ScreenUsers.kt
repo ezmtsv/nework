@@ -7,14 +7,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
-import ru.netology.nework.activity.AppActivity.Companion.idArg
-import ru.netology.nework.activity.AppActivity.Companion.uriArg
 import ru.netology.nework.activity.AppActivity.Companion.userArg
 import ru.netology.nework.adapter.AdapterUsersList
 import ru.netology.nework.adapter.ListenerSelectionUser
@@ -49,7 +46,15 @@ class ScreenUsers : Fragment() {
 
                 )
             }
-        })
+
+            override fun addUser(idUser: Long?) {
+
+            }
+
+            override fun removeUser(idUser: Long?) {
+
+            }
+        }, false)
 
         fun showBar(txt: String) {
             Snackbar.make(

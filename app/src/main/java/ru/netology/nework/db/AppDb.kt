@@ -18,8 +18,6 @@ import java.lang.reflect.Type
 @TypeConverters(
     DataConvertorList::class,
     DataConvertorAdditionalProp::class,
-//    DataConvertorUsers::class,
-//    DataConvertorDouble::class,
 )
 @Database(
     entities = [PostEntity::class,
@@ -60,44 +58,16 @@ class DataConvertorList {
 //}
 
 class DataConvertorAdditionalProp {
-    private val type = object : TypeToken<Map<String, String>?>() {}.type
+    private val type = object : TypeToken<Map<String, UserPreview>?>() {}.type
 
     @TypeConverter
-    fun toGson(obj: Map<String, String>?): String =
+    fun toGson(obj: Map<String, UserPreview>?): String =
         Gson().toJson(obj)
 
     @TypeConverter
-    fun fromGson(str: String): Map<String, String>? =
-        Gson().fromJson<Map<String, String>?>(str, type)
+    fun fromGson(str: String): Map<String, UserPreview>? =
+        Gson().fromJson<Map<String, UserPreview>?>(str, type)
 
 
 }
-
-//class DataConvertorDouble {
-//    private val type = object: TypeToken<Double?>() {}.type
-//
-//    @TypeConverter
-//    fun toGson(obj: Double?): String =
-//        Gson().toJson(obj)
-//
-//    @TypeConverter
-//    fun fromGson(str: String): Double? =
-//        Gson().fromJson<Double?>(str, type)
-//
-//
-//}
-
-//class DataConvertorUsers {
-//    private val type = object : TypeToken<List<UserPreview>?>(){}.type
-//
-//    @TypeConverter
-//    fun toGson(obj: List<UserPreview>?): String =
-//        Gson().toJson(obj)
-//
-//    @TypeConverter
-//    fun fromGson(str: String): List<UserPreview>? =
-//        Gson().fromJson<List<UserPreview>?>(str, type)
-//
-//
-//}
 

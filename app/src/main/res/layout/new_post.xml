@@ -23,6 +23,51 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="ic_audio, name_track, btn_clear_loading" />
+
+            <ImageView
+                android:id="@+id/ic_audio"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/common_spacing"
+                android:layout_marginTop="@dimen/common_spacing"
+                app:layout_constraintStart_toStartOf="@id/content"
+                app:layout_constraintTop_toBottomOf="@id/content"
+                tools:srcCompat="@drawable/avatar_user" />
+
+            <TextView
+                android:id="@+id/name_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/common_spacing"
+                app:layout_constraintBottom_toBottomOf="@id/ic_audio"
+                app:layout_constraintStart_toEndOf="@id/ic_audio"
+                tools:text="Name Track" />
+
+            <Button
+                android:id="@+id/btn_clear_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_spacing"
+                android:text="@string/remove"
+                app:layout_constraintStart_toStartOf="@id/ic_audio"
+                app:layout_constraintTop_toBottomOf="@id/ic_audio" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_users"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/card_user" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -32,8 +77,8 @@
                 android:id="@+id/select_attach"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/material_on_primary_disabled"
                 android:layout_marginTop="@dimen/common_spacing"
+                android:background="@color/material_on_primary_disabled"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/content">
 
@@ -46,17 +91,17 @@
                     <Button
                         android:id="@+id/attach_audio"
                         android:layout_width="wrap_content"
-                        android:layout_weight="@integer/material_motion_duration_long_1"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/common_spacing"
+                        android:layout_weight="@integer/material_motion_duration_long_1"
                         android:text="AUDIO" />
 
                     <Button
                         android:id="@+id/attach_video"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_margin="@dimen/common_spacing"
                         android:layout_weight="@integer/material_motion_duration_long_1"
-                        android:layout_height="wrap_content"
                         android:text="VIDEO" />
 
                 </LinearLayout>
@@ -92,6 +137,22 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/lay_maps"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/min_space"
+        android:visibility="gone"
+        android:layout_marginBottom="70dp">
+
+        <com.yandex.mapkit.mapview.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_new_post"

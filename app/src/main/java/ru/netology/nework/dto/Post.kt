@@ -15,6 +15,6 @@ data class Post(
     val likedByMe: Boolean = false,
     val attachment: Attachment? = null,
     val coords: Coordinates? = null,
-    val users: Users? = null,
+    val users: Map<String, UserPreview>? = null,
     val postOwner: Boolean = false
 )

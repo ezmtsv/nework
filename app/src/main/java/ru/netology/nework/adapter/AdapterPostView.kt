@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ArrayAdapter
-import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKit
@@ -13,7 +11,6 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.MapObjectTapListener
 import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
@@ -21,7 +18,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostViewBinding
 import ru.netology.nework.dto.Post
-import ru.netology.nework.dto.UserResponse
+import ru.netology.nework.dto.UserPreview
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.util.AndroidUtils
 import javax.inject.Inject
@@ -34,12 +31,12 @@ interface OnIteractionListenerPostView {
     fun playAudio(link: String)
     fun playVideo(link: String)
     fun openSpacePhoto(post: Post)
+    fun showMentionUsers(listUsersId: List<Long>?)
 }
 
 class AdapterPostView @Inject constructor(
     private val binding: PostViewBinding,
     private val onListener: OnIteractionListenerPostView,
-    private val listMentions: List<UserResponse>,
     @ApplicationContext
     private val context: Context
 ) {
@@ -49,7 +46,7 @@ class AdapterPostView @Inject constructor(
     private lateinit var mapObjectCollection: MapObjectCollection
     private lateinit var placemarkMapObject: PlacemarkMapObject
 
-//    private var startLocation = Point(59.9402, 30.315)
+    //    private var startLocation = Point(59.9402, 30.315)
     private var zoomValue: Float = 16.5f
 
     init {
@@ -71,26 +68,21 @@ class AdapterPostView @Inject constructor(
 
     private fun setMarkerInStartLocation(startLocation: Point) {
         val marker = R.drawable.ic_pin_black_png // Добавляем ссылку на картинку
-        mapObjectCollection = mapView.map.mapObjects // Инициализируем коллекцию различных объектов на карте
-        placemarkMapObject = mapObjectCollection.addPlacemark(startLocation, ImageProvider.fromResource(context, marker)) // Добавляем метку со значком
+        mapObjectCollection =
+            mapView.map.mapObjects // Инициализируем коллекцию различных объектов на карте
+        placemarkMapObject = mapObjectCollection.addPlacemark(
+            startLocation,
+            ImageProvider.fromResource(context, marker)
+        ) // Добавляем метку со значком
         placemarkMapObject.opacity = 0.5f // Устанавливаем прозрачность метке
         placemarkMapObject.setText("Здесь!") // Устанавливаем текст сверху метки
     }
 
-    private val placemarkTapListener = MapObjectTapListener { _, point ->
-//        Toast.makeText(
-//            this@AppActivity,
-//            "Tapped the point (${point.longitude}, ${point.latitude})",
-//            Toast.LENGTH_SHORT
-//        ).show()
-        true
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SuspiciousIndentation")
     fun bind(post: Post) {
-        yandexMapsKitFactory = MapKitFactory.getInstance()
+        //       yandexMapsKitFactory = MapKitFactory.getInstance()
         mapView = binding.map
-//        println("post Id ${post.id} postAttach ${post.attachment}")
+        println("post Id ${post.id} postAttach ${post.attachment}")
 //        println("post likeOwnerIds ${post.likeOwnerIds}, post mentionIds ${post.mentionIds}, users ${post.users}")
         binding.apply {
             author.text = post.author
@@ -135,10 +127,18 @@ class AdapterPostView @Inject constructor(
                     }
 
                     AttachmentType.VIDEO -> {
-                        videoView.visibility = View.VISIBLE
                         play.visibility = View.VISIBLE
+                        imageView.visibility = View.VISIBLE
+                        Glide.with(imageView)
+                            .load(post.attachment.url)
+                            .placeholder(R.drawable.ic_loading_100dp)
+                            //.error(R.drawable.ic_error_100dp)
+                            .timeout(180_000)
+                            .into(imageView)
 
                         play.setOnClickListener {
+                            videoView.visibility = View.VISIBLE
+                            imageView.visibility = View.GONE
                             onListener.playVideo(post.attachment.url)
                             play.visibility = View.GONE
                         }
@@ -148,8 +148,6 @@ class AdapterPostView @Inject constructor(
                         layAudio.visibility = View.VISIBLE
                         playAudio.setOnClickListener { onListener.playAudio(post.attachment.url) }
                     }
-
-                    else -> return
                 }
 
             }
@@ -162,18 +160,97 @@ class AdapterPostView @Inject constructor(
                 .circleCrop()
                 .into(avatar)
 
-//            listUsers.visibility = View.GONE
-//            if (post.mentionIds?.size!! > 0) {
-//                layMentions.setOnClickListener {
-//                    if (listUsers.isVisible) listUsers.visibility = View.GONE
-//                    else listUsers.visibility = View.VISIBLE
-//                }
-//            }
+            icMentions.text = post.mentionIds?.count().toString()
+
+            post.mentionIds?.let {
+                val listUsersMentions = mutableListOf<UserPreview>()
+                post.users?.forEach { (t, u) ->
+                    if (post.mentionIds.contains(t.toLong()) && u.avatar != null) listUsersMentions.add(
+                        u
+                    )
+                }
+
+                val dimViewAvatarLikes = listOf(
+                    avatarUser1,
+                    avatarUser2,
+                    avatarUser3,
+                    avatarUser4,
+                    avatarUser5
+                )
+                if (listUsersMentions.size < 6) {
+                    for (i in 0..<listUsersMentions.size) {
+                        Glide.with(dimViewAvatarLikes[i])
+                            .load(listUsersMentions[i].avatar)
+                            .timeout(45_000)
+                            .circleCrop()
+                            .into(dimViewAvatarLikes[i])
+                    }
+                } else {
+                    for (i in 0..<5) {
+                        Glide.with(dimViewAvatarLikes[i])
+                            .load(listUsersMentions[i].avatar)
+                            .timeout(45_000)
+                            .circleCrop()
+                            .into(dimViewAvatarLikes[i])
+                    }
+                    Glide.with(avatarUser6)
+                        .load(R.drawable.but_plus)
+                        .timeout(45_000)
+                        .circleCrop()
+                        .into(avatarUser6)
+
+                }
+            }
+            post.likeOwnerIds?.let {
+                val listUsersLike = mutableListOf<UserPreview>()
+                post.users?.forEach { (t, u) ->
+                    if (post.likeOwnerIds.contains(t.toLong()) && u.avatar != null) listUsersLike.add(
+                        u
+                    )
+                }
+
+                val dimViewAvatarLikes = listOf(
+                    avatarUserLike1,
+                    avatarUserLike2,
+                    avatarUserLike3,
+                    avatarUserLike4,
+                    avatarUserLike5
+                )
+                if (listUsersLike.size < 6) {
+                    for (i in 0..<listUsersLike.size) {
+                        Glide.with(dimViewAvatarLikes[i])
+                            .load(listUsersLike[i].avatar)
+                            .timeout(45_000)
+                            .circleCrop()
+                            .into(dimViewAvatarLikes[i])
+                    }
+                } else {
+                    for (i in 0..<5) {
+                        Glide.with(dimViewAvatarLikes[i])
+                            .load(listUsersLike[i].avatar)
+                            .timeout(45_000)
+                            .circleCrop()
+                            .into(dimViewAvatarLikes[i])
+                    }
+                    Glide.with(avatarUserLike6)
+                        .load(R.drawable.but_plus)
+                        .timeout(45_000)
+                        .circleCrop()
+                        .into(avatarUserLike6)
+
+                }
+            }
 
 
-            transparentImage.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
-                val event = motionEvent.action
-                when (event) {
+            avatarUser6.setOnClickListener {
+                onListener.showMentionUsers(post.mentionIds)
+            }
+            avatarUserLike6.setOnClickListener {
+                onListener.showMentionUsers(post.likeOwnerIds)
+            }
+
+            transparentImage.setOnTouchListener { _, motionEvent ->
+                when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
                         scroll.requestDisallowInterceptTouchEvent(true)
                         false
@@ -193,7 +270,8 @@ class AdapterPostView @Inject constructor(
                         true
                     }
                 }
-            })
+
+            }
         }
 
     }

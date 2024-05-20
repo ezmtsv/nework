@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.databinding.CardWorkBinding
 import ru.netology.nework.dto.Job
 import ru.netology.nework.util.AndroidUtils.getTimeJob
-import ru.netology.nework.util.AndroidUtils.getTimePublish
 
 interface ListenerSelectionJobs {
 
