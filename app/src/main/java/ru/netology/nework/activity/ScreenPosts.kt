@@ -151,9 +151,9 @@ class ScreenPosts : Fragment() {
                 }
 
                 R.id.menu_events -> {
-                    println("click EVENTS")
+//                    println("click EVENTS")
                     findNavController().navigate(
-                        R.id.tmpFrag,
+                        R.id.screenEvents,
                     )
                     true
                 }

@@ -10,59 +10,78 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nework.R
-import ru.netology.nework.databinding.CardPostBinding
-import ru.netology.nework.dto.Post
+import ru.netology.nework.databinding.CardEventBinding
+import ru.netology.nework.dto.Event
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.util.AndroidUtils.getTimePublish
 
-interface OnIteractionListener {
-    fun onLike(post: Post)
-    fun onShare(post: Post)
-    fun onEdit(post: Post)
-    fun onRemove(post: Post)
-    fun openCardPost(post: Post)
+interface OnEventsListener{
+    fun onLike(event: Event)
+    fun onShare(event: Event)
+    fun onEdit(event: Event)
+    fun onRemove(event: Event)
+    fun openCardEvent(event: Event)
+    fun onParticipants(event: Event)
 }
 
-class AdapterScreenPosts(
-    private val onIteractionListener: OnIteractionListener
-) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onIteractionListener)
+class AdapterEventsList(
+    private val onEventsListener: OnEventsListener
+) : ListAdapter<Event, EventViewHolder>(EventDiffCallBack()) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        val binding =
+            CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return EventViewHolder(binding, onEventsListener)
     }
 
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        val post = getItem(position)
-        holder.bind(post)
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        val event = getItem(position)
+        holder.bind(event)
     }
 }
 
-class PostViewHolder(
-    private val binding: CardPostBinding,
-    private val onIteractionListener: OnIteractionListener,
+class EventViewHolder(
+    private val binding: CardEventBinding,
+    private val onEventsListener: OnEventsListener,
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(post: Post) {
-        binding.apply {
-            author.text = post.author
-            published.text = getTimePublish(post.published)
-            content.text = post.content
-            icLike.isChecked = post.likedByMe
-            icLike.text = post.likeOwnerIds?.count().toString()
+    fun bind(event: Event) {
+        with(binding) {
+            author.text = event.author
+            published.text = getTimePublish(event.published)
+            infoDate.text= event.typeMeeting.toString()
+            dateTime.text= getTimePublish(event.datetime)
+            content.text = event.content
+
+            icLike.isChecked = event.likedByMe?:false
+            icLike.text = event.likeOwnerIds?.count().toString()
             icLike.setOnClickListener {
-                onIteractionListener.onLike(post)
+                onEventsListener.onLike(event)
             }
+
             icShare.setOnClickListener {
-                onIteractionListener.onShare(post)
+                onEventsListener.onShare(event)
             }
+            icParticipants.isChecked = event.participatedByMe?:false
+            icParticipants.text = event.participantsIds?.count().toString()
+            icParticipants.setOnClickListener {
+                onEventsListener.onParticipants(event)
+            }
+
+            Glide.with(avatar)
+                .load(event.authorAvatar)
+                .error(R.drawable.icon_person_24)
+                .timeout(180_000)
+                .circleCrop()
+                .into(avatar)
+
             imageView.visibility = View.GONE
             playAudio.visibility = View.GONE
             play.visibility = View.GONE
-            post.attachment?.let {
+            event.attachment?.let {
                 when (it.type) {
                     AttachmentType.IMAGE, null -> {
                         imageView.visibility = View.VISIBLE
                         Glide.with(imageView)
-                            .load(post.attachment.url)
+                            .load(event.attachment.url)
                             .placeholder(R.drawable.ic_loading_100dp)
                             //.error(R.drawable.ic_error_100dp)
                             .timeout(180_000)
@@ -73,13 +92,13 @@ class PostViewHolder(
                         imageView.visibility = View.VISIBLE
                         play.visibility = View.VISIBLE
                         Glide.with(imageView)
-                            .load(post.attachment.url)
+                            .load(event.attachment.url)
                             .placeholder(R.drawable.ic_loading_100dp)
                             //.error(R.drawable.ic_error_100dp)
                             .timeout(180_000)
                             .into(imageView)
                         play.setOnClickListener {
-                            onIteractionListener.openCardPost(post)
+                            onEventsListener.openCardEvent(event)
                         }
                     }
 
@@ -90,30 +109,19 @@ class PostViewHolder(
 
             }
 
-            Glide.with(avatar)
-                .load(post.authorAvatar)
-                .error(R.drawable.icon_person_24)
-                .timeout(180_000)
-                .circleCrop()
-                .into(avatar)
-
-            root.setOnClickListener {
-                onIteractionListener.openCardPost(post)
-            }
-
-            menu.isVisible = post.postOwner
+            menu.isVisible = event.eventOwner
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)
                     setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.edit -> {
-                                onIteractionListener.onEdit(post)
+
                                 true
                             }
 
                             R.id.remove -> {
-                                onIteractionListener.onRemove(post)
+
                                 true
                             }
 
@@ -122,17 +130,18 @@ class PostViewHolder(
                     }
                 }.show()
             }
+
         }
     }
 }
 
-class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
-    override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem.id == newItem.id
-    }
+class EventDiffCallBack : DiffUtil.ItemCallback<Event>() {
+    override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean =
+        oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem == newItem
-    }
+
+    override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean =
+        oldItem == newItem
+
 
 }

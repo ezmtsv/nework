@@ -105,7 +105,13 @@ class ScreenUsers : Fragment() {
                 }
 
                 R.id.menu_events -> {
-                    println("click EVENTS")
+                    findNavController().navigate(
+                        R.id.screenEvents,
+                    )
+                    true
+                }
+                R.id.menu_users -> {
+
                     true
                 }
 

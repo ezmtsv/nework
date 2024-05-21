@@ -23,6 +23,7 @@
                 android:layout_height="@dimen/posts_avatar_size"
                 android:layout_marginBottom="@dimen/common_spacing"
                 android:contentDescription="@string/description_post_author_avatar"
+                android:layout_marginStart="@dimen/min_space"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@drawable/avatar_user" />
@@ -92,8 +93,8 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/play_audio"
                         style="@style/Widget.AppTheme.playButtonBig"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
                         android:layout_marginTop="@dimen/common_spacing"
                         android:checkable="true"
                         android:foreground="@drawable/selector_button_big" />

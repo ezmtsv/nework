@@ -11,6 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.netology.nework.dto.Event
 import ru.netology.nework.dto.Job
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.User
@@ -174,10 +175,35 @@ interface ApiService {
     suspend fun sendMyJob(): Response<Job>
 
     @DELETE("/api/my/jobs/{id}")
-    suspend fun deleteMyJobs(@Path("id") id: Long):Response<String>
+    suspend fun deleteMyJobs(@Path("id") id: Long): Response<String>
 
     //Media
     @Multipart
     @POST("/api/media")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
+
+    // Events
+    @GET("/api/events")
+    suspend fun getEvents(): Response<List<Event>>
+
+    @POST("/api/events/{id}/likes")
+    suspend fun likeEventId(@Path("id") id: Long): Response<Event>
+
+    @DELETE("/api/events/{id}/likes")
+    suspend fun dislikeEventId(@Path("id") id: Long): Response<Event>
+
+    @DELETE("/api/events/{id}")
+    suspend fun removeEvent(@Path("id") id: Long): Response<Int>
+
+    @POST("/api/events/{id}/participants")
+    suspend fun participantsId(@Path("id") id: Long): Response<Event>
+
+    @DELETE("/api/events/{id}/participants")
+    suspend fun delParticipantsId(@Path("id") id: Long): Response<Event>
+
+    @POST("/api/events")
+    suspend fun sendEvent(
+        @Body event: Event
+    ): Response<Event>
+
 }

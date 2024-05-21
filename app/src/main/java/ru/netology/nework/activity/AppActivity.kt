@@ -16,9 +16,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
 import ru.netology.nework.databinding.ActivityAppBinding
 import ru.netology.nework.dialog.DialogAuth
+import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.util.ListUserArg
 import ru.netology.nework.util.LongEditArg
+import ru.netology.nework.util.PostArg
 import ru.netology.nework.util.StringArg
 import ru.netology.nework.util.UserArg
 import ru.netology.nework.viewmodel.AuthViewModel
@@ -40,6 +42,7 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         var Bundle.uriArg: String? by StringArg
         var Bundle.userArg: UserResponse? by UserArg
         var Bundle.listUserArg: List<UserResponse>? by ListUserArg
+        var Bundle.postArg: Post? by PostArg
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

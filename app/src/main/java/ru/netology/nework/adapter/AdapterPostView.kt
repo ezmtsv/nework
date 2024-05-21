@@ -111,7 +111,13 @@ class AdapterPostView @Inject constructor(
             }
 
             imageView.setOnClickListener {
-                onListener.openSpacePhoto(post)
+                if(post.attachment?.type == AttachmentType.IMAGE) onListener.openSpacePhoto(post)
+                if(post.attachment?.type == AttachmentType.VIDEO) {
+                    videoView.visibility = View.VISIBLE
+                    imageView.visibility = View.GONE
+                    onListener.playVideo(post.attachment.url)
+                    play.visibility = View.GONE
+                }
             }
 
             post.attachment?.let {

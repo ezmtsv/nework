@@ -56,4 +56,9 @@
         android:name="ru.netology.nework.activity.SelectionUsersFrag"
         android:label="TmpFrag"
         tools:layout="@layout/selection_users" />
+    <fragment
+        android:id="@+id/screenEvents"
+        android:name="ru.netology.nework.activity.ScreenEvents"
+        android:label="ScreenEvents"
+        tools:layout="@layout/screen_events" />
 </navigation>

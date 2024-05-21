@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -24,6 +23,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
 import com.yandex.mapkit.Animation
@@ -52,12 +52,16 @@ import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.error.UnknownError
+import ru.netology.nework.model.NewPostStatusModel
 import ru.netology.nework.util.AndroidUtils.focusAndShowKeyboard
+import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 import java.io.InputStream
 
 const val MAX_SIZE_FILE = 15_728_640L
+const val SHOW = View.VISIBLE
+const val HIDE = View.GONE
 
 @Suppress("NAME_SHADOWING")
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -76,8 +80,8 @@ class NewPostFrag : Fragment() {
     val viewModelPosts: PostsViewModel by viewModels()
     private val viewModelUsers: UsersViewModel by viewModels()
 
-    private val inputListener =  object: InputListener {
-        override fun onMapTap(p0: Map, p1: Point) { }
+    private val inputListener = object : InputListener {
+        override fun onMapTap(p0: Map, p1: Point) {}
 
         override fun onMapLongTap(p0: Map, p1: Point) {
             viewModelPosts.setLocation(Point(p1.latitude, p1.longitude))
@@ -86,6 +90,7 @@ class NewPostFrag : Fragment() {
 
     companion object {
         private var multiPartBody: MultipartBody.Part? = null
+//        var typeAttach: AttachmentType? = null
     }
 
     @SuppressLint("Recycle")
@@ -96,10 +101,7 @@ class NewPostFrag : Fragment() {
     ): View {
         val binding = NewPostBinding.inflate(layoutInflater)
 
-//        val vibrator = context?.getSystemService(VIBRATOR_SERVICE) as Vibrator
-//        vibrator.vibrate(20)
 
-        var typeAttach: AttachmentType? = null
         var lastStateLoading = false
 
         yandexMapsKitFactory = MapKitFactory.getInstance()
@@ -114,6 +116,51 @@ class NewPostFrag : Fragment() {
 
         mapView!!.map.addInputListener(inputListener)
 
+        fun closeListUser() {
+            when (viewModelPosts.typeAttach.value) {
+                AttachmentType.IMAGE -> {
+                    val statusLoading =
+                        viewModelPosts.newPostStatusModel.value?.statusLoading
+                            ?: false
+                    val statusCoords =
+                        viewModelPosts.newPostStatusModel.value?.statusCoords
+                            ?: false
+                    if (multiPartBody != null) {
+                        viewModelPosts.setStatusNewPostFrag(
+                            NewPostStatusModel(
+                                groupImage = SHOW,
+                                statusCoords = statusCoords,
+                                statusLoading = statusLoading
+                            )
+                        )
+                    } else {
+                        NewPostStatusModel(
+                            statusCoords = statusCoords,
+                            statusLoading = statusLoading
+                        )
+                    }
+                }
+
+                AttachmentType.AUDIO, AttachmentType.VIDEO -> {
+                    val statusLoading =
+                        viewModelPosts.newPostStatusModel.value?.statusLoading
+                            ?: false
+                    val statusCoords =
+                        viewModelPosts.newPostStatusModel.value?.statusCoords
+                            ?: false
+                    viewModelPosts.setStatusNewPostFrag(
+                        NewPostStatusModel(
+                            groupLoadFile = SHOW,
+                            statusCoords = statusCoords,
+                            statusLoading = statusLoading
+                        )
+                    )
+                }
+
+                else -> viewModelPosts.setStatusNewPostFrag(NewPostStatusModel())
+            }
+        }
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_save, menu)
@@ -123,29 +170,29 @@ class NewPostFrag : Fragment() {
                 when (menuItem.itemId) {
                     R.id.save -> {
                         if (binding.listUsers.isVisible) {
-                            binding.listUsers.visibility = View.GONE
-                            multiPartBody?.let {
-                                binding.groupLoading.visibility = View.VISIBLE
-                            }
-
-                            binding.layMaps.visibility = View.VISIBLE
+                            closeListUser()
                         } else {
-                            if (!binding.content.text.isNullOrBlank()) {
+                            if (binding.content.text.isNullOrBlank() && multiPartBody == null) {
+                                context?.toast("Для создания поста нужен контент!")
+                            } else {
                                 val txt = binding.content.text.toString()
                                 var coords: Coordinates? = null
                                 viewModelPosts.location.value?.let {
-                                   coords = Coordinates().copy(it.latitude, it.longitude)
+                                    coords = Coordinates().copy(it.latitude, it.longitude)
                                 }
+//                                println("myID $myID")
                                 val post = Post(
-                                    id = 0,
-                                    authorId = 0,
+                                    id = 458,
+                                    authorId = myID?:0,
                                     content = txt,
                                     mentionIds = listUsers,
                                     coords = coords
                                 )
-                                viewModelPosts.savePost(post, multiPartBody, typeAttach)
-                            } else {
-                                context?.toast("Для создания поста нужен контент!")
+                                viewModelPosts.savePost(
+                                    post,
+                                    multiPartBody,
+                                    viewModelPosts.typeAttach.value
+                                )
                             }
                         }
                         true
@@ -153,11 +200,7 @@ class NewPostFrag : Fragment() {
 
                     android.R.id.home -> {
                         if (binding.listUsers.isVisible) {
-                            binding.listUsers.visibility = View.GONE
-                            binding.layMaps.visibility = View.VISIBLE
-                            multiPartBody?.let {
-                                binding.groupLoading.visibility = View.VISIBLE
-                            }
+                            closeListUser()
                         } else findNavController().navigateUp()
                         true
                     }
@@ -166,6 +209,27 @@ class NewPostFrag : Fragment() {
                 }
 
         }, viewLifecycleOwner)
+
+        val adapterUsers = AdapterUsersList(object : ListenerSelectionUser {
+            override fun selectUser(user: UserResponse?) {
+
+            }
+
+            override fun addUser(idUser: Long?) {
+                listUsers.add(idUser!!)
+            }
+
+            override fun removeUser(idUser: Long?) {
+                if (listUsers.contains(idUser)) {
+                    listUsers.remove(idUser)
+                }
+            }
+        }, true)
+
+        binding.listUsers.adapter = adapterUsers
+        viewModelUsers.listUsers.observe(viewLifecycleOwner) { users ->
+            adapterUsers.submitList(users)
+        }
 
         fun getFileName(uri: Uri): String? {
             var result: String? = null
@@ -206,7 +270,6 @@ class NewPostFrag : Fragment() {
         val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
                 ImagePicker.RESULT_ERROR -> {
-//                    println("resultCode ${it.resultCode}")
                     Snackbar.make(
                         binding.root,
                         ImagePicker.getError(it.data),
@@ -216,7 +279,7 @@ class NewPostFrag : Fragment() {
 
                 Activity.RESULT_OK -> {
                     val uri: Uri? = it.data?.data
-                    when (typeAttach) {
+                    when (viewModelPosts.typeAttach.value) {
                         AttachmentType.IMAGE -> {
                             val file = uri?.toFile()
                             if (file?.length()!! < MAX_SIZE_FILE) {
@@ -224,7 +287,14 @@ class NewPostFrag : Fragment() {
                                 multiPartBody = MultipartBody.Part.createFormData(
                                     "file", file.name, file.asRequestBody()
                                 )
-                                binding.btnClear.visibility = View.VISIBLE
+                                val statusCoords =
+                                    viewModelPosts.newPostStatusModel.value?.statusCoords ?: false
+                                viewModelPosts.setStatusNewPostFrag(
+                                    NewPostStatusModel(
+                                        groupImage = SHOW,
+                                        statusCoords = statusCoords
+                                    )
+                                )
                             } else {
                                 context?.toast("Размер вложения превышает максимально допустимый 15Мб!")
                             }
@@ -239,11 +309,25 @@ class NewPostFrag : Fragment() {
                                         multiPartBody = inputStream?.let { stream ->
                                             uploadStream(stream, type, uri)
                                         }
-                                        binding.groupLoading.visibility = View.VISIBLE
-                                        binding.icAudio.setImageResource(R.drawable.play_circle_70)
+
+                                        val statusCoords =
+                                            viewModelPosts.newPostStatusModel.value?.statusCoords
+                                                ?: false
+                                        viewModelPosts.setStatusNewPostFrag(
+                                            NewPostStatusModel(
+                                                groupLoadFile = SHOW,
+                                                statusLoading = true,
+                                                statusCoords = statusCoords
+                                            )
+                                        )
+
+                                        Glide.with(binding.icAudio)
+                                            .load(R.drawable.play_circle_70)
+                                            .into(binding.icAudio)
                                         binding.nameTrack.text = getFileName(uri)
                                     } else {
                                         multiPartBody = null
+                                        viewModelPosts.setTypeAttach(null)
                                         context?.toast("Неправильный формат файла, загрузите аудио файл!")
                                     }
                                 }
@@ -255,22 +339,30 @@ class NewPostFrag : Fragment() {
                             it.data?.data?.let { uri ->
                                 val inputStream = context?.contentResolver?.openInputStream(uri)
                                 val type = context?.contentResolver?.getType(uri)
-
-//                                multiPartBody = inputStream?.let { stream ->
-//                                    type?.let { type ->
-//                                        uploadStream(stream, type, uri)
-//                                    }
-//                                }
                                 if (type != null) {
                                     if (type.contains(Regex("video/"))) {
                                         multiPartBody = inputStream?.let { stream ->
                                             uploadStream(stream, type, uri)
                                         }
-                                        binding.groupLoading.visibility = View.VISIBLE
-                                        binding.icAudio.setImageResource(R.drawable.video_file_70)
+
+
+                                        val statusCoords =
+                                            viewModelPosts.newPostStatusModel.value?.statusCoords
+                                                ?: false
+                                        viewModelPosts.setStatusNewPostFrag(
+                                            NewPostStatusModel(
+                                                groupLoadFile = SHOW,
+                                                statusLoading = true,
+                                                statusCoords = statusCoords
+                                            )
+                                        )
+                                        Glide.with(binding.icAudio)
+                                            .load(R.drawable.video_file_70)
+                                            .into(binding.icAudio)
                                         binding.nameTrack.text = getFileName(uri)
                                     } else {
                                         multiPartBody = null
+                                        viewModelPosts.setTypeAttach(null)
                                         context?.toast("Неправильный формат файла, загрузите видео файл!")
                                     }
                                 }
@@ -283,6 +375,7 @@ class NewPostFrag : Fragment() {
 
                 Activity.RESULT_CANCELED -> {
                     multiPartBody = null
+                    viewModelPosts.setTypeAttach(null)
                 }
             }
         }
@@ -291,9 +384,8 @@ class NewPostFrag : Fragment() {
         binding.bottomNavigationNewPost.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_pic -> {
-                    binding.selectAttach.visibility = View.GONE
                     multiPartBody = null
-                    typeAttach = AttachmentType.IMAGE
+                    viewModelPosts.setTypeAttach(AttachmentType.IMAGE)
                     ImagePicker.with(this)
                         .galleryOnly()
                         .crop()
@@ -303,25 +395,38 @@ class NewPostFrag : Fragment() {
                 }
 
                 R.id.add_geo -> {
-                    binding.layMaps.visibility = View.VISIBLE
+                    val statusLoading =
+                        viewModelPosts.newPostStatusModel.value?.statusLoading
+                            ?: false
+                    viewModelPosts.setStatusNewPostFrag(
+                        NewPostStatusModel(
+                            geo = SHOW,
+                            statusLoading = statusLoading
+                        )
+                    )
                     true
                 }
 
                 R.id.add_users -> {
-                    binding.listUsers.visibility = View.VISIBLE
-                    multiPartBody?.let {
-                        binding.groupLoading.visibility = View.GONE
-                    }
-                    binding.layMaps.visibility = View.GONE
-                    binding.selectAttach.visibility = View.GONE
+                    val statusCoords =
+                        viewModelPosts.newPostStatusModel.value?.statusCoords ?: false
+                    val statusLoading =
+                        viewModelPosts.newPostStatusModel.value?.statusLoading
+                            ?: false
+                    viewModelPosts.setStatusNewPostFrag(
+                        NewPostStatusModel(
+                            groupUsers = SHOW,
+                            statusCoords = statusCoords,
+                            statusLoading = statusLoading
+                        )
+                    )
                     true
                 }
 
                 R.id.photo -> {
-                    binding.selectAttach.visibility = View.GONE
                     multiPartBody = null
-                    binding.groupLoading.visibility = View.GONE
-                    typeAttach = AttachmentType.IMAGE
+                    viewModelPosts.setTypeAttach(null)
+                    viewModelPosts.setTypeAttach(AttachmentType.IMAGE)
                     ImagePicker.with(this)
                         .cameraOnly()
                         .crop()
@@ -331,9 +436,17 @@ class NewPostFrag : Fragment() {
                 }
 
                 R.id.add_file -> {
-                    binding.groupImg.visibility = View.GONE
+                    multiPartBody?.let { "Выбранное вложение удалено!" }
                     multiPartBody = null
-                    binding.selectAttach.visibility = View.VISIBLE
+                    viewModelPosts.setTypeAttach(null)
+                    val statusCoords =
+                        viewModelPosts.newPostStatusModel.value?.statusCoords ?: false
+                    viewModelPosts.setStatusNewPostFrag(
+                        NewPostStatusModel(
+                            groupLoadFile = SHOW,
+                            statusCoords = statusCoords
+                        )
+                    )
                     true
                 }
 
@@ -342,54 +455,39 @@ class NewPostFrag : Fragment() {
         }
 
 
-        val adapterUsers = AdapterUsersList(object : ListenerSelectionUser {
-            override fun selectUser(user: UserResponse?) {
-
-            }
-
-            override fun addUser(idUser: Long?) {
-                listUsers.add(idUser!!)
-            }
-
-            override fun removeUser(idUser: Long?) {
-                if (listUsers.contains(idUser)) {
-                    listUsers.remove(idUser)
-                }
-            }
-        }, true)
-
-        binding.listUsers.adapter = adapterUsers
-        viewModelUsers.listUsers.observe(viewLifecycleOwner) { users ->
-            adapterUsers.submitList(users)
-        }
         with(binding) {
 
             attachAudio.setOnClickListener {
-                typeAttach = AttachmentType.AUDIO
+                viewModelPosts.setTypeAttach(AttachmentType.AUDIO)
                 launcher.launch(getIntent())
-                selectAttach.visibility = View.GONE
             }
             attachVideo.setOnClickListener {
-                typeAttach = AttachmentType.VIDEO
+                viewModelPosts.setTypeAttach(AttachmentType.VIDEO)
                 launcher.launch(getIntent())
-                selectAttach.visibility = View.GONE
             }
             btnClearLoading.setOnClickListener {
-                groupLoading.visibility = View.GONE
+                val statusCoords = viewModelPosts.newPostStatusModel.value?.statusCoords ?: false
+                viewModelPosts.setStatusNewPostFrag(NewPostStatusModel(statusCoords = statusCoords))
                 multiPartBody = null
+                viewModelPosts.setTypeAttach(null)
             }
+        }
+
+        binding.btnClear.setOnClickListener {
+            viewModelPosts.clearPhoto()
+            val statusCoords = viewModelPosts.newPostStatusModel.value?.statusCoords ?: false
+            viewModelPosts.setStatusNewPostFrag(NewPostStatusModel(statusCoords = statusCoords))
+            multiPartBody = null
+            viewModelPosts.setTypeAttach(null)
         }
 
         viewModelPosts.photo.observe(viewLifecycleOwner) {
             if (it == viewModelPosts.noPhoto) {
-                binding.photo.visibility = View.GONE
                 binding.content.focusAndShowKeyboard()
-                typeAttach = null
                 return@observe
             }
-            typeAttach = AttachmentType.IMAGE
+            viewModelPosts.setTypeAttach(AttachmentType.IMAGE)
             binding.content.clearFocus()
-            binding.photo.visibility = View.VISIBLE
             binding.photo.setImageURI(it.uri)
         }
 
@@ -400,17 +498,36 @@ class NewPostFrag : Fragment() {
             lastStateLoading = it.loading
         }
 
-        viewModelPosts.location.observe(viewLifecycleOwner){
+        viewModelPosts.typeAttach.observe(viewLifecycleOwner) {}
+
+        viewModelPosts.location.observe(viewLifecycleOwner) {
             mapObjectCollection.clear()
             setMarkerInStartLocation(it)
-            //vibrator.vibrate(70)
             vibratePhone()
         }
 
-        binding.btnClear.setOnClickListener {
-            viewModelPosts.clearPhoto()
-            it.visibility = View.GONE
-            multiPartBody = null
+        viewModelPosts.newPostStatusModel.observe(viewLifecycleOwner) { status ->
+            with(binding) {
+
+                groupImg.visibility = status.groupImage
+                listUsers.visibility = status.groupUsers
+                groupLoading.visibility = HIDE
+                selectAttach.visibility = HIDE
+                layMaps.visibility = status.geo
+                if (layMaps.isVisible &&
+                    viewModelPosts.newPostStatusModel.value?.statusLoading == true
+                ) groupLoading.visibility = SHOW
+                println("FILE ${viewModelPosts.typeAttach.value}")
+                if (viewModelPosts.newPostStatusModel.value?.groupLoadFile == SHOW) {
+                    if (viewModelPosts.newPostStatusModel.value?.statusLoading == false)
+                        selectAttach.visibility = SHOW
+                    else
+                        groupLoading.visibility = SHOW
+                    if (viewModelPosts.newPostStatusModel.value?.statusCoords == true) layMaps.visibility =
+                        SHOW
+                }
+
+            }
         }
 
         return binding.root
@@ -451,9 +568,6 @@ class NewPostFrag : Fragment() {
         putExtra(
             // List all file types you want the user to be able to select
             Intent.EXTRA_MIME_TYPES, arrayOf(
-//                "text/html", // .html
-//                "text/plain", // .txt
-//                "application/pdf",
                 "audio/mpeg",
                 "video/mp4",
             )
@@ -479,18 +593,14 @@ class NewPostFrag : Fragment() {
         placemarkMapObject = mapObjectCollection.addPlacemark(
             startLocation,
             ImageProvider.fromResource(context, marker)
-        ) // Добавляем метку со значком
+        )
         placemarkMapObject.opacity = 0.5f
         placemarkMapObject.setText("Здесь!")
     }
 
     private fun Fragment.vibratePhone() {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(70, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(70)
-        }
+        vibrator.vibrate(VibrationEffect.createOneShot(70, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
 }
