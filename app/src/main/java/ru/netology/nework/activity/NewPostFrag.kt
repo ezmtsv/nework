@@ -26,17 +26,9 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.snackbar.Snackbar
-import com.yandex.mapkit.Animation
-import com.yandex.mapkit.MapKit
 import com.yandex.mapkit.map.Map
-import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.InputListener
-import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.PlacemarkMapObject
-import com.yandex.mapkit.mapview.MapView
-import com.yandex.runtime.image.ImageProvider
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -44,8 +36,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.R
+import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.adapter.AdapterUsersList
 import ru.netology.nework.adapter.ListenerSelectionUser
+import ru.netology.nework.adapter.YaKit
 import ru.netology.nework.databinding.NewPostBinding
 import ru.netology.nework.dto.Coordinates
 import ru.netology.nework.dto.Post
@@ -58,6 +52,7 @@ import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 import java.io.InputStream
+import javax.inject.Inject
 
 const val MAX_SIZE_FILE = 15_728_640L
 const val SHOW = View.VISIBLE
@@ -71,12 +66,10 @@ const val HIDE = View.GONE
 class NewPostFrag : Fragment() {
 
     private val listUsers = mutableListOf<Long>()
-    private var mapView: MapView? = null
-    private var yandexMapsKitFactory: MapKit? = null
-    private lateinit var mapObjectCollection: MapObjectCollection
-    private lateinit var placemarkMapObject: PlacemarkMapObject
-    private var zoomValue: Float = 12.5f
+    private var post: Post? = null
 
+    @Inject
+    lateinit var yakit: YaKit
     val viewModelPosts: PostsViewModel by viewModels()
     private val viewModelUsers: UsersViewModel by viewModels()
 
@@ -100,21 +93,24 @@ class NewPostFrag : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = NewPostBinding.inflate(layoutInflater)
-
+        yakit.initMapView(binding.map)
 
         var lastStateLoading = false
+        post = arguments?.postArg
 
-        yandexMapsKitFactory = MapKitFactory.getInstance()
-        mapView = binding.map
-        yandexMapsKitFactory?.onStart()
-        mapView!!.onStart()
+        post?.let {
+//            binding.content.setText(post?.content.toString())
+//            it.coords?.let {coordinates ->
+//                viewModelPosts.setLocation(Point(coordinates.lat!!, coordinates.longCr!!))
+//            }
 
+        }
 
         val startLocation = Point(55.75, 37.62)
-        moveToStartLocation(startLocation)
-        setMarkerInStartLocation(startLocation)
+        yakit.moveToStartLocation(startLocation)
+        yakit.setMarkerInStartLocation(startLocation)
 
-        mapView!!.map.addInputListener(inputListener)
+        binding.map.map.addInputListener(inputListener)
 
         fun closeListUser() {
             when (viewModelPosts.typeAttach.value) {
@@ -182,12 +178,13 @@ class NewPostFrag : Fragment() {
                                 }
 //                                println("myID $myID")
                                 val post = Post(
-                                    id = 458,
-                                    authorId = myID?:0,
+                                    id = 0,
+                                    authorId = myID ?: 0,
                                     content = txt,
                                     mentionIds = listUsers,
                                     coords = coords
                                 )
+                                yakit.stopMapView()
                                 viewModelPosts.savePost(
                                     post,
                                     multiPartBody,
@@ -501,8 +498,9 @@ class NewPostFrag : Fragment() {
         viewModelPosts.typeAttach.observe(viewLifecycleOwner) {}
 
         viewModelPosts.location.observe(viewLifecycleOwner) {
-            mapObjectCollection.clear()
-            setMarkerInStartLocation(it)
+//            mapObjectCollection.clear()
+            yakit.cleanMapObject()
+            yakit.setMarkerInStartLocation(it)
             vibratePhone()
         }
 
@@ -552,15 +550,15 @@ class NewPostFrag : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        curFrag?.getCurFragmentAttach(getString(R.string.new_post))
+        if (post == null) {
+            curFrag?.getCurFragmentAttach(getString(R.string.new_post))
+        } else {
+            curFrag?.getCurFragmentAttach(getString(R.string.edit_post))
+        }
+
 
     }
 
-    override fun onStop() {
-        //binding.mapview.onStop()
-        MapKitFactory.getInstance().onStop()
-        super.onStop()
-    }
 
     private fun getIntent() = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
         addCategory(Intent.CATEGORY_OPENABLE)
@@ -577,26 +575,6 @@ class NewPostFrag : Fragment() {
 
     private fun Context.toast(message: CharSequence) =
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-    private fun moveToStartLocation(point: Point) {
-        mapView?.map?.move(
-            CameraPosition(point, zoomValue, 0.0f, 0.0f),
-            Animation(Animation.Type.SMOOTH, 2f),
-            null
-        )
-    }
-
-    private fun setMarkerInStartLocation(startLocation: Point) {
-        val marker = R.drawable.ic_pin_black_png
-        mapObjectCollection =
-            mapView?.map!!.mapObjects
-        placemarkMapObject = mapObjectCollection.addPlacemark(
-            startLocation,
-            ImageProvider.fromResource(context, marker)
-        )
-        placemarkMapObject.opacity = 0.5f
-        placemarkMapObject.setText("Здесь!")
-    }
 
     private fun Fragment.vibratePhone() {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

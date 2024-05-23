@@ -1,5 +1,6 @@
 package ru.netology.nework.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import ru.netology.nework.R
 import ru.netology.nework.databinding.CardEventBinding
 import ru.netology.nework.dto.Event
 import ru.netology.nework.enumeration.AttachmentType
+import ru.netology.nework.enumeration.MeetingType
 import ru.netology.nework.util.AndroidUtils.getTimePublish
 
 interface OnEventsListener{
@@ -48,6 +50,7 @@ class EventViewHolder(
             author.text = event.author
             published.text = getTimePublish(event.published)
             infoDate.text= event.typeMeeting.toString()
+            if(event.typeMeeting == MeetingType.ONLINE) infoDate.setTextColor(Color.parseColor("#00ff00"))
             dateTime.text= getTimePublish(event.datetime)
             content.text = event.content
 
@@ -64,6 +67,10 @@ class EventViewHolder(
             icParticipants.text = event.participantsIds?.count().toString()
             icParticipants.setOnClickListener {
                 onEventsListener.onParticipants(event)
+            }
+
+            root.setOnClickListener {
+                onEventsListener.openCardEvent(event)
             }
 
             Glide.with(avatar)

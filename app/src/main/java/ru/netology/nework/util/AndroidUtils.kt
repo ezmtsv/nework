@@ -138,7 +138,7 @@ object PostArg : ReadWriteProperty<Bundle, Post?> {
     }
 
     override fun getValue(thisRef: Bundle, property: KProperty<*>): Post? {
-        val type: Type = object : TypeToken<UserResponse?>() {}.type
+        val type: Type = object : TypeToken<Post?>() {}.type
         return Gson().fromJson<Post?>(thisRef.getString(property.name), type)
     }
 }

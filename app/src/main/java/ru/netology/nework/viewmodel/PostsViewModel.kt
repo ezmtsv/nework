@@ -102,17 +102,28 @@ class PostsViewModel @Inject constructor(
         _dataState.value = FeedModelState(loading = true)
         viewModelScope.launch {
             try {
-                typeAttach?.let {
+//                typeAttach?.let {
+//                    media?.let {
+//                        val media: Media = repository.upload(media)
+//                        val postWithAttachment =
+//                            post.copy(attachment = Attachment(media.url, typeAttach))
+//                        repository.savePost(postWithAttachment)
+//                        _dataState.value = FeedModelState()
+//                    }
+//                    return@launch
+//                }
+//                repository.savePost(post)
+                if (typeAttach != null) {
                     media?.let {
-                        val media: Media = repository.upload(media)
+                        val _media: Media = repository.upload(media)
                         val postWithAttachment =
-                            post.copy(attachment = Attachment(media.url, typeAttach))
+                            post.copy(attachment = Attachment(_media.url, typeAttach))
                         repository.savePost(postWithAttachment)
                         _dataState.value = FeedModelState()
                     }
-                    return@launch
+                } else {
+                    repository.savePost(post)
                 }
-                repository.savePost(post)
                 _dataState.value = FeedModelState()
 
             } catch (e: Exception) {
@@ -193,7 +204,7 @@ class PostsViewModel @Inject constructor(
 
     }
 
-    fun setTypeAttach(attach: AttachmentType?){
+    fun setTypeAttach(attach: AttachmentType?) {
         _typeAttach.value = attach
     }
 

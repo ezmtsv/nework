@@ -61,4 +61,9 @@
         android:name="ru.netology.nework.activity.ScreenEvents"
         android:label="ScreenEvents"
         tools:layout="@layout/screen_events" />
+    <fragment
+        android:id="@+id/eventView"
+        android:name="ru.netology.nework.activity.EventView"
+        android:label="EventView"
+        tools:layout="@layout/event_view"/>
 </navigation>

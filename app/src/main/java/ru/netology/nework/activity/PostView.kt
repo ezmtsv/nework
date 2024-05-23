@@ -23,6 +23,7 @@ import ru.netology.nework.activity.AppActivity.Companion.listUserArg
 import ru.netology.nework.activity.AppActivity.Companion.uriArg
 import ru.netology.nework.adapter.AdapterPostView
 import ru.netology.nework.adapter.OnIteractionListenerPostView
+import ru.netology.nework.adapter.YaKit
 import ru.netology.nework.databinding.PostViewBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Post
@@ -33,11 +34,14 @@ import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
+import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class PostView : Fragment() {
     private var audioPl: MPlayer? = null
+    @Inject
+    lateinit var yakit: YaKit
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,11 +73,11 @@ class PostView : Fragment() {
                         }
 
                         override fun onEdit(post: Post) {
-                            TODO("Not yet implemented")
+
                         }
 
                         override fun onRemove(post: Post) {
-                            TODO("Not yet implemented")
+
                         }
 
                         override fun playAudio(link: String) {
@@ -119,9 +123,9 @@ class PostView : Fragment() {
                             )
                         }
 
-                        override fun showMentionUsers(listUsersId: List<Long>?) {
+                        override fun showUsers(users: List<Long>?) {
                             //val list = viewModelUsers.selectUsers(listOf(65, 66, 67, 68, 69, 70))
-                            val list = listUsersId?.let { viewModelUsers.selectUsers(it) }
+                            val list = users?.let { viewModelUsers.selectUsers(it) }
                             findNavController().navigate(
                                 R.id.tmpFrag,
                                 Bundle().apply {
@@ -129,7 +133,7 @@ class PostView : Fragment() {
                                 }
                             )
                         }
-                    }, context = cntx).bind(post)
+                    }, yakit, context = cntx).bind(post)
                 }
             }
         }
@@ -197,6 +201,7 @@ class PostView : Fragment() {
     }
 
     override fun onStop() {
+        yakit.stopMapView()
         audioPl?.stopPlayer()
         super.onStop()
     }

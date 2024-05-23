@@ -85,22 +85,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/common_spacing">
+                    android:orientation="horizontal">
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/attach_audio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/common_spacing"
+                        android:layout_margin="@dimen/min_space"
                         android:layout_weight="@integer/material_motion_duration_long_1"
                         android:text="AUDIO" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/attach_video"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/common_spacing"
+                        android:layout_margin="@dimen/min_space"
                         android:layout_weight="@integer/material_motion_duration_long_1"
                         android:text="VIDEO" />
 

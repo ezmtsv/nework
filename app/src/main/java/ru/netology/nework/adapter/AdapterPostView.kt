@@ -5,15 +5,7 @@ import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import com.bumptech.glide.Glide
-import com.yandex.mapkit.Animation
-import com.yandex.mapkit.MapKit
-import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.map.MapObjectCollection
-import com.yandex.mapkit.map.PlacemarkMapObject
-import com.yandex.mapkit.mapview.MapView
-import com.yandex.runtime.image.ImageProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostViewBinding
@@ -31,57 +23,26 @@ interface OnIteractionListenerPostView {
     fun playAudio(link: String)
     fun playVideo(link: String)
     fun openSpacePhoto(post: Post)
-    fun showMentionUsers(listUsersId: List<Long>?)
+    fun showUsers(users: List<Long>?)
 }
 
 class AdapterPostView @Inject constructor(
     private val binding: PostViewBinding,
     private val onListener: OnIteractionListenerPostView,
+    private val yakit: YaKit,
     @ApplicationContext
     private val context: Context
 ) {
 
-    private var mapView: MapView
-    private var yandexMapsKitFactory: MapKit? = null
-    private lateinit var mapObjectCollection: MapObjectCollection
-    private lateinit var placemarkMapObject: PlacemarkMapObject
-
-    //    private var startLocation = Point(59.9402, 30.315)
-    private var zoomValue: Float = 16.5f
 
     init {
-        yandexMapsKitFactory = MapKitFactory.getInstance()
-        mapView = binding.map
-        yandexMapsKitFactory?.onStart()
-        mapView.onStart()
-//        moveToStartLocation(startLocation)
-//        setMarkerInStartLocation(startLocation)
-    }
-
-    private fun moveToStartLocation(point: Point) {
-        mapView.map.move(
-            CameraPosition(point, zoomValue, 0.0f, 0.0f),
-            Animation(Animation.Type.SMOOTH, 2f),
-            null
-        )
-    }
-
-    private fun setMarkerInStartLocation(startLocation: Point) {
-        val marker = R.drawable.ic_pin_black_png // Добавляем ссылку на картинку
-        mapObjectCollection =
-            mapView.map.mapObjects // Инициализируем коллекцию различных объектов на карте
-        placemarkMapObject = mapObjectCollection.addPlacemark(
-            startLocation,
-            ImageProvider.fromResource(context, marker)
-        ) // Добавляем метку со значком
-        placemarkMapObject.opacity = 0.5f // Устанавливаем прозрачность метке
-        placemarkMapObject.setText("Здесь!") // Устанавливаем текст сверху метки
+        yakit.initMapView(binding.map)
     }
 
     @SuppressLint("ClickableViewAccessibility", "SuspiciousIndentation")
     fun bind(post: Post) {
         //       yandexMapsKitFactory = MapKitFactory.getInstance()
-        mapView = binding.map
+//        mapView = binding.map
         println("post Id ${post.id} postAttach ${post.attachment}")
 //        println("post likeOwnerIds ${post.likeOwnerIds}, post mentionIds ${post.mentionIds}, users ${post.users}")
         binding.apply {
@@ -106,8 +67,8 @@ class AdapterPostView @Inject constructor(
             post.coords?.let {
                 layMaps.visibility = View.VISIBLE
                 val startLocation = Point(post.coords.lat!!, post.coords.longCr!!)
-                moveToStartLocation(startLocation)
-                setMarkerInStartLocation(startLocation)
+                yakit.moveToStartLocation(startLocation)
+                yakit.setMarkerInStartLocation(startLocation)
             }
 
             imageView.setOnClickListener {
@@ -249,10 +210,10 @@ class AdapterPostView @Inject constructor(
 
 
             avatarUser6.setOnClickListener {
-                onListener.showMentionUsers(post.mentionIds)
+                onListener.showUsers(post.mentionIds)
             }
             avatarUserLike6.setOnClickListener {
-                onListener.showMentionUsers(post.likeOwnerIds)
+                onListener.showUsers(post.likeOwnerIds)
             }
 
             transparentImage.setOnTouchListener { _, motionEvent ->

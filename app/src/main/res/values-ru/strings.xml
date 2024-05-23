@@ -46,4 +46,6 @@
     <string name="add_geo">Локация</string>
     <string name="search_job">В поиске работы</string>
     <string name="new_post">Новый Пост</string>
+    <string name="pic">Изображение</string>
+    <string name="event">Событие</string>
 </resources>

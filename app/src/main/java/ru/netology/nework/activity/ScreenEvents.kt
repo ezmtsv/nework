@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
+import ru.netology.nework.activity.AppActivity.Companion.idArg
 import ru.netology.nework.adapter.AdapterEventsList
 import ru.netology.nework.adapter.OnEventsListener
 import ru.netology.nework.databinding.ScreenEventsBinding
@@ -80,7 +81,12 @@ class ScreenEvents : Fragment() {
             }
 
             override fun openCardEvent(event: Event) {
-                TODO("Not yet implemented")
+                findNavController().navigate(
+                    R.id.eventView,
+                    Bundle().apply {
+                        idArg = event.id!!
+                    }
+                )
             }
 
             override fun onParticipants(event: Event) {
@@ -155,7 +161,6 @@ class ScreenEvents : Fragment() {
 
     override fun onResume() {
         binding?.bottomNavigationEvents?.selectedItemId = R.id.menu_events
-        println("onResume()")
         super.onResume()
     }
 
