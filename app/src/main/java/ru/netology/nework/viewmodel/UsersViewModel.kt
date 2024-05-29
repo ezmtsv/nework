@@ -10,6 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.netology.nework.dto.Job
+import ru.netology.nework.dto.ListMarkedUsers
+import ru.netology.nework.dto.MarkedUser
 import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.model.FeedModelState
 import ru.netology.nework.repository.UsersRepository
@@ -86,19 +88,77 @@ class UsersViewModel @Inject constructor(
         }
     }
 
+    fun saveJob(job: Job) {
+        _dataState.value = FeedModelState(loading = true)
+        viewModelScope.launch {
+            try {
+                usersRepo.saveJob(job)
+            } catch (e: Exception) {
+                when (e.javaClass.name) {
+                    "ru.netology.nework.error.ApiError403" -> {
+                        _dataState.value = FeedModelState(error403 = true)
+                    }
+
+                    "ru.netology.nework.error.ApiError404" -> {
+                        _dataState.value = FeedModelState(error404 = true)
+                    }
+
+                    else -> {
+                        _dataState.value = FeedModelState(error = true)
+                    }
+                }
+            }
+        }
+
+    }
+
+    fun removeJob(id: Long) {
+        val job = userJobs.value?.find { it.id == id }
+        println("Find Job $job")
+        _dataState.value = FeedModelState(loading = true)
+        viewModelScope.launch {
+            try {
+                job?.let { usersRepo.deleteJob(it) }
+            } catch (e: Exception) {
+                when (e.javaClass.name) {
+                    "ru.netology.nework.error.ApiError403" -> {
+                        _dataState.value = FeedModelState(error403 = true)
+                    }
+
+                    "ru.netology.nework.error.ApiError404" -> {
+                        _dataState.value = FeedModelState(error404 = true)
+                    }
+
+                    else -> {
+                        _dataState.value = FeedModelState(error = true)
+                    }
+                }
+            }
+        }
+    }
+
+
     fun takeUser(user: UserResponse?) {
         user?.let {
             _userAccount.value = it
         }
     }
 
-    fun selectUsers(list: List<Long>): List<UserResponse>? {
+    fun selectUsers(list: List<Long>): List<UserResponse> {
         val users = mutableListOf<UserResponse>()
         listUsers.value?.let {
             for (i in listUsers.value!!) {
                 if (list.contains(i.id)) users.add(i)
             }
         }
-        return users ?: null
+        return users
+    }
+
+    fun updateCheckableUsers(users: List<Long>) {
+        ListMarkedUsers.cleanUsers()
+        users.forEach { user ->
+            ListMarkedUsers.addUser(MarkedUser(id = user))
+        }
+
     }
 }

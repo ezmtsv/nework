@@ -11,8 +11,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:padding="@dimen/common_spacing"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="@dimen/common_spacing">
 
             <ProgressBar
                 android:id="@+id/progress"
@@ -37,10 +37,10 @@
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/wall_jobs_navigation"
                 style="@style/Theme.MaterialComponents.DayNight"
-                android:layout_marginTop="@dimen/min_space"
-                android:layout_marginBottom="@dimen/min_space"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/min_space"
+                android:layout_marginBottom="@dimen/min_space"
                 app:layout_constraintTop_toBottomOf="@id/image_avatar"
                 app:menu="@menu/menu_jobs_wall" />
 
@@ -53,6 +53,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/wall_jobs_navigation"
                 tools:listitem="@layout/card_post" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_jobs"
                 android:layout_width="match_parent"
@@ -63,8 +64,20 @@
                 app:layout_constraintTop_toBottomOf="@id/wall_jobs_navigation"
                 tools:listitem="@layout/card_work" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/common_spacing"
+        android:layout_marginBottom="@dimen/common_spacing"
+        android:contentDescription="@string/add_post"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_add_24dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

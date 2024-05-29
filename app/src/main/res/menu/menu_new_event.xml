@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/photo"
-        android:enabled="true"
-        android:icon="@drawable/photo_camera_24"
-        android:title="@string/add_photo" />
-    <item
         android:id="@+id/add_pic"
         android:enabled="true"
         android:icon="@drawable/ic_photo_24dp"
@@ -26,4 +21,9 @@
         android:enabled="true"
         android:icon="@drawable/location_24"
         android:title="@string/add_geo" />
+    <item
+        android:id="@+id/add_date"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_24dp"
+        android:title="@string/add_event_date" />
 </menu>

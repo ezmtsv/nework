@@ -66,4 +66,14 @@
         android:name="ru.netology.nework.activity.EventView"
         android:label="EventView"
         tools:layout="@layout/event_view"/>
+    <fragment
+        android:id="@+id/newEvent"
+        android:name="ru.netology.nework.activity.NewEvent"
+        android:label="NewEvent"
+        tools:layout="@layout/new_event"/>
+    <fragment
+        android:id="@+id/newJob"
+        android:name="ru.netology.nework.activity.NewJob"
+        android:label="NewJob"
+        tools:layout="@layout/new_job"/>
 </navigation>

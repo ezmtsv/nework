@@ -61,6 +61,9 @@ class ScreenPosts : Fragment() {
                         "Для установки лайков нужна авторизация, выполнить вход?"
                     )
                         .show(childFragmentManager, "TAG")
+
+//                    DialogAddJob.newInstance("SELECT_DATE", "12321321")
+//                        .show(childFragmentManager, "TAG")
                 }
             }
 

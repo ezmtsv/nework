@@ -13,7 +13,9 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
+import ru.netology.nework.activity.AppActivity.Companion.eventArg
 import ru.netology.nework.activity.AppActivity.Companion.idArg
+import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.adapter.AdapterEventsList
 import ru.netology.nework.adapter.OnEventsListener
 import ru.netology.nework.databinding.ScreenEventsBinding
@@ -72,7 +74,12 @@ class ScreenEvents : Fragment() {
             }
 
             override fun onEdit(event: Event) {
-                TODO("Not yet implemented")
+                findNavController().navigate(
+                    R.id.newEvent,
+                    Bundle().apply {
+                        eventArg = event
+                    }
+                )
             }
 
             override fun onRemove(event: Event) {
@@ -155,6 +162,30 @@ class ScreenEvents : Fragment() {
             }
         }
 
+        binding?.fabEvent?.setOnClickListener {
+//            if (userAuth) {
+//                findNavController().navigate(
+//                    R.id.newEvent,
+//                    Bundle().apply {
+//                        eventArg = null
+//                    }
+//                )
+//            } else {
+//                DialogAuth.newInstance(
+//                    AuthViewModel.DIALOG_IN,
+//                    "Для добавления события нужно авторизоваться, выполнить вход?"
+//                )
+//                    .show(childFragmentManager, "TAG")
+//            }
+
+            findNavController().navigate(
+                R.id.newEvent,
+                Bundle().apply {
+                    eventArg = null
+                }
+            )
+
+        }
 
         return binding?.root
     }

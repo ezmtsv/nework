@@ -172,7 +172,9 @@ interface ApiService {
     suspend fun getUserIdJobs(@Path("userId") id: Long): Response<List<Job>>
 
     @POST("/api/my/jobs")
-    suspend fun sendMyJob(): Response<Job>
+    suspend fun sendMyJob(
+        @Body job: Job
+    ): Response<Job>
 
     @DELETE("/api/my/jobs/{id}")
     suspend fun deleteMyJobs(@Path("id") id: Long): Response<String>

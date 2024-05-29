@@ -11,4 +11,6 @@ interface UsersRepository {
     suspend fun getUsers()
     suspend fun getUser(id: Long): UserResponse
     suspend fun getJobs(id: Long)
+    suspend fun saveJob(job: Job)
+    suspend fun deleteJob(job: Job)
 }

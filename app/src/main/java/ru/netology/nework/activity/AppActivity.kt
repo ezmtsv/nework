@@ -15,9 +15,13 @@ import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nework.R
 import ru.netology.nework.databinding.ActivityAppBinding
+import ru.netology.nework.date.DateJob
 import ru.netology.nework.dialog.DialogAuth
+import ru.netology.nework.dialog.ListenerDialogSelectDate
+import ru.netology.nework.dto.Event
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserResponse
+import ru.netology.nework.util.EventArg
 import ru.netology.nework.util.ListUserArg
 import ru.netology.nework.util.LongEditArg
 import ru.netology.nework.util.PostArg
@@ -28,11 +32,13 @@ import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_IN
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_OUT
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_REG
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
-
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 
 @AndroidEntryPoint
 
-class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShowFragment {
+class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShowFragment,
+    ListenerDialogSelectDate {
     private var actionBar: ActionBar? = null
     private var imageView: ImageView? = null
     private val viewModel: AuthViewModel by viewModels()
@@ -43,6 +49,7 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         var Bundle.userArg: UserResponse? by UserArg
         var Bundle.listUserArg: List<UserResponse>? by ListUserArg
         var Bundle.postArg: Post? by PostArg
+        var Bundle.eventArg: Event? by EventArg
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,6 +171,7 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         invalidateOptionsMenu()
     }
 
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
@@ -179,10 +187,23 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
     }
 
     override fun getCurFragmentDetach() {
+
         actionBar.apply {
             title = getString(R.string.app_name)
             imageView?.visibility = View.VISIBLE
         }
     }
 
+    private val FragmentManager.currentNavigationFragment: Fragment?
+        get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
+
+    override fun returnDateJob(date: DateJob) {
+        val currentFragment = supportFragmentManager.currentNavigationFragment
+        if (currentFragment is NewJob) currentFragment.getDateJob(date)
+    }
+
+    override fun returnIdJob(id: Long) {
+        val currentFragment = supportFragmentManager.currentNavigationFragment
+        if(currentFragment is UserAccount) currentFragment.getIdJob(id)
+    }
 }

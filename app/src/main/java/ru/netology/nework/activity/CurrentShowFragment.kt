@@ -4,3 +4,5 @@ interface CurrentShowFragment {
     fun getCurFragmentAttach(headerTitle: String)
     fun getCurFragmentDetach()
 }
+
+

@@ -18,4 +18,8 @@ object ListMarkedUsers {
     fun removeUser(user: MarkedUser) {
         if (listUsers.find { it.id == user.id } != null)listUsers.remove(user)
     }
+
+    fun cleanUsers() {
+        listUsers.clear()
+    }
 }

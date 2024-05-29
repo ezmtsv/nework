@@ -10,11 +10,11 @@ import ru.netology.nework.dto.Job
 import ru.netology.nework.util.AndroidUtils.getTimeJob
 
 interface ListenerSelectionJobs {
-
+fun removeJob(job: Job)
 }
 
 class AdapterJobsList(
-    private val listenerSelectionJobs: ListenerSelectionJobs
+    private val listenerSelectionJobs: ListenerSelectionJobs,
 ): ListAdapter<Job, JobViewHolder>(JobDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JobViewHolder {
         val binding = CardWorkBinding.inflate(LayoutInflater.from(parent.context), parent, false )
@@ -39,6 +39,9 @@ class JobViewHolder(
             "$startJob - $finishJob".also { experience.text = it }
             jobTitle.text = job.position
             jobLink.text = job.link
+            trash.setOnClickListener{
+                listenerSelectionJobs.removeJob(job)
+            }
         }
     }
 // "${job.start} - ${job.finish}"

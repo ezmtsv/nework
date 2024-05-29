@@ -100,6 +100,57 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun saveJob(job: Job) {
+        try {
+            val response = apiService.sendMyJob(job)
+
+            if (!response.isSuccessful) {
+                when (response.code()) {
+                    403 -> throw ApiError403(response.code().toString())
+                    404 -> throw ApiError404(response.code().toString())
+                    else -> throw ApiError(response.code(), response.message())
+                }
+            }
+            val getJob = response.body() ?: throw ApiError(response.code(), response.message())
+            daoJob.insertJob(
+                JobEntity.fromDto(getJob)
+            )
+
+        } catch (e: ApiError403) {
+            println("EXC 403")
+            throw ApiError403("403")
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
+    override suspend fun deleteJob(job: Job) {
+        try {
+
+            job.id?.let {
+                daoJob.removeJobById(it)
+                val response = apiService.removePost(job.id)
+                if (!response.isSuccessful) {
+                    println("!response.isSuccessful")
+                    daoJob.insertJob(JobEntity.fromDto(job))
+                    when (response.code()) {
+                        403 -> throw ApiError403(response.code().toString())
+                        else -> throw ApiError(response.code(), response.message())
+                    }
+                }
+            }
+
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: ApiError403) {
+            throw ApiError403("403")
+        } catch (e: ApiError404) {
+            throw ApiError404("404")
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
 //    interface GetMentionUser {
 //        fun getUser(user: UserResponse)
 //    }

@@ -116,19 +116,20 @@ class EventViewHolder(
 
             }
 
-            menu.isVisible = event.eventOwner
+//            menu.isVisible = event.eventOwner
+            menu.isVisible = true
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)
                     setOnMenuItemClickListener { menuItem ->
                         when (menuItem.itemId) {
                             R.id.edit -> {
-
+                                onEventsListener.onEdit(event)
                                 true
                             }
 
                             R.id.remove -> {
-
+                                onEventsListener.onRemove(event)
                                 true
                             }
 

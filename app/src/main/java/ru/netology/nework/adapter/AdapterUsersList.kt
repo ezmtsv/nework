@@ -38,7 +38,7 @@ class UserViewHolder(
     private val binding: CardUserBinding,
     private val listenerSelectionUser: ListenerSelectionUser,
 ) : RecyclerView.ViewHolder(binding.root) {
-//    private val listUsers = mutableListOf<Long>()
+    //    private val listUsers = mutableListOf<Long>()
     fun bind(user: UserResponse, checkBoxUser: Boolean) {
         binding.apply {
 
@@ -52,8 +52,7 @@ class UserViewHolder(
                     listenerSelectionUser.addUser(user.id)
 //                    val markedUser = MarkedUser(user.id, true)
                     ListMarkedUsers.addUser(MarkedUser(id = user.id))
-                }
-                else {
+                } else {
                     listenerSelectionUser.removeUser(user.id)
 //                    val markedUser = MarkedUser(user.id, false)
                     ListMarkedUsers.removeUser(MarkedUser(id = user.id))

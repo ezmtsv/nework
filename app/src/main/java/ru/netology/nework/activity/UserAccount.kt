@@ -25,11 +25,16 @@ import ru.netology.nework.adapter.ListenerSelectionJobs
 import ru.netology.nework.adapter.OnIteractionListener
 import ru.netology.nework.databinding.UserAccountBinding
 import ru.netology.nework.dialog.DialogAuth
+import ru.netology.nework.dialog.DialogSelectRemoveJob
+import ru.netology.nework.dto.Job
 import ru.netology.nework.dto.Post
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
+
+const val REMOVE_JOB = 2
+const val SELECT_DATE = 1
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
@@ -71,6 +76,13 @@ class UserAccount : Fragment() {
         }
 
         val adapterJobs = AdapterJobsList(object : ListenerSelectionJobs {
+            override fun removeJob(job: Job) {
+                job.id?.let {
+                    DialogSelectRemoveJob.newInstance(REMOVE_JOB, it)
+                        .show(childFragmentManager, "TAG")
+                }
+
+            }
 
         })
 
@@ -101,7 +113,7 @@ class UserAccount : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onRemove(post: Post) {
@@ -173,12 +185,6 @@ class UserAccount : Fragment() {
                     .show()
             } else if (state.error404) {
                 showBar("Пользователь не найден!")
-            } else {
-                if (state.error) {
-                    Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.retry_loading) { viewModelUser.getUser(idUser) }
-                        .show()
-                }
             }
         }
 
@@ -198,6 +204,12 @@ class UserAccount : Fragment() {
 
                 else -> false
             }
+        }
+
+        binding.fab.setOnClickListener {
+            findNavController().navigate(
+                R.id.newJob
+            )
         }
 
         return binding.root
@@ -225,4 +237,7 @@ class UserAccount : Fragment() {
 
     }
 
+    fun getIdJob(id: Long) {
+        viewModelUser.removeJob(id)
+    }
 }

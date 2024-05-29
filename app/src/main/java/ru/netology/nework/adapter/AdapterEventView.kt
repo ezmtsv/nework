@@ -60,8 +60,9 @@ class AdapterEventView @Inject constructor(
 
             icParticipants.isChecked = event.participatedByMe?:false
             icParticipants.text = event.participantsIds?.count().toString()
+            "Speakers ${event.speakerIds?.count().toString()}".also { speakers.text = it }
 
-            Glide.with(avatar)
+                Glide.with(avatar)
                 .load(event.authorAvatar)
 //                .placeholder(R.drawable.ic_loading_100dp)
                 .error(R.drawable.icon_person_24)

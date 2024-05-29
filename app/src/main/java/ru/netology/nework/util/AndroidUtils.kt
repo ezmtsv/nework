@@ -1,15 +1,21 @@
 package ru.netology.nework.util
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ru.netology.nework.dto.Event
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserResponse
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -50,6 +56,7 @@ object AndroidUtils {
 
     fun getTimePublish(str: String?): String {
         //"2023-10-17T13:01:59.846Z"
+        //"2024-04-25T15:00:33.874Z"
         str?.let{
             try {
                 val yyyy = it.subSequence(0, 4)
@@ -85,6 +92,45 @@ object AndroidUtils {
         } else {
             "  ${time / 1000 / 60}:${time / 1000 % 60} мин."
         }
+
+    fun getFileName(uri: Uri, context: Context): String? {
+        var result: String? = null
+        if (uri.scheme.equals("content")) {
+            val cursor = context.contentResolver?.query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    result = cursor.getString(index)
+                }
+            } catch (e: Exception) {
+                println(e.printStackTrace())
+            } finally {
+                cursor?.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/')
+            if (cut != -1) {
+                result = result?.substring(cut!! + 1)
+            }
+        }
+        return result
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getTime(): String =
+        SimpleDateFormat("dd MMMM yyyy в HH:mm").format(Calendar.getInstance().time).toString()
+    @SuppressLint("SimpleDateFormat")
+    fun getDate(): String =
+        SimpleDateFormat("dd MMMM yyyy").format(Calendar.getInstance().time).toString()
+    @SuppressLint("SimpleDateFormat")
+    fun getDate(date: Calendar): String =
+        SimpleDateFormat("dd MMMM yyyy").format(date.time).toString()
+    @SuppressLint("SimpleDateFormat")
+    fun getTimeFormat(date: Calendar): String =
+        SimpleDateFormat("yyyy-MM-dd HH:mm").format(date.time).toString()
+    //"2024-04-25T15:00:33.874Z"
 
 }
 
@@ -140,5 +186,17 @@ object PostArg : ReadWriteProperty<Bundle, Post?> {
     override fun getValue(thisRef: Bundle, property: KProperty<*>): Post? {
         val type: Type = object : TypeToken<Post?>() {}.type
         return Gson().fromJson<Post?>(thisRef.getString(property.name), type)
+    }
+}
+
+object EventArg : ReadWriteProperty<Bundle, Event?> {
+
+    override fun setValue(thisRef: Bundle, property: KProperty<*>, value: Event?) {
+        thisRef.putString(property.name, Gson().toJson(value))
+    }
+
+    override fun getValue(thisRef: Bundle, property: KProperty<*>): Event? {
+        val type: Type = object : TypeToken<Event?>() {}.type
+        return Gson().fromJson<Event?>(thisRef.getString(property.name), type)
     }
 }

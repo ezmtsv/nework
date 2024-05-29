@@ -18,7 +18,7 @@ import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.media.Media
 import ru.netology.nework.media.PhotoModel
 import ru.netology.nework.model.FeedModelState
-import ru.netology.nework.model.NewPostStatusModel
+import ru.netology.nework.model.StatusModelViews
 import ru.netology.nework.repository.PostsRepository
 import java.io.File
 import javax.inject.Inject
@@ -51,9 +51,9 @@ class PostsViewModel @Inject constructor(
     val location: LiveData<Point>
         get() = _location
 
-    private val _newPostStatusModel = MutableLiveData<NewPostStatusModel>()
-    val newPostStatusModel: LiveData<NewPostStatusModel>
-        get() = _newPostStatusModel
+    private val _newStatusViewsModel = MutableLiveData<StatusModelViews>()
+    val newStatusViewsModel: LiveData<StatusModelViews>
+        get() = _newStatusViewsModel
 
     private val _userWall = MutableLiveData<List<Post>>()
     val userWall: LiveData<List<Post>>
@@ -213,8 +213,8 @@ class PostsViewModel @Inject constructor(
 
     }
 
-    fun setStatusNewPostFrag(newStatus: NewPostStatusModel) {
-        _newPostStatusModel.value = newStatus
+    fun setStatusViews(newStatus: StatusModelViews) {
+        _newStatusViewsModel.value = newStatus
     }
 
     fun setLocation(point: Point) {

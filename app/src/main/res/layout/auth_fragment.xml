@@ -9,7 +9,8 @@
     android:id="@+id/status_auth"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
+    android:layout_gravity="center_horizontal|bottom"
+    android:layout_marginBottom="150dp"
     android:visibility="gone"/>
 
     <ScrollView
@@ -29,12 +30,10 @@
             android:id="@+id/field_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/icon_person_24"
             app:startIconContentDescription="@string/login"
             android:hint="@string/login"
             >
-
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -48,7 +47,6 @@
             android:id="@+id/field_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/icon_lock_person_24"
             app:startIconContentDescription="@string/login"
             android:hint="@string/password">

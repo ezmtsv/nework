@@ -48,4 +48,15 @@
     <string name="new_post">Новый Пост</string>
     <string name="pic">Изображение</string>
     <string name="event">Событие</string>
+    <string name="new_event">Новое Событие</string>
+    <string name="edit_event">Редактировать Событие</string>
+    <string name="add_event_date">Дата События</string>
+    <string name="name">Компания</string>
+    <string name="position">Должность</string>
+    <string name="link">Ссылка</string>
+    <string name="add">Добавить</string>
+    <string name="end_date">Дата увольнения</string>
+    <string name="start_date">Начало работы</string>
+    <string name="enter_date">Даты работы</string>
+    <string name="select_date">Выбор даты</string>
 </resources>

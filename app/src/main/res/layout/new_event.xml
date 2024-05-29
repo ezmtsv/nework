@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/min_space"
+    tools:context=".activity.NewPostFrag">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="ic_attach, name_track, btn_clear_loading" />
+
+            <ImageView
+                android:id="@+id/ic_attach"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/common_spacing"
+                android:layout_marginTop="@dimen/common_spacing"
+                app:layout_constraintStart_toStartOf="@id/content"
+                app:layout_constraintTop_toBottomOf="@id/content"
+                tools:srcCompat="@drawable/avatar_user" />
+
+            <TextView
+                android:id="@+id/name_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/common_spacing"
+                app:layout_constraintBottom_toBottomOf="@id/ic_attach"
+                app:layout_constraintStart_toEndOf="@id/ic_attach"
+                tools:text="Name Track" />
+
+            <Button
+                android:id="@+id/btn_clear_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_spacing"
+                android:text="@string/remove"
+                app:layout_constraintStart_toStartOf="@id/ic_attach"
+                app:layout_constraintTop_toBottomOf="@id/ic_attach" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="photo, btn_clear" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/select_attach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_spacing"
+                android:background="@color/material_on_primary_disabled"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/attach_audio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/min_space"
+                        android:layout_weight="@integer/material_motion_duration_long_1"
+                        android:text="AUDIO" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/attach_video"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/min_space"
+                        android:layout_weight="@integer/material_motion_duration_long_1"
+                        android:text="VIDEO" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toBottomOf="@id/content"
+                tools:srcCompat="@tools:sample/avatars[2]" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/photo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_spacing"
+                android:text="@string/remove"
+                app:layout_constraintEnd_toEndOf="@id/photo"
+                app:layout_constraintStart_toStartOf="@id/photo"
+                app:layout_constraintTop_toTopOf="@id/photo" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_users"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/card_user" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/lay_maps"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/min_space"
+        android:layout_marginBottom="70dp"
+        android:visibility="visible">
+
+
+        <com.yandex.mapkit.mapview.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/view_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="100dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/currentDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/common_spacing"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/btn_online"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Online" />
+
+            <RadioButton
+                android:id="@+id/btn_offline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Offline" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/timeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_spacing"
+                android:layout_weight="1"
+                android:text="Время" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dateButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/common_spacing"
+                android:layout_weight="1"
+                android:text="Дата" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/fab_add_date"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="bottom|end"-->
+    <!--        android:layout_marginEnd="@dimen/common_spacing"-->
+    <!--        android:layout_marginBottom="70dp"-->
+    <!--        android:contentDescription="@string/add_post"-->
+    <!--        app:srcCompat="@drawable/ic_add_24dp" />-->
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation_new_event"
+        style="@style/Theme.MaterialComponents.DayNight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/menu_new_event" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

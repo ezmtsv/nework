@@ -9,9 +9,8 @@
         android:id="@+id/card_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/min_space"
         android:layout_marginTop="@dimen/min_space"
-        android:clickable="true"
+        android:padding="@dimen/min_space"
         app:cardElevation="5dp">
 
         <LinearLayout
@@ -19,13 +18,35 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/company_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/common_spacing"
-                android:textSize="@dimen/button_text"
-                tools:text="@string/user_name" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/company_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/common_spacing"
+                    android:textSize="@dimen/button_text"
+                    tools:text="@string/user_name" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="right">
+                <ImageView
+                    android:id="@+id/trash"
+                    android:layout_marginEnd="@dimen/common_spacing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/trash_24"
+                    />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/experience"
@@ -42,12 +63,13 @@
                 android:layout_margin="@dimen/common_spacing"
                 android:textSize="@dimen/button_text"
                 tools:text="@string/user_name" />
+
             <TextView
                 android:id="@+id/job_link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:autoLink="web"
                 android:layout_margin="@dimen/common_spacing"
+                android:autoLink="web"
                 android:textSize="@dimen/button_text"
                 tools:text="@string/user_name" />
 

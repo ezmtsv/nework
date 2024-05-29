@@ -19,7 +19,7 @@ import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_REG
 
 class DialogAuth : DialogFragment() {
     private var sel = 0
-    private var message = "{POI{POI{POI"
+    private var message = ""
 
     companion object {
         private const val SEL_DIALOG = "SEL_DIALOG"
