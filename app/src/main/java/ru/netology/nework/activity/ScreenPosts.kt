@@ -131,7 +131,7 @@ class ScreenPosts : Fragment() {
                 userAuth = false
                 myID = null
                 showBar("Ошибка авторизации, выполните вход")
-                viewModel.loadPosts()
+//                viewModel.loadPosts()
             }
             if (state.error415) {
                 showBar("Неправильный формат файла!")

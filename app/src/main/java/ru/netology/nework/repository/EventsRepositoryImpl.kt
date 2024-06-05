@@ -165,4 +165,61 @@ class EventsRepositoryImpl @Inject constructor(
             throw UnknownError
         }
     }
+
+    override suspend fun participateEvent(id: Long, status: Boolean) {
+        try {
+            if (status) {
+
+                val response = apiService.participantsId(id)
+                if (!response.isSuccessful) {
+                    when (response.code()) {
+                        403 -> throw ApiError403(response.code().toString())
+                        404 -> throw ApiError404(response.code().toString())
+                        else -> throw ApiError(response.code(), response.message())
+                    }
+                }
+                val event = response.body() ?: throw ApiError(response.code(), response.message())
+                daoEvents.insertEvent(
+                    EventEntity.fromDto(event)
+                )
+            } else delParticipateEvent(id)
+
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: ApiError403) {
+            throw ApiError403("403")
+        } catch (e: ApiError404) {
+            throw ApiError404("404")
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
+    private suspend fun delParticipateEvent(id: Long) {
+        try {
+            val response = apiService.delParticipantsId(id)
+
+            if (!response.isSuccessful) {
+                when (response.code()) {
+                    403 -> throw ApiError403(response.code().toString())
+                    404 -> throw ApiError404(response.code().toString())
+                    else -> throw ApiError(response.code(), response.message())
+                }
+            }
+            val event = response.body() ?: throw ApiError(response.code(), response.message())
+            daoEvents.insertEvent(
+                EventEntity.fromDto(event)
+            )
+
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: ApiError403) {
+            throw ApiError403("403")
+        } catch (e: ApiError404) {
+            throw ApiError404("404")
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
 }

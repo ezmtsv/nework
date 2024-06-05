@@ -19,10 +19,11 @@
             android:orientation="horizontal"
             android:padding="@dimen/min_space">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/avatar_user"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
+                android:contentDescription="@string/avatar_user"
                 tools:srcCompat="@drawable/avatar_user" />
 
             <LinearLayout

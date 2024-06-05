@@ -10,5 +10,6 @@ data class FeedModelState(
     val error404: Boolean = false,
     val errorNetWork: Boolean = false,
     val refreshing: Boolean = false,
-    val statusAuth: Boolean = false
+    val statusAuth: Boolean = false,
+    val loadingJob: Boolean = false
 )

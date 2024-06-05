@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    >
-<ProgressBar
-    android:id="@+id/status_auth"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal|bottom"
-    android:layout_marginBottom="150dp"
-    android:visibility="gone"/>
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ProgressBar
+        android:id="@+id/status_auth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="150dp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/form_signIn"
@@ -28,35 +22,34 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/field_login"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/wide_text_field"
             android:layout_height="wrap_content"
-            app:startIconDrawable="@drawable/icon_person_24"
-            app:startIconContentDescription="@string/login"
             android:hint="@string/login"
-            >
+            app:startIconContentDescription="@string/login"
+            app:startIconDrawable="@drawable/icon_person_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
-                />
+                android:background="@color/transparent"
+                android:textSize="24sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/field_pass"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/wide_text_field"
             android:layout_height="wrap_content"
-            app:startIconDrawable="@drawable/icon_lock_person_24"
+            android:hint="@string/password"
             app:startIconContentDescription="@string/login"
-            android:hint="@string/password">
+            app:startIconDrawable="@drawable/icon_lock_person_24">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 android:inputType="textPassword"
-                android:textSize="24sp"
-                />
+                android:textSize="24sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,9 +57,8 @@
             android:id="@+id/btn_SignIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_spacing"
             android:layout_gravity="center"
-            android:text="@string/sign_in"/>
+            android:layout_marginTop="@dimen/common_spacing"
+            android:text="@string/sign_in" />
     </LinearLayout>
-    </ScrollView>
 </FrameLayout>

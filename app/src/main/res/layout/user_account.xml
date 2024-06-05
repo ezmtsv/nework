@@ -7,11 +7,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="@dimen/common_spacing">
 
             <ProgressBar
@@ -32,6 +32,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/avatar_user"
                 tools:src="@tools:sample/avatars[3]" />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView

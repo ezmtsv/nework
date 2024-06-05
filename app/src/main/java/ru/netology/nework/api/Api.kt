@@ -165,9 +165,6 @@ interface ApiService {
     ): Response<Post>
 
     // Jobs
-    @GET("api/my/jobs")
-    suspend fun getMyJobs(): Response<List<Job>>
-
     @GET("api/{userId}/jobs")
     suspend fun getUserIdJobs(@Path("userId") id: Long): Response<List<Job>>
 
@@ -177,7 +174,7 @@ interface ApiService {
     ): Response<Job>
 
     @DELETE("/api/my/jobs/{id}")
-    suspend fun deleteMyJobs(@Path("id") id: Long): Response<String>
+    suspend fun deleteMyJobs(@Path("id") id: Long): Response<Int>
 
     //Media
     @Multipart

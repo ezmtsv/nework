@@ -116,8 +116,7 @@ class EventViewHolder(
 
             }
 
-//            menu.isVisible = event.eventOwner
-            menu.isVisible = true
+            menu.isVisible = event.eventOwner
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
                     inflate(R.menu.options_post)

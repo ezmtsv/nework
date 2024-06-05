@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/jobs"
+        android:id="@+id/wall"
         android:enabled="true"
         android:icon="@drawable/pic_posts"
         android:title="@string/wall" />
     <item
-        android:id="@+id/work"
+        android:id="@+id/jobs"
         android:enabled="true"
         android:icon="@drawable/work_24"
         android:title="@string/jobs" />

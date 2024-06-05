@@ -106,16 +106,6 @@
                 app:layout_constraintTop_toBottomOf="@id/content"
                 tools:srcCompat="@tools:sample/avatars[2]" />
 
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/photo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <Button
                 android:id="@+id/btn_clear"
                 android:layout_width="wrap_content"
@@ -134,6 +124,16 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/card_user" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/photo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -213,16 +213,6 @@
                 android:text="Дата" />
         </LinearLayout>
     </LinearLayout>
-
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/fab_add_date"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_gravity="bottom|end"-->
-    <!--        android:layout_marginEnd="@dimen/common_spacing"-->
-    <!--        android:layout_marginBottom="70dp"-->
-    <!--        android:contentDescription="@string/add_post"-->
-    <!--        app:srcCompat="@drawable/ic_add_24dp" />-->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_new_event"

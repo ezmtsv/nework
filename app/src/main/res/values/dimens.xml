@@ -10,4 +10,7 @@
     <dimen name="count_spacing">5dp</dimen>
     <dimen name="icon_button_padding">12dp</dimen>
     <dimen name="icon_button_min_size">48dp</dimen>
+    <dimen name="wide_text_field">370dp</dimen>
+    <dimen name="wide_menu_btn">50dp</dimen>
+    <dimen name="wide_date_field">170dp</dimen>
 </resources>

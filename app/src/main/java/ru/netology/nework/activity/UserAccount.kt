@@ -18,6 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.activity.AppActivity.Companion.idArg
+import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.activity.AppActivity.Companion.userArg
 import ru.netology.nework.adapter.AdapterJobsList
 import ru.netology.nework.adapter.AdapterScreenPosts
@@ -30,6 +31,7 @@ import ru.netology.nework.dto.Job
 import ru.netology.nework.dto.Post
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.viewmodel.AuthViewModel
+import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 
@@ -113,7 +115,12 @@ class UserAccount : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-
+                findNavController().navigate(
+                    R.id.newPostFrag,
+                    Bundle().apply {
+                        postArg = post
+                    }
+                )
             }
 
             override fun onRemove(post: Post) {
@@ -132,6 +139,16 @@ class UserAccount : Fragment() {
         })
 
         binding.listPosts.adapter = adapterPosts
+
+        fun showListJobs(status: Boolean) {
+            if(status){
+                binding.listPosts.visibility = View.GONE
+                binding.listJobs.visibility = View.VISIBLE
+            } else {
+                binding.listPosts.visibility = View.VISIBLE
+                binding.listJobs.visibility = View.GONE
+            }
+        }
 
 //        val manager = LinearLayoutManager(context)
 //        binding.listPosts.layoutManager = manager
@@ -158,6 +175,18 @@ class UserAccount : Fragment() {
                     .into(imageAvatar)
 
 
+            }
+        }
+
+        viewModelUser.statusShowListJobs.observe(viewLifecycleOwner) {
+            if (it.statusShowListJobs) {
+                showListJobs(true)
+                if(myID == idUser) {
+                    binding.fab.visibility = SHOW
+                }
+            } else {
+                binding.fab.visibility = HIDE
+                showListJobs(false)
             }
         }
 
@@ -190,21 +219,23 @@ class UserAccount : Fragment() {
 
         binding.wallJobsNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.work -> {
-                    binding.listPosts.visibility = View.GONE
-                    binding.listJobs.visibility = View.VISIBLE
+                R.id.jobs -> {
+                    viewModelUser.setStatusShowListJobs(true)
+                    showListJobs(true)
                     true
                 }
 
-                R.id.jobs -> {
-                    binding.listPosts.visibility = View.VISIBLE
-                    binding.listJobs.visibility = View.GONE
+                R.id.wall -> {
+                    viewModelUser.setStatusShowListJobs(false)
+                    showListJobs(false)
+                    adapterPosts.submitList(viewModelPosts.userWall.value)
                     true
                 }
 
                 else -> false
             }
         }
+
 
         binding.fab.setOnClickListener {
             findNavController().navigate(

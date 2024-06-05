@@ -2,15 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <ProgressBar
-        android:id="@+id/progress_load"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/form_job"
@@ -21,7 +13,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/field_name"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/wide_text_field"
             android:layout_height="wrap_content"
             android:hint="@string/name"
             app:startIconContentDescription="@string/name"
@@ -30,13 +22,14 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 android:textSize="24sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/field_position"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/wide_text_field"
             android:layout_height="wrap_content"
             android:hint="@string/position"
             app:startIconContentDescription="@string/position"
@@ -45,13 +38,14 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 android:textSize="24sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/field_link"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/wide_text_field"
             android:layout_height="wrap_content"
             android:hint="@string/link"
             app:startIconContentDescription="@string/link">
@@ -59,6 +53,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/transparent"
                 android:textSize="24sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -71,23 +66,28 @@
             android:textSize="24sp"
             android:gravity="center"
             android:background="#55555555"
-            android:text="ENTER DATES"
+            android:text="@string/enter_dates"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
+
 
         <Button
             android:id="@+id/btn_create"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/common_spacing"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/common_spacing"
             android:text="@string/add" />
-        </LinearLayout>
+
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </FrameLayout>

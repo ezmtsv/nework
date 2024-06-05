@@ -72,11 +72,11 @@ class NewJob : Fragment() {
         }
 
         viewModelUser.dataState.observe(viewLifecycleOwner) {
-            binding?.progressLoad?.isVisible = it.loading
+            binding?.progressLoad?.isVisible = it.loadingJob
             if (it.error403) showBar("Ошибка авторизации,отказано в доступе!")
             if (it.error) showBar("Проверьте ваше подключение к сети!")
-            if (!it.loading && lastStateLoading) findNavController().navigateUp()
-            lastStateLoading = it.loading
+            if (!it.loadingJob && lastStateLoading) findNavController().navigateUp()
+            lastStateLoading = it.loadingJob
         }
 
         return binding!!.root
@@ -87,7 +87,5 @@ class NewJob : Fragment() {
         startDate = date.dateStart
         finishDate = date.dateEnd
         binding?.dateJob?.text = "${getTimeJob(startDate)} - ${getTimeJob(finishDate)}"
-
-        println("DATE JOB $date")
     }
 }

@@ -1,12 +1,10 @@
 package ru.netology.nework.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.yandex.mapkit.geometry.Point
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,9 +16,7 @@ import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.media.Media
 import ru.netology.nework.media.PhotoModel
 import ru.netology.nework.model.FeedModelState
-import ru.netology.nework.model.StatusModelViews
 import ru.netology.nework.repository.PostsRepository
-import java.io.File
 import javax.inject.Inject
 
 
@@ -32,28 +28,24 @@ class PostsViewModel @Inject constructor(
 //    private val repoUsers: UsersRepository,
 ) : ViewModel() {
 
-//    private val _userMentions = MutableLiveData<List<UserResponse>>()
-//    val userMentions: LiveData<List<UserResponse>>
-//        get() = _userMentions
-
-    val noPhoto = PhotoModel()
-    private val _photo = MutableLiveData(noPhoto)
-    val photo: LiveData<PhotoModel>
-        get() = _photo
-    private val _typeAttach = MutableLiveData<AttachmentType?>()
-    val typeAttach: LiveData<AttachmentType?>
-        get() = _typeAttach
+//    private val noPhoto = PhotoModel()
+//    private val _photo = MutableLiveData(noPhoto)
+//    val photo: LiveData<PhotoModel>
+//        get() = _photo
+//    private val _typeAttach = MutableLiveData<AttachmentType?>()
+//    val typeAttach: LiveData<AttachmentType?>
+//        get() = _typeAttach
 
     val data: LiveData<List<Post>> = repository.postsBd
         .asLiveData(Dispatchers.IO)
 
-    private val _location = MutableLiveData<Point>()
-    val location: LiveData<Point>
-        get() = _location
-
-    private val _newStatusViewsModel = MutableLiveData<StatusModelViews>()
-    val newStatusViewsModel: LiveData<StatusModelViews>
-        get() = _newStatusViewsModel
+//    private val _location = MutableLiveData<Point>()
+//    val location: LiveData<Point>
+//        get() = _location
+//
+//    private val _newStatusViewsModel = MutableLiveData<StatusModelViews>()
+//    val newStatusViewsModel: LiveData<StatusModelViews>
+//        get() = _newStatusViewsModel
 
     private val _userWall = MutableLiveData<List<Post>>()
     val userWall: LiveData<List<Post>>
@@ -102,26 +94,13 @@ class PostsViewModel @Inject constructor(
         _dataState.value = FeedModelState(loading = true)
         viewModelScope.launch {
             try {
-//                typeAttach?.let {
-//                    media?.let {
-//                        val media: Media = repository.upload(media)
-//                        val postWithAttachment =
-//                            post.copy(attachment = Attachment(media.url, typeAttach))
-//                        repository.savePost(postWithAttachment)
-//                        _dataState.value = FeedModelState()
-//                    }
-//                    return@launch
-//                }
-//                repository.savePost(post)
-                if (typeAttach != null) {
-                    media?.let {
-                        val _media: Media = repository.upload(media)
-                        val postWithAttachment =
-                            post.copy(attachment = Attachment(_media.url, typeAttach))
-                        repository.savePost(postWithAttachment)
-                        _dataState.value = FeedModelState()
-                    }
+                if (typeAttach != null && media != null) {
+                    val _media: Media = repository.upload(media)
+                    val postWithAttachment =
+                        post.copy(attachment = Attachment(_media.url, typeAttach))
+                    repository.savePost(postWithAttachment)
                 } else {
+                    println("Save POST $post")
                     repository.savePost(post)
                 }
                 _dataState.value = FeedModelState()
@@ -144,13 +123,13 @@ class PostsViewModel @Inject constructor(
         }
     }
 
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = PhotoModel(uri, file)
-    }
-
-    fun clearPhoto() {
-        _photo.value = noPhoto
-    }
+//    fun changePhoto(uri: Uri?, file: File?) {
+//        _photo.value = PhotoModel(uri, file)
+//    }
+//
+//    fun clearPhoto() {
+//        _photo.value = noPhoto
+//    }
 
     fun like(post: Post, like: Boolean) {
         _dataState.value = FeedModelState(loading = true)
@@ -204,55 +183,24 @@ class PostsViewModel @Inject constructor(
 
     }
 
-    fun setTypeAttach(attach: AttachmentType?) {
-        _typeAttach.value = attach
-    }
-
     fun takePosts(list: List<Post>?) {
         list?.let { _userWall.value = it }
 
     }
 
-    fun setStatusViews(newStatus: StatusModelViews) {
-        _newStatusViewsModel.value = newStatus
-    }
-
-    fun setLocation(point: Point) {
-        _location.value = point
-    }
-//    fun getMentionsUsers(id: Long) {
-//        viewModelScope.launch {
-//            for (i in 60..70) {
-//
-//                repoUsers.getMentionsUsers(
-//                    i.toLong(),
-//                    object : UsersRepositoryImpl.GetMentionUser {
-//                        override fun getUser(user: UserResponse) {
-//                            println(user)
-//                        }
-//                    })
-//            }
-//
-//        }
-//
+//    fun setTypeAttach(attach: AttachmentType?) {
+//        _typeAttach.value = attach
 //    }
 
-//    fun getMentionIds(post: Post) {
-//        var posts = data.value?.map { it }
-//        var list: List<Post>? = listOf()
-//        println("println(posts?.size) ${posts?.size}")
-//        for (i in post.mentionIds!!) {
-//            println(i)
-//            posts = posts?.filter {
-//                i == it.authorId
-//            }
-//            if(posts?.size != 0) println("find posts $posts")
+
 //
-//        }
-//
-//
-//        println(data.value?.size)
-//        println(list?.size)
+//    fun setStatusViews(newStatus: StatusModelViews) {
+//        _newStatusViewsModel.value = newStatus
 //    }
+//
+//    fun setLocation(point: Point) {
+//        _location.value = point
+//    }
+
 
 }

@@ -129,12 +129,13 @@ class UsersRepositoryImpl @Inject constructor(
 
             job.id?.let {
                 daoJob.removeJobById(it)
-                val response = apiService.removePost(job.id)
+                val response = apiService.deleteMyJobs(job.id)
                 if (!response.isSuccessful) {
                     println("!response.isSuccessful")
                     daoJob.insertJob(JobEntity.fromDto(job))
                     when (response.code()) {
                         403 -> throw ApiError403(response.code().toString())
+                        404 -> throw ApiError404(response.code().toString())
                         else -> throw ApiError(response.code(), response.message())
                     }
                 }

@@ -83,7 +83,7 @@ class AuthFragment : Fragment() {
             if (it.error400) showBar("Неправильный пароль!")
             if (it.error404) showBar("Пользователь не зарегистрирован!")
             binding.statusAuth.isVisible = it.loading
-            println("it = $it")
+//            println("it = $it")
         }
         return binding.root
     }

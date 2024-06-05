@@ -77,14 +77,12 @@ class EventsViewModel @Inject constructor(
         _dataState.value = FeedModelState(loading = true)
         viewModelScope.launch {
             try {
-                if (typeAttach != null) {
-                    media?.let {
-                        val _media: Media = repositoryPosts.upload(media)
-                        val eventWithAttachment =
-                            event.copy(attachment = Attachment(_media.url, typeAttach))
-                        repositoryEvents.saveEvent(eventWithAttachment)
-                        _dataState.value = FeedModelState()
-                    }
+                if (typeAttach != null && media != null) {
+                    val _media: Media = repositoryPosts.upload(media)
+                    val eventWithAttachment =
+                        event.copy(attachment = Attachment(_media.url, typeAttach))
+                    repositoryEvents.saveEvent(eventWithAttachment)
+                    _dataState.value = FeedModelState()
                 } else {
                     repositoryEvents.saveEvent(event)
                 }
@@ -98,6 +96,55 @@ class EventsViewModel @Inject constructor(
 
                     "ru.netology.nework.error.ApiError415" -> {
                         _dataState.value = FeedModelState(error415 = true)
+                    }
+
+                    else -> {
+                        _dataState.value = FeedModelState(error = true)
+                    }
+                }
+            }
+        }
+    }
+
+    //deleteEvent
+    fun removeEvent(event: Event) {
+        _dataState.value = FeedModelState(loading = true)
+        viewModelScope.launch {
+            try {
+                repositoryEvents.deleteEvent(event)
+                _dataState.value = FeedModelState()
+            } catch (e: Exception) {
+                when (e.javaClass.name) {
+                    "ru.netology.nework.error.ApiError403" -> {
+                        _dataState.value = FeedModelState(error403 = true)
+                    }
+
+                    "ru.netology.nework.error.ApiError404" -> {
+                        _dataState.value = FeedModelState(error404 = true)
+                    }
+
+                    else -> {
+                        _dataState.value = FeedModelState(error = true)
+                    }
+                }
+            }
+        }
+    }
+
+    fun participateEvent(event: Event, status: Boolean) {
+        _dataState.value = FeedModelState(loading = true)
+        viewModelScope.launch {
+            try {
+                repositoryEvents.participateEvent(event.id!!, status)
+                _dataState.value = FeedModelState()
+            } catch (e: Exception) {
+                when (e.javaClass.name) {
+                    "ru.netology.nework.error.ApiError403" -> {
+                        _dataState.value = FeedModelState(error403 = true)
+                    }
+
+                    "ru.netology.nework.error.ApiError404" -> {
+                        _dataState.value = FeedModelState(error404 = true)
                     }
 
                     else -> {

@@ -17,12 +17,13 @@ import ru.netology.nework.enumeration.MeetingType
 import ru.netology.nework.util.AndroidUtils
 import javax.inject.Inject
 
-interface OnEventListener{
+interface OnEventListener {
     fun onLike(event: Event)
     fun openSpacePhoto(event: Event)
     fun playVideo(url: String)
     fun playAudio(url: String)
     fun showUsers(users: List<Long>?)
+    fun participateEvan(event: Event)
 }
 
 class AdapterEventView @Inject constructor(
@@ -37,41 +38,44 @@ class AdapterEventView @Inject constructor(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(event: Event){
-        with(binding){
+    fun bind(event: Event) {
+        with(binding) {
 
 //                //layMaps.visibility = View.VISIBLE
 //                val startLocation = Point(59.9402, 30.315)
 //                yakit.moveToStartLocation(startLocation)
 //                yakit.setMarkerInStartLocation(startLocation)
-
+//println("event $event")
             author.text = event.author
             published.text = AndroidUtils.getTimePublish(event.published)
-            infoDate.text= event.typeMeeting.toString()
+            infoDate.text = event.typeMeeting.toString()
             if (event.typeMeeting == MeetingType.ONLINE) infoDate.setTextColor(Color.parseColor("#00ff00"))
             content.text = event.content
             workPlace.text = event.authorJob
 
-            icLike.isChecked = event.likedByMe?:false
+            icLike.isChecked = event.likedByMe ?: false
             icLike.text = event.likeOwnerIds?.count().toString()
             icLike.setOnClickListener {
                 onEventListener.onLike(event)
             }
 
-            icParticipants.isChecked = event.participatedByMe?:false
+            icParticipants.isChecked = event.participatedByMe ?: false
             icParticipants.text = event.participantsIds?.count().toString()
             "Speakers ${event.speakerIds?.count().toString()}".also { speakers.text = it }
+            icParticipants.setOnClickListener {
+                onEventListener.participateEvan(event)
+            }
 
-                Glide.with(avatar)
+            Glide.with(avatar)
                 .load(event.authorAvatar)
 //                .placeholder(R.drawable.ic_loading_100dp)
                 .error(R.drawable.icon_person_24)
                 .timeout(45_000)
                 .circleCrop()
                 .into(avatar)
-            event.coordinates?.let {
+            event.coords?.let {
                 layMaps.visibility = View.VISIBLE
-                val startLocation = Point(event.coordinates.lat!!, event.coordinates.longCr!!)
+                val startLocation = Point(event.coords.lat!!, event.coords.longCr!!)
                 yakit.moveToStartLocation(startLocation)
                 yakit.setMarkerInStartLocation(startLocation)
             }
@@ -82,8 +86,10 @@ class AdapterEventView @Inject constructor(
             play.visibility = View.GONE
 
             imageView.setOnClickListener {
-                if(event.attachment?.type == AttachmentType.IMAGE) onEventListener.openSpacePhoto(event)
-                if(event.attachment?.type == AttachmentType.VIDEO) {
+                if (event.attachment?.type == AttachmentType.IMAGE) onEventListener.openSpacePhoto(
+                    event
+                )
+                if (event.attachment?.type == AttachmentType.VIDEO) {
                     videoView.visibility = View.VISIBLE
                     imageView.visibility = View.GONE
                     onEventListener.playVideo(event.attachment.url)
@@ -144,8 +150,12 @@ class AdapterEventView @Inject constructor(
                     avatarUserLike4,
                     avatarUserLike5
                 )
+                for (i in 0..<5) {
+                    dimViewAvatarLikes[i].visibility = View.GONE
+                }
                 if (listUsersLike.size < 6) {
                     for (i in 0..<listUsersLike.size) {
+                        dimViewAvatarLikes[i].visibility = View.VISIBLE
                         Glide.with(dimViewAvatarLikes[i])
                             .load(listUsersLike[i].avatar)
                             .timeout(45_000)
@@ -154,12 +164,14 @@ class AdapterEventView @Inject constructor(
                     }
                 } else {
                     for (i in 0..<5) {
+                        dimViewAvatarLikes[i].visibility = View.VISIBLE
                         Glide.with(dimViewAvatarLikes[i])
                             .load(listUsersLike[i].avatar)
                             .timeout(45_000)
                             .circleCrop()
                             .into(dimViewAvatarLikes[i])
                     }
+                    avatarUserLike6.visibility = View.VISIBLE
                     Glide.with(avatarUserLike6)
                         .load(R.drawable.but_plus)
                         .timeout(45_000)
@@ -184,8 +196,12 @@ class AdapterEventView @Inject constructor(
                     avatarUser4,
                     avatarUser5
                 )
+                for (i in 0..<5) {
+                    dimViewAvatarParticipants[i].visibility = View.GONE
+                }
                 if (listUsersParticipants.size < 6) {
                     for (i in 0..<listUsersParticipants.size) {
+                        dimViewAvatarParticipants[i].visibility = View.VISIBLE
                         Glide.with(dimViewAvatarParticipants[i])
                             .load(listUsersParticipants[i].avatar)
                             .timeout(45_000)
@@ -194,12 +210,14 @@ class AdapterEventView @Inject constructor(
                     }
                 } else {
                     for (i in 0..<5) {
+                        dimViewAvatarParticipants[i].visibility = View.VISIBLE
                         Glide.with(dimViewAvatarParticipants[i])
                             .load(listUsersParticipants[i].avatar)
                             .timeout(45_000)
                             .circleCrop()
                             .into(dimViewAvatarParticipants[i])
                     }
+                    avatarUser6.visibility = View.VISIBLE
                     Glide.with(avatarUser6)
                         .load(R.drawable.but_plus)
                         .timeout(45_000)

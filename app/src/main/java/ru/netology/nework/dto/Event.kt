@@ -24,6 +24,6 @@ data class Event(
     val typeMeeting: MeetingType? = null,
     val users: Map<String, UserPreview>? = null,
     val attachment: Attachment? = null,
-    val coordinates: Coordinates? = null,
+    val coords: Coordinates? = null,
     val eventOwner: Boolean = false
 )

@@ -83,7 +83,9 @@ class ScreenEvents : Fragment() {
             }
 
             override fun onRemove(event: Event) {
-                if (event.authorId == AuthViewModel.myID){}
+                if (event.authorId == AuthViewModel.myID){
+                    viewModelEvent.removeEvent(event)
+                }
 
             }
 
@@ -97,7 +99,15 @@ class ScreenEvents : Fragment() {
             }
 
             override fun onParticipants(event: Event) {
-                TODO("Not yet implemented")
+                if (userAuth) {
+                    viewModelEvent.participateEvent(event, !event.participatedByMe!!)
+                } else {
+                    DialogAuth.newInstance(
+                        AuthViewModel.DIALOG_IN,
+                        "Для в список участников нужна авторизация, выполнить вход?"
+                    )
+                        .show(childFragmentManager, "TAG")
+                }
             }
         })
         binding?.listEvents?.adapter = adapterEvents
@@ -163,28 +173,20 @@ class ScreenEvents : Fragment() {
         }
 
         binding?.fabEvent?.setOnClickListener {
-//            if (userAuth) {
-//                findNavController().navigate(
-//                    R.id.newEvent,
-//                    Bundle().apply {
-//                        eventArg = null
-//                    }
-//                )
-//            } else {
-//                DialogAuth.newInstance(
-//                    AuthViewModel.DIALOG_IN,
-//                    "Для добавления события нужно авторизоваться, выполнить вход?"
-//                )
-//                    .show(childFragmentManager, "TAG")
-//            }
-
-            findNavController().navigate(
-                R.id.newEvent,
-                Bundle().apply {
-                    eventArg = null
-                }
-            )
-
+            if (userAuth) {
+                findNavController().navigate(
+                    R.id.newEvent,
+                    Bundle().apply {
+                        eventArg = null
+                    }
+                )
+            } else {
+                DialogAuth.newInstance(
+                    AuthViewModel.DIALOG_IN,
+                    "Для добавления события нужно авторизоваться, выполнить вход?"
+                )
+                    .show(childFragmentManager, "TAG")
+            }
         }
 
         return binding?.root

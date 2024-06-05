@@ -28,7 +28,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_name"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/wide_text_field"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing"
                 android:hint="@string/user_name"
@@ -38,13 +38,14 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/transparent"
                     android:textSize="24sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_login"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/wide_text_field"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing"
                 android:hint="@string/login"
@@ -54,13 +55,14 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/transparent"
                     android:textSize="24sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_pass"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/wide_text_field"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing"
                 android:hint="@string/password"
@@ -71,13 +73,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:background="@color/transparent"
                     android:textSize="24sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/field_confirm"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/wide_text_field"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_spacing"
                 android:hint="@string/confirm_password"
@@ -88,6 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:background="@color/transparent"
                     android:textSize="24sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -98,7 +102,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="@dimen/common_spacing"
-                android:background="?attr/colorAccent"
+                android:background="@color/design_default_color_primary"
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
@@ -124,7 +128,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/common_spacing"
+                    android:layout_marginEnd="@dimen/common_spacing"
                     android:text="@string/select_an_avatar_image"
                     android:textColor="@color/white"
                     android:textSize="18sp" />

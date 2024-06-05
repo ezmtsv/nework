@@ -118,6 +118,18 @@ class EventView : Fragment() {
                         }
                     )
                 }
+
+                override fun participateEvan(event: Event) {
+                    if (AuthViewModel.userAuth) {
+                        viewModelEvents.participateEvent(event, !event.participatedByMe!!)
+                    } else {
+                        DialogAuth.newInstance(
+                            AuthViewModel.DIALOG_IN,
+                            "Для в список участников нужна авторизация, выполнить вход?"
+                        )
+                            .show(childFragmentManager, "TAG")
+                    }
+                }
             })
         }
         viewModelEvents.events.observe(viewLifecycleOwner) { events ->

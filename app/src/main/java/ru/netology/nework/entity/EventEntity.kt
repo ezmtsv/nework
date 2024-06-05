@@ -34,7 +34,7 @@ data class EventEntity(
     @Embedded
     val attachment: Attachment?,
     @Embedded
-    val coordinates: Coordinates? = null,
+    val coords: Coordinates? = null,
     val eventOwner: Boolean,
 ) {
     fun toDto() = Event(
@@ -55,7 +55,7 @@ data class EventEntity(
         typeMeeting,
         users,
         attachment,
-        coordinates,
+        coords,
         eventOwner,
     )
 
@@ -78,7 +78,7 @@ data class EventEntity(
             dto.typeMeeting,
             dto.users,
             dto.attachment,
-            dto.coordinates,
+            dto.coords,
             dto.eventOwner
         )
     }

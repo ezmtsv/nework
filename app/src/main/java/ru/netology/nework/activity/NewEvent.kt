@@ -60,7 +60,6 @@ import ru.netology.nework.util.AndroidUtils.getTimeFormat
 import ru.netology.nework.viewmodel.EventsViewModel
 import ru.netology.nework.viewmodel.LaysViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -97,7 +96,7 @@ class NewEvent : Fragment() {
     ): View {
         var lastStateLoading = false
         event = arguments?.eventArg
-        println("GET EVENT $event")
+//        println("GET EVENT $event")
 
         val binding = NewEventBinding.inflate(layoutInflater)
         yakit.initMapView(binding.map)
@@ -192,11 +191,11 @@ class NewEvent : Fragment() {
                             val text = binding.content.text.toString()
                             val event = viewModelLays.getEvent(text)
                             println("EVENT for send $event")
-//                            viewModelEvent.saveEvent(
-//                                event,
-//                                multiPart,
-//                                viewModelLays.typeAttach.value
-//                            )
+                            viewModelEvent.saveEvent(
+                                event!!,
+                                multiPart,
+                                viewModelLays.typeAttach.value
+                            )
                         }
                         true
                     }
@@ -449,7 +448,7 @@ class NewEvent : Fragment() {
                 //viewModelLays.setImageGroup()
             }
 
-            content.setOnTouchListener { v, event ->
+            content.setOnTouchListener { _, event ->
                 when (event.action) {
                     MotionEvent.ACTION_DOWN, MotionEvent.ACTION_UP -> {
                         if (viewModelLays.newStatusViewsModel.value?.geo == SHOW)
@@ -585,7 +584,7 @@ class NewEvent : Fragment() {
     }
 
     private var timePickerDialog =
-        OnTimeSetListener { view, hourOfDay, minute ->
+        OnTimeSetListener { _, hourOfDay, minute ->
             dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
             dateAndTime.set(Calendar.MINUTE, minute)
             setInitialDateTime()
@@ -593,7 +592,7 @@ class NewEvent : Fragment() {
 
     // установка обработчика выбора даты
     private var datePickerDialog =
-        OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             dateAndTime.set(Calendar.YEAR, year)
             dateAndTime.set(Calendar.MONTH, monthOfYear)
             dateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)

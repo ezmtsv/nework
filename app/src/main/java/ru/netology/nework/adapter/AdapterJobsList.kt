@@ -1,6 +1,7 @@
 package ru.netology.nework.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nework.databinding.CardWorkBinding
 import ru.netology.nework.dto.Job
 import ru.netology.nework.util.AndroidUtils.getTimeJob
+import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 
 interface ListenerSelectionJobs {
 fun removeJob(job: Job)
@@ -39,6 +41,8 @@ class JobViewHolder(
             "$startJob - $finishJob".also { experience.text = it }
             jobTitle.text = job.position
             jobLink.text = job.link
+            if(myID == job.idUser) trash.visibility = View.VISIBLE
+            else trash.visibility = View.GONE
             trash.setOnClickListener{
                 listenerSelectionJobs.removeJob(job)
             }

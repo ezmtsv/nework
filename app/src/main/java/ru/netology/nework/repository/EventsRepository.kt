@@ -9,4 +9,5 @@ interface EventsRepository {
     suspend fun likeEvent(id: Long, like: Boolean)
     suspend fun saveEvent(event: Event)
     suspend fun deleteEvent(event: Event)
+    suspend fun participateEvent(id: Long, status: Boolean)
 }

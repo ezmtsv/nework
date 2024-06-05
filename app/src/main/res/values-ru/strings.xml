@@ -30,7 +30,7 @@
     <string name="confirm_password">Подтвердите пароль</string>
     <string name="input_password">Введите пароль</string>
     <string name="select_an_avatar_image">Изображение аватара</string>
-    <string name="account_setup">Настройки профиля</string>
+    <string name="account_setup">Мой профиль</string>
     <string name="user_name">Имя</string>
     <string name="account_id">ID уч. записи</string>
     <string name="users">Люди</string>
@@ -59,4 +59,20 @@
     <string name="start_date">Начало работы</string>
     <string name="enter_date">Даты работы</string>
     <string name="select_date">Выбор даты</string>
+    <string name="fullscreen_picture">Полноэкранная картинка</string>
+    <string name="button_clear_job">Кнопка удаления работы</string>
+    <string name="duration">...</string>
+    <string name="participants">Участники</string>
+    <string name="play_video">Видео</string>
+    <string name="speakers">Спикеры</string>
+    <string name="avatar_speaker">Аватар спикера</string>
+    <string name="avatar_user">Аватар пользователя</string>
+    <string name="play_audio">Воспроизведение</string>
+    <string name="job_title">Должность</string>
+    <string name="experience">Опыт</string>
+    <string name="enter_dates">Введите даты</string>
+    <string name="ok">Применить</string>
+    <string name="cancel">Отмена</string>
+    <string name="transparent">Прозрачный слой</string>
+    <string name="description_event_participants">Участники</string>
 </resources>

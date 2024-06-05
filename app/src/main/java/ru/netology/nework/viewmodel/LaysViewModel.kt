@@ -12,6 +12,7 @@ import ru.netology.nework.activity.SHOW
 import ru.netology.nework.date.DateEvent
 import ru.netology.nework.dto.Coordinates
 import ru.netology.nework.dto.Event
+import ru.netology.nework.dto.Post
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.enumeration.MeetingType
 import ru.netology.nework.media.MediaModel
@@ -39,7 +40,7 @@ class LaysViewModel @Inject constructor(
     val typeAttach: LiveData<AttachmentType?>
         get() = _typeAttach
 
-    val noPhoto = PhotoModel()
+    private val noPhoto = PhotoModel()
     private val _photo = MutableLiveData(noPhoto)
     val photo: LiveData<PhotoModel>
         get() = _photo
@@ -52,11 +53,16 @@ class LaysViewModel @Inject constructor(
     val listUsersEvent: LiveData<List<Long>>
         get() = _listUsersEvent
 
+    private val _listUsersMentions = MutableLiveData(listOf<Long>())
+    val listUsersMentions: LiveData<List<Long>>
+        get() = _listUsersMentions
+
     private val _dateEvent = MutableLiveData(DateEvent())
     val dateEvent: LiveData<DateEvent>
         get() = _dateEvent
 
     private val _event = MutableLiveData(Event(id = 0L))
+    private val _post = MutableLiveData(Post(id = 0L, authorId = 0L))
 //    val event: LiveData<Event>
 //        get() = _event
 
@@ -248,14 +254,16 @@ class LaysViewModel @Inject constructor(
 
     fun changeListUsers(list: List<Long>) {
         _listUsersEvent.value = list
+        _listUsersMentions.value = list
     }
+
 
     fun setEvent(event: Event) {
         _event.value = event
 
-        event.coordinates?.let {
-            val lat = event.coordinates.lat!!
-            val longCr = event.coordinates.longCr!!
+        event.coords?.let {
+            val lat = event.coords.lat!!
+            val longCr = event.coords.longCr!!
             _location.value = Point(lat, longCr)
         }
 
@@ -295,28 +303,68 @@ class LaysViewModel @Inject constructor(
 
     }
 
+    fun setPost(post: Post) {
+        _post.value = post
+
+        post.coords?.let {
+            val lat = post.coords.lat!!
+            val longCr = post.coords.longCr!!
+            _location.value = Point(lat, longCr)
+        }
+
+        _listUsersMentions.value = post.mentionIds
+        post.attachment?.let {
+            _typeAttach.value = it.type
+            when (it.type) {
+                AttachmentType.IMAGE -> {
+                    _photo.value = PhotoModel(uri = Uri.parse(post.attachment.url))
+                    setStatusLoadingImg(true)
+                    setTypeAttach(AttachmentType.IMAGE)
+                    setImageGroup()
+                }
+
+                AttachmentType.VIDEO -> {
+                    _mediaFile.value =
+                        MediaModel(uri = Uri.parse(post.attachment.url), post.attachment.url, 0)
+                    setTypeAttach(AttachmentType.VIDEO)
+                    setStatusLoadingFile(true)
+                }
+
+                AttachmentType.AUDIO -> {
+                    _mediaFile.value =
+                        MediaModel(uri = Uri.parse(post.attachment.url), post.attachment.url, 0)
+                    setTypeAttach(AttachmentType.AUDIO)
+                    setStatusLoadingFile(true)
+                }
+
+                null -> {}
+            }
+        }
+    }
+
     fun cleanAttach() {
         _event.value =
             _event.value?.copy(attachment = null)
     }
 
     fun setDataTime(date: DateEvent) {
-        _dateEvent.value = _dateEvent.value?.copy(date = date.date, dateForSending = date.dateForSending)
+        _dateEvent.value =
+            _dateEvent.value?.copy(date = date.date, dateForSending = date.dateForSending)
     }
 
-    fun setMeetingType(type: MeetingType){
+    fun setMeetingType(type: MeetingType) {
         _dateEvent.value = _dateEvent.value?.copy(meetingType = type)
     }
 
     fun setStatusEdit() {
-        _newStatusViewsModel.value = StatusModelViews(statusNewEvent = false)
+        _newStatusViewsModel.value = StatusModelViews(statusNewEvent = false, statusNewPost = false)
     }
 
     fun getEvent(text: String): Event? {
         _event.value =
             _event.value?.copy(
                 content = text,
-                coordinates = Coordinates(_location.value?.latitude, _location.value?.longitude),
+                coords = Coordinates(_location.value?.latitude, _location.value?.longitude),
                 speakerIds = listUsersEvent.value,
                 typeMeeting = _dateEvent.value?.meetingType,
                 datetime = _dateEvent.value?.dateForSending,
@@ -324,6 +372,17 @@ class LaysViewModel @Inject constructor(
             )
 
         return _event.value
+    }
+
+    fun getPost(text: String): Post? {
+        _post.value =
+            _post.value?.copy(
+                content = text,
+                coords = Coordinates(_location.value?.latitude, _location.value?.longitude),
+                mentionIds = listUsersMentions.value,
+                postOwner = true,
+            )
+        return _post.value
     }
 
 }

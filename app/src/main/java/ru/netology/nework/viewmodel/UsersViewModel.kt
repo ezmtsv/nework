@@ -14,6 +14,7 @@ import ru.netology.nework.dto.ListMarkedUsers
 import ru.netology.nework.dto.MarkedUser
 import ru.netology.nework.dto.UserResponse
 import ru.netology.nework.model.FeedModelState
+import ru.netology.nework.model.StatusModelShowUserAcc
 import ru.netology.nework.repository.UsersRepository
 import javax.inject.Inject
 
@@ -31,6 +32,9 @@ class UsersViewModel @Inject constructor(
     //    private val _listUsers = MutableLiveData<List<UserResponse>>()
     val listUsers: LiveData<List<UserResponse>> = usersRepo.allUsers.asLiveData(Dispatchers.Default)
 
+    private val _statusShowListJobs = MutableLiveData(StatusModelShowUserAcc())
+    val statusShowListJobs: LiveData<StatusModelShowUserAcc>
+        get() = _statusShowListJobs
 
     private val _userAccount: MutableLiveData<UserResponse> = MutableLiveData()
     val userAccount: LiveData<UserResponse>
@@ -77,6 +81,7 @@ class UsersViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 usersRepo.getUser(id)
+                _dataState.value = FeedModelState()
             } catch (e: Exception) {
 
                 if (e.javaClass.name == "ru.netology.nework.error.ApiError404") {
@@ -89,10 +94,11 @@ class UsersViewModel @Inject constructor(
     }
 
     fun saveJob(job: Job) {
-        _dataState.value = FeedModelState(loading = true)
+        _dataState.value = FeedModelState(loadingJob = true)
         viewModelScope.launch {
             try {
                 usersRepo.saveJob(job)
+                _dataState.value = FeedModelState()
             } catch (e: Exception) {
                 when (e.javaClass.name) {
                     "ru.netology.nework.error.ApiError403" -> {
@@ -114,12 +120,13 @@ class UsersViewModel @Inject constructor(
 
     fun removeJob(id: Long) {
         val job = userJobs.value?.find { it.id == id }
-        println("Find Job $job")
-        _dataState.value = FeedModelState(loading = true)
+        _dataState.value = FeedModelState(loadingJob = true)
         viewModelScope.launch {
             try {
                 job?.let { usersRepo.deleteJob(it) }
+                _dataState.value = FeedModelState()
             } catch (e: Exception) {
+                println(e.javaClass.name)
                 when (e.javaClass.name) {
                     "ru.netology.nework.error.ApiError403" -> {
                         _dataState.value = FeedModelState(error403 = true)
@@ -127,6 +134,9 @@ class UsersViewModel @Inject constructor(
 
                     "ru.netology.nework.error.ApiError404" -> {
                         _dataState.value = FeedModelState(error404 = true)
+                    }
+                    "ru.netology.nework.error.NetworkError" -> {
+
                     }
 
                     else -> {
@@ -160,5 +170,9 @@ class UsersViewModel @Inject constructor(
             ListMarkedUsers.addUser(MarkedUser(id = user))
         }
 
+    }
+
+    fun setStatusShowListJobs(status: Boolean){
+        _statusShowListJobs.value = _statusShowListJobs.value?.copy(statusShowListJobs = status)
     }
 }

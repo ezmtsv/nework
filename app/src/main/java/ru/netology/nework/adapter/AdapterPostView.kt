@@ -183,8 +183,12 @@ class AdapterPostView @Inject constructor(
                     avatarUserLike4,
                     avatarUserLike5
                 )
+                for (i in 0..<5) {
+                    dimViewAvatarLikes[i].visibility = View.GONE
+                }
                 if (listUsersLike.size < 6) {
                     for (i in 0..<listUsersLike.size) {
+                        dimViewAvatarLikes[i].visibility = View.VISIBLE
                         Glide.with(dimViewAvatarLikes[i])
                             .load(listUsersLike[i].avatar)
                             .timeout(45_000)
@@ -193,12 +197,14 @@ class AdapterPostView @Inject constructor(
                     }
                 } else {
                     for (i in 0..<5) {
+                        dimViewAvatarLikes[i].visibility = View.VISIBLE
                         Glide.with(dimViewAvatarLikes[i])
                             .load(listUsersLike[i].avatar)
                             .timeout(45_000)
                             .circleCrop()
                             .into(dimViewAvatarLikes[i])
                     }
+                    avatarUserLike6.visibility = View.VISIBLE
                     Glide.with(avatarUserLike6)
                         .load(R.drawable.but_plus)
                         .timeout(45_000)

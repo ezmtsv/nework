@@ -2,88 +2,79 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:padding="@dimen/common_spacing"
-    android:layout_height="wrap_content">
-
-<TextView
-    android:id="@+id/field_header"
-    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/select_date"
-    android:layout_marginStart="@dimen/common_spacing"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/common_spacing">
+
+    <TextView
+        android:id="@+id/field_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:text="@string/select_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/field_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/field_header"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/common_spacing"
         android:layout_marginStart="@dimen/common_spacing"
-        android:textStyle="bold"
-        android:text="@string/enter_date"
-        android:textSize="24sp"/>
-
-    <LinearLayout
-        android:id="@+id/lay_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/field_info"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/common_spacing"
-        android:orientation="horizontal">
+        android:text="@string/enter_date"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field_header" />
 
-        <EditText
-            android:id="@+id/field_start_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/min_space"
-            android:layout_weight="1"
-            android:textColorHint="#555555"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:minWidth="200dp"
-            android:editable="false"
-            app:startIconContentDescription="@string/start_date"/>
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/field_start_date"
+        android:layout_width="@dimen/wide_date_field"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/min_space"
+        android:editable="false"
+        android:gravity="center"
+        android:hint="__.__.____"
+        tools:ignore="Autofill"
+        android:minHeight="48dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field_info"
+        app:startIconContentDescription="@string/start_date" />
 
-        <EditText
-            android:id="@+id/field_end_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/min_space"
-            android:layout_weight="1"
-            android:minWidth="200dp"
-            android:gravity="center"
-            android:textColorHint="#555555"
-            android:textSize="16sp"
-            android:editable="false"
-            android:hint="НВ"
-            app:startIconContentDescription="@string/end_date"/>
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/field_end_date"
+        android:layout_width="@dimen/wide_date_field"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/min_space"
+        android:editable="false"
+        android:gravity="center"
+        tools:ignore="Autofill"
+        android:hint="НВ"
+        android:minHeight="48dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field_info"
+        app:startIconContentDescription="@string/end_date" />
 
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_chanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/min_space"
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_ok"
+        app:layout_constraintTop_toBottomOf="@id/field_end_date" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/lay_date"
-        android:gravity="right"
-       android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_chanel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/min_space"
-            android:text="Chanel" />
-        <Button
-            android:id="@+id/btn_ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/min_space"
-            android:text="OK" />
-    </LinearLayout>
-
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/min_space"
+        android:text="@string/ok"
+        app:layout_constraintEnd_toStartOf="@id/btn_chanel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/field_start_date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
