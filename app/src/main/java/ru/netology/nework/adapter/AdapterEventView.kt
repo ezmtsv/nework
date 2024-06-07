@@ -1,13 +1,11 @@
 package ru.netology.nework.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.view.MotionEvent
 import android.view.View
 import com.bumptech.glide.Glide
 import com.yandex.mapkit.geometry.Point
-import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.netology.nework.R
 import ru.netology.nework.databinding.EventViewBinding
 import ru.netology.nework.dto.Event
@@ -29,8 +27,6 @@ interface OnEventListener {
 class AdapterEventView @Inject constructor(
     private val binding: EventViewBinding,
     private val yakit: YaKit,
-    @ApplicationContext
-    private val context: Context,
     private val onEventListener: OnEventListener
 ) {
     init {
@@ -41,10 +37,6 @@ class AdapterEventView @Inject constructor(
     fun bind(event: Event) {
         with(binding) {
 
-//                //layMaps.visibility = View.VISIBLE
-//                val startLocation = Point(59.9402, 30.315)
-//                yakit.moveToStartLocation(startLocation)
-//                yakit.setMarkerInStartLocation(startLocation)
 //println("event $event")
             author.text = event.author
             published.text = AndroidUtils.getTimePublish(event.published)
@@ -66,6 +58,11 @@ class AdapterEventView @Inject constructor(
                 onEventListener.participateEvan(event)
             }
 
+            imageView.visibility = View.GONE
+            layAudio.visibility = View.GONE
+            layMaps.visibility = View.GONE
+            play.visibility = View.GONE
+
             Glide.with(avatar)
                 .load(event.authorAvatar)
 //                .placeholder(R.drawable.ic_loading_100dp)
@@ -79,11 +76,6 @@ class AdapterEventView @Inject constructor(
                 yakit.moveToStartLocation(startLocation)
                 yakit.setMarkerInStartLocation(startLocation)
             }
-
-            imageView.visibility = View.GONE
-            layAudio.visibility = View.GONE
-            layMaps.visibility = View.GONE
-            play.visibility = View.GONE
 
             imageView.setOnClickListener {
                 if (event.attachment?.type == AttachmentType.IMAGE) onEventListener.openSpacePhoto(
@@ -102,7 +94,7 @@ class AdapterEventView @Inject constructor(
                     AttachmentType.IMAGE, null -> {
                         imageView.visibility = View.VISIBLE
                         Glide.with(imageView)
-                            .load(event.attachment?.url)
+                            .load(event.attachment.url)
                             .placeholder(R.drawable.ic_loading_100dp)
                             //.error(R.drawable.ic_error_100dp)
                             .timeout(45_000)

@@ -58,7 +58,7 @@ class PostView : Fragment() {
             val post = posts.find { it.id == idPost }
             txtShare = (post?.attachment?.url ?: post?.content).toString()
             post?.let {
-                container?.context?.let { cntx ->
+                container?.context?.let { _ ->
                     AdapterPostView(binding, object : OnIteractionListenerPostView {
                         override fun onLike(post: Post) {
                             if (userAuth) {
@@ -66,7 +66,7 @@ class PostView : Fragment() {
                             } else {
                                 DialogAuth.newInstance(
                                     AuthViewModel.DIALOG_IN,
-                                    "Для установки лайков нужна авторизация, выполнить вход?"
+                                    "Для установки лайков нужна нужно авторизоваться"
                                 )
                                     .show(childFragmentManager, "TAG")
                             }
@@ -133,7 +133,7 @@ class PostView : Fragment() {
                                 }
                             )
                         }
-                    }, yakit, context = cntx).bind(post)
+                    }, yakit).bind(post)
                 }
             }
         }

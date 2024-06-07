@@ -16,6 +16,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/common_spacing"
             android:layout_marginStart="@dimen/common_spacing"
+            android:layout_marginEnd="@dimen/common_spacing"
             android:textSize="18sp"
             tools:text="@tools:sample/lorem[10]" />
 
@@ -28,21 +29,26 @@
             android:padding="@dimen/common_spacing">
 
             <Button
-                android:id="@+id/btn_yes"
+                android:id="@+id/btn_signin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/common_spacing"
-
-                android:text="@string/yes" />
+                tools:ignore="ButtonStyle"
+                android:minWidth="100dp"
+                android:textSize="12sp"
+                android:text="@string/sign_in" />
 
             <Button
-                android:id="@+id/btn_no"
+                android:id="@+id/btn_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                tools:ignore="ButtonStyle"
                 android:layout_marginStart="@dimen/common_spacing"
-                android:text="@string/no" />
+                android:minWidth="100dp"
+                android:textSize="12sp"
+                android:text="@string/sign_up" />
         </LinearLayout>
     </LinearLayout>
 

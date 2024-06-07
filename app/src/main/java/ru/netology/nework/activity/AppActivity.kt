@@ -1,7 +1,11 @@
 package ru.netology.nework.activity
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 
 import android.view.View
@@ -61,6 +65,15 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         imageView = ImageView(this)
         imageView?.setImageResource(R.drawable.icon_person_24)
 
+        val foregroundColorSpan = ForegroundColorSpan(Color.WHITE)
+        val spannableString = SpannableString(getString(R.string.app_name))
+        spannableString.setSpan(
+            foregroundColorSpan,
+            0,
+            spannableString.length,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
 
         val lp = ActionBar.LayoutParams(
             ActionBar.LayoutParams.WRAP_CONTENT,
@@ -70,22 +83,8 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         actionBar?.apply {
             setDisplayShowCustomEnabled(true)
             setCustomView(imageView, lp)
+            title = spannableString
         }
-        //actionBar?.hide()
-
-//        viewModel.statusAuth.observe(this) {
-//            println("viewModel.authState.value?.login ${viewModel.authState.value?.login}")
-//            println("userAuth $userAuth")
-//            actionBar?.apply {
-////                if(userAuth) {
-//
-////                    subtitle = viewModel.authState.value?.login
-//                subtitle = ""
-////                }
-////                else subtitle = ""
-//            }
-//        }
-
 
         imageView?.setOnClickListener {
             PopupMenu(this, it).apply {
@@ -157,7 +156,9 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
             }
 
             DIALOG_REG -> {
-                println("fragment registration")
+                findNavController(R.id.nav_host_fragment).navigate(
+                    R.id.regFragment
+                )
             }
         }
     }
@@ -204,6 +205,6 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
 
     override fun returnIdJob(id: Long) {
         val currentFragment = supportFragmentManager.currentNavigationFragment
-        if(currentFragment is UserAccount) currentFragment.getIdJob(id)
+        if (currentFragment is UserAccount) currentFragment.getIdJob(id)
     }
 }

@@ -12,7 +12,7 @@
     <string name="new_posts">Новые посты</string>
     <string name="empty_posts">Пустые посты</string>
     <string name="add_post">Добавить пост</string>
-    <string name="sign_in">Войти</string>
+    <string name="sign_in">Вход</string>
     <string name="sign_up">Регистрация</string>
     <string name="sign_out">Выход</string>
     <string name="save">Сохранить</string>
@@ -75,4 +75,13 @@
     <string name="cancel">Отмена</string>
     <string name="transparent">Прозрачный слой</string>
     <string name="description_event_participants">Участники</string>
+    <string name="count_likes">Count likes</string>
+    <string name="audio">AUDIO</string>
+    <string name="video">VIDEO</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
+    <string name="description_attach">Описание вложения</string>
+    <string name="date">Дата</string>
+    <string name="time">Время</string>
+    <string name="content">Content</string>
 </resources>

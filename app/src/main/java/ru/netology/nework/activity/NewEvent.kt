@@ -190,12 +190,16 @@ class NewEvent : Fragment() {
                             }
                             val text = binding.content.text.toString()
                             val event = viewModelLays.getEvent(text)
-                            println("EVENT for send $event")
-                            viewModelEvent.saveEvent(
-                                event!!,
-                                multiPart,
-                                viewModelLays.typeAttach.value
-                            )
+                            if (event?.datetime == null) {
+                                context?.toast("Необходимо установить дату и время события!")
+                            } else {
+                                viewModelEvent.saveEvent(
+                                    event,
+                                    multiPart,
+                                    viewModelLays.typeAttach.value
+                                )
+                            }
+//                            println("EVENT for send $event")
                         }
                         true
                     }
@@ -292,6 +296,7 @@ class NewEvent : Fragment() {
                 layMaps.visibility = status.geo
                 listUsers.visibility = status.groupUsers
                 viewDate.visibility = status.groupDateEvent
+                content.visibility = status.groupContent
             }
 
         }

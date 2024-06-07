@@ -26,7 +26,8 @@
                 android:contentDescription="@string/description_post_author_avatar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/avatar_user" />
+                tools:src="@drawable/avatar_new_user_24"
+                 />
 
             <TextView
                 android:id="@+id/author"
@@ -100,7 +101,7 @@
                     android:layout_marginTop="@dimen/min_space"
                     android:contentDescription="@string/preview_video"
                     android:visibility="visible"
-                    tools:srcCompat="@drawable/avatar_user" />
+                    tools:src="@drawable/avatar_new_user_24" />
 
                 <ImageButton
                     android:id="@+id/play"

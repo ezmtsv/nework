@@ -1,12 +1,10 @@
 package ru.netology.nework.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import com.bumptech.glide.Glide
 import com.yandex.mapkit.geometry.Point
-import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.netology.nework.R
 import ru.netology.nework.databinding.PostViewBinding
 import ru.netology.nework.dto.Post
@@ -30,8 +28,6 @@ class AdapterPostView @Inject constructor(
     private val binding: PostViewBinding,
     private val onListener: OnIteractionListenerPostView,
     private val yakit: YaKit,
-    @ApplicationContext
-    private val context: Context
 ) {
 
 
@@ -72,8 +68,8 @@ class AdapterPostView @Inject constructor(
             }
 
             imageView.setOnClickListener {
-                if(post.attachment?.type == AttachmentType.IMAGE) onListener.openSpacePhoto(post)
-                if(post.attachment?.type == AttachmentType.VIDEO) {
+                if (post.attachment?.type == AttachmentType.IMAGE) onListener.openSpacePhoto(post)
+                if (post.attachment?.type == AttachmentType.VIDEO) {
                     videoView.visibility = View.VISIBLE
                     imageView.visibility = View.GONE
                     onListener.playVideo(post.attachment.url)

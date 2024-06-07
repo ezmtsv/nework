@@ -4,5 +4,7 @@
         <!-- Customize your dark theme here. -->
 <!--        Theme.Material3.DayNight"-->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">#714Cff</item>
     </style>
+
 </resources>

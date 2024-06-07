@@ -54,14 +54,14 @@ class EventView : Fragment() {
         var txtShare = ""
         val idEvent = arguments?.idArg
         val adapterEventView = context?.let {
-            AdapterEventView(binding!!, yakit, it, object : OnEventListener {
+            AdapterEventView(binding!!, yakit, object : OnEventListener {
                 override fun onLike(event: Event) {
                     if (AuthViewModel.userAuth) {
                         viewModelEvents.likeEvent(event, !event.likedByMe!!)
                     } else {
                         DialogAuth.newInstance(
                             AuthViewModel.DIALOG_IN,
-                            "Для установки лайков нужна авторизация, выполнить вход?"
+                            "Для установки лайков нужно авторизоваться"
                         )
                             .show(childFragmentManager, "TAG")
                     }
@@ -125,7 +125,7 @@ class EventView : Fragment() {
                     } else {
                         DialogAuth.newInstance(
                             AuthViewModel.DIALOG_IN,
-                            "Для в список участников нужна авторизация, выполнить вход?"
+                            "Для добавления в список участников нужно авторизоваться"
                         )
                             .show(childFragmentManager, "TAG")
                     }

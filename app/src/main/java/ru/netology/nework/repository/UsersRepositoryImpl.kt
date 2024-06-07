@@ -12,6 +12,7 @@ import ru.netology.nework.entity.UserResponseEntity
 import ru.netology.nework.entity.toDto
 import ru.netology.nework.entity.toEntity
 import ru.netology.nework.error.ApiError
+import ru.netology.nework.error.ApiError400
 import ru.netology.nework.error.ApiError403
 import ru.netology.nework.error.ApiError404
 import ru.netology.nework.error.NetworkError
@@ -108,6 +109,7 @@ class UsersRepositoryImpl @Inject constructor(
                 when (response.code()) {
                     403 -> throw ApiError403(response.code().toString())
                     404 -> throw ApiError404(response.code().toString())
+                    400 -> throw ApiError400(response.code().toString())
                     else -> throw ApiError(response.code(), response.message())
                 }
             }
@@ -117,8 +119,11 @@ class UsersRepositoryImpl @Inject constructor(
             )
 
         } catch (e: ApiError403) {
-            println("EXC 403")
             throw ApiError403("403")
+        } catch (e: ApiError404) {
+            throw ApiError403("404")
+        } catch (e: ApiError400) {
+            throw ApiError400("400")
         } catch (e: Exception) {
             throw UnknownError
         }

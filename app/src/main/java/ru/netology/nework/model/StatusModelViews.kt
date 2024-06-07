@@ -8,6 +8,7 @@ data class StatusModelViews(
     val groupLoadFile: Int = View.GONE,
     val groupSelectAttach: Int = View.GONE,
     val groupDateEvent: Int = View.GONE,
+    val groupContent: Int = View.VISIBLE,
     val geo: Int = View.GONE,
     val statusCoords: Boolean = false,
     val statusLoadingImg: Boolean = false,

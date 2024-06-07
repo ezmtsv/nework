@@ -36,7 +36,7 @@
                 android:contentDescription="@string/button_clear_job"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/trash_24" />
+                android:src = "@drawable/trash_24" />
 
             <TextView
                 android:id="@+id/experience"

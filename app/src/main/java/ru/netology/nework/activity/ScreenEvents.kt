@@ -15,13 +15,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
 import ru.netology.nework.activity.AppActivity.Companion.eventArg
 import ru.netology.nework.activity.AppActivity.Companion.idArg
-import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.adapter.AdapterEventsList
 import ru.netology.nework.adapter.OnEventsListener
 import ru.netology.nework.databinding.ScreenEventsBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Event
 import ru.netology.nework.viewmodel.AuthViewModel
+import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
 import ru.netology.nework.viewmodel.EventsViewModel
 
@@ -55,7 +55,7 @@ class ScreenEvents : Fragment() {
                 } else {
                     DialogAuth.newInstance(
                         AuthViewModel.DIALOG_IN,
-                        "Для установки лайков нужна авторизация, выполнить вход?"
+                        "Для установки лайков нужно авторизоваться"
                     )
                         .show(childFragmentManager, "TAG")
                 }
@@ -83,7 +83,7 @@ class ScreenEvents : Fragment() {
             }
 
             override fun onRemove(event: Event) {
-                if (event.authorId == AuthViewModel.myID){
+                if (event.authorId == myID){
                     viewModelEvent.removeEvent(event)
                 }
 
@@ -104,7 +104,7 @@ class ScreenEvents : Fragment() {
                 } else {
                     DialogAuth.newInstance(
                         AuthViewModel.DIALOG_IN,
-                        "Для в список участников нужна авторизация, выполнить вход?"
+                        "Для добавления в список участников нужно авторизоваться"
                     )
                         .show(childFragmentManager, "TAG")
                 }
@@ -126,8 +126,8 @@ class ScreenEvents : Fragment() {
             }
 
             if (state.error403) {
-                AuthViewModel.userAuth = false
-                AuthViewModel.myID = null
+                userAuth = false
+                myID = null
                 showBar("Ошибка авторизации, выполните вход")
                 viewModelEvent.loadEvents()
             }
@@ -183,7 +183,7 @@ class ScreenEvents : Fragment() {
             } else {
                 DialogAuth.newInstance(
                     AuthViewModel.DIALOG_IN,
-                    "Для добавления события нужно авторизоваться, выполнить вход?"
+                    "Для добавления события нужно авторизоваться"
                 )
                     .show(childFragmentManager, "TAG")
             }

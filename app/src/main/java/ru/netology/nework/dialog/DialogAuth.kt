@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import ru.netology.nework.R
 import ru.netology.nework.error.UnknownError
 import ru.netology.nework.databinding.FragmentDialogBinding
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_IN
@@ -47,25 +48,33 @@ class DialogAuth : DialogFragment() {
             when (sel) {
                 DIALOG_IN -> {
                     //textDialog.text = "Для установки лайков нужна авторизация, выполнить вход?"
-                    btnYes.setOnClickListener {
+                    btnSignin.setOnClickListener {
                         //findNavController().navigate(R.id.authFragment)
                         backValue?.returnDialogValue(DIALOG_IN)
+                        dismiss()
+                    }
+                    btnSignup.setOnClickListener {
+                        backValue?.returnDialogValue(DIALOG_REG)
                         dismiss()
                     }
                 }
 
                 DIALOG_OUT -> {
 //                    textDialog.text = "Вы хотите удалить регистрацию?"
-                    btnYes.setOnClickListener {
+                    btnSignin.text = getString(R.string.yes)
+                    btnSignup.text = getString(R.string.no)
+                    btnSignin.setOnClickListener {
                         backValue?.returnDialogValue(DIALOG_OUT)
                         dismiss()
                     }
-
+                    btnSignup.setOnClickListener {
+                        dismiss()
+                    }
                 }
 
                 DIALOG_REG -> {
 //                    textDialog.text = "Регистрация пользователя"
-                    btnYes.setOnClickListener {
+                    btnSignin.setOnClickListener {
                         backValue?.returnDialogValue(DIALOG_REG)
                         dismiss()
                     }
@@ -73,9 +82,9 @@ class DialogAuth : DialogFragment() {
                 }
             }
 
-            btnNo.setOnClickListener {
-                dismiss()
-            }
+//            btnNo.setOnClickListener {
+//                dismiss()
+//            }
 
 
         }

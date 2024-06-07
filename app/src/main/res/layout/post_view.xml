@@ -74,7 +74,7 @@
                     android:layout_height="280dp"
                     android:layout_marginTop="@dimen/common_spacing"
                     android:contentDescription="@string/avatar_user"
-                    tools:srcCompat="@drawable/avatar_user" />
+                    tools:srcCompat="@drawable/avatar_new_user_24" />
                 <LinearLayout
                     android:id="@+id/lay_audio"
                     android:layout_width="match_parent"
@@ -181,7 +181,7 @@
                         android:layout_marginStart="100dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user_like_2"
@@ -190,7 +190,7 @@
                         android:layout_marginStart="140dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user_like_3"
@@ -199,7 +199,7 @@
                         android:layout_marginStart="180dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user_like_4"
@@ -208,7 +208,7 @@
                         android:layout_marginStart="220dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user_like_5"
@@ -217,7 +217,7 @@
                         android:layout_marginStart="260dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user_like_6"
@@ -226,7 +226,7 @@
                         android:layout_marginStart="300dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
 
             </FrameLayout>
@@ -270,7 +270,7 @@
                         android:layout_marginStart="100dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user2"
@@ -279,7 +279,7 @@
                         android:layout_marginStart="140dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user3"
@@ -288,7 +288,7 @@
                         android:layout_marginStart="180dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user4"
@@ -297,7 +297,7 @@
                         android:layout_marginStart="220dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user5"
@@ -306,7 +306,7 @@
                         android:layout_marginStart="260dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
                     <ImageView
                         android:id="@+id/avatar_user6"
@@ -315,7 +315,7 @@
                         android:layout_marginStart="300dp"
                         android:layout_gravity="bottom"
                         android:contentDescription="@string/avatar_user"
-                        tools:srcCompat="@drawable/avatar_user"
+                        tools:srcCompat="@drawable/avatar_new_user_24"
                         />
 
             </FrameLayout>

@@ -80,13 +80,21 @@ class LaysViewModel @Inject constructor(
     }
 
     fun setStatusLoadingFile(statusLoading: Boolean) {
+//        val status = _newStatusViewsModel.value
+//        if (statusLoading) {
+//            _newStatusViewsModel.value =
+//                status?.copy(statusLoadingFile = statusLoading, statusViewLoading = false)
+//        } else {
+//            _newStatusViewsModel.value =
+//                status?.copy(statusLoadingFile = statusLoading)
+//        }
         val status = _newStatusViewsModel.value
+        _newStatusViewsModel.value =
+            status?.copy(statusLoadingFile = statusLoading)
         if (statusLoading) {
-            _newStatusViewsModel.value =
-                status?.copy(statusLoadingFile = statusLoading, statusViewLoading = false)
-        } else {
-            _newStatusViewsModel.value =
-                status?.copy(statusLoadingFile = statusLoading)
+            _newStatusViewsModel.value = _newStatusViewsModel.value?.copy(
+                statusViewLoading = false
+            )
         }
         setLoadingGroup()
     }
@@ -96,6 +104,7 @@ class LaysViewModel @Inject constructor(
         val statusView = _newStatusViewsModel.value?.statusViewImage!!
         if (!statusView) _newStatusViewsModel.value = status?.copy(
             groupImage = SHOW,
+            groupContent = SHOW,
             groupLoadFile = HIDE,
             groupUsers = HIDE,
             groupSelectAttach = HIDE,
@@ -127,6 +136,7 @@ class LaysViewModel @Inject constructor(
             if (_newStatusViewsModel.value!!.statusLoadingFile) {
                 _newStatusViewsModel.value = status?.copy(
                     groupImage = HIDE,
+                    groupContent = SHOW,
                     groupLoadFile = SHOW,
                     groupSelectAttach = HIDE,
                     groupUsers = HIDE,
@@ -138,6 +148,7 @@ class LaysViewModel @Inject constructor(
             } else {
                 _newStatusViewsModel.value = status?.copy(
                     groupImage = HIDE,
+                    groupContent = SHOW,
                     groupLoadFile = HIDE,
                     groupSelectAttach = SHOW,
                     groupUsers = HIDE,
@@ -172,6 +183,7 @@ class LaysViewModel @Inject constructor(
                 groupSelectAttach = HIDE,
                 geo = HIDE,
                 groupDateEvent = HIDE,
+                groupContent = HIDE,
                 groupUsers = SHOW,
                 statusViewImage = false,
                 statusDateEvent = false,
@@ -196,6 +208,7 @@ class LaysViewModel @Inject constructor(
                 groupImage = HIDE,
                 groupUsers = HIDE,
                 groupDateEvent = HIDE,
+                groupContent = HIDE,
                 geo = SHOW,
                 statusViewMaps = !_newStatusViewsModel.value?.statusViewMaps!!,
                 statusViewImage = false,
@@ -221,6 +234,7 @@ class LaysViewModel @Inject constructor(
                 groupUsers = HIDE,
                 geo = HIDE,
                 groupDateEvent = SHOW,
+                groupContent = SHOW,
                 statusDateEvent = !_newStatusViewsModel.value?.statusDateEvent!!,
                 statusViewMaps = false,
                 statusViewImage = false,

@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName
 import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Coordinates
 import ru.netology.nework.dto.Event
-import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.UserPreview
 import ru.netology.nework.enumeration.MeetingType
 

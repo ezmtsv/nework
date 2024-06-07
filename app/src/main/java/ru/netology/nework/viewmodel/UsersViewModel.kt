@@ -100,6 +100,7 @@ class UsersViewModel @Inject constructor(
                 usersRepo.saveJob(job)
                 _dataState.value = FeedModelState()
             } catch (e: Exception) {
+//                println("e.javaClass.name ${e.javaClass.name}")
                 when (e.javaClass.name) {
                     "ru.netology.nework.error.ApiError403" -> {
                         _dataState.value = FeedModelState(error403 = true)
@@ -107,6 +108,10 @@ class UsersViewModel @Inject constructor(
 
                     "ru.netology.nework.error.ApiError404" -> {
                         _dataState.value = FeedModelState(error404 = true)
+                    }
+
+                    "ru.netology.nework.error.ApiError400" -> {
+                        _dataState.value = FeedModelState(error400 = true)
                     }
 
                     else -> {
@@ -135,6 +140,7 @@ class UsersViewModel @Inject constructor(
                     "ru.netology.nework.error.ApiError404" -> {
                         _dataState.value = FeedModelState(error404 = true)
                     }
+
                     "ru.netology.nework.error.NetworkError" -> {
 
                     }
@@ -172,7 +178,7 @@ class UsersViewModel @Inject constructor(
 
     }
 
-    fun setStatusShowListJobs(status: Boolean){
+    fun setStatusShowListJobs(status: Boolean) {
         _statusShowListJobs.value = _statusShowListJobs.value?.copy(statusShowListJobs = status)
     }
 }

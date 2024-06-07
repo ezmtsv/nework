@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import ru.netology.nework.R
 
 import ru.netology.nework.activity.HIDE
 import ru.netology.nework.activity.REMOVE_JOB
@@ -61,8 +62,11 @@ class DialogSelectRemoveJob : DialogFragment() {
             if (sel == REMOVE_JOB) {
                 fieldHeader.text = "Удаление записи о работе"
                 fieldInfo.text = "Вы уверены, что хотите удалить запись?"
+                fieldInfo.textSize = 20F
                 fieldStartDate.visibility = HIDE
                 fieldEndDate.visibility = HIDE
+                btnOk.text = getString(R.string.yes)
+                btnChanel.text = getString(R.string.no)
             }
             fieldStartDate.setText(getDate())
             fieldEndDate.setText("НВ")

@@ -97,7 +97,7 @@ class UserAccount : Fragment() {
                 } else {
                     DialogAuth.newInstance(
                         AuthViewModel.DIALOG_IN,
-                        "Для установки лайков нужна авторизация, выполнить вход?"
+                        "Для установки лайков нужно авторизоваться"
                     )
                         .show(childFragmentManager, "TAG")
                 }

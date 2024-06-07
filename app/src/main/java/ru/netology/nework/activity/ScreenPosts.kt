@@ -58,7 +58,7 @@ class ScreenPosts : Fragment() {
                 } else {
                     DialogAuth.newInstance(
                         DIALOG_IN,
-                        "Для установки лайков нужна авторизация, выполнить вход?"
+                        "Для установки лайков нужно авторизоваться"
                     )
                         .show(childFragmentManager, "TAG")
 
@@ -190,7 +190,7 @@ class ScreenPosts : Fragment() {
             } else {
                 DialogAuth.newInstance(
                     DIALOG_IN,
-                    "Для добавления поста нужно авторизоваться, выполнить вход?"
+                    "Для добавления поста нужно авторизоваться"
                 )
                     .show(childFragmentManager, "TAG")
             }

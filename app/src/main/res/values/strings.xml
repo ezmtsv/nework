@@ -74,4 +74,13 @@
     <string name="cancel">Cancel</string>
     <string name="transparent">Transparent lay</string>
     <string name="description_event_participants">Participants</string>
+    <string name="count_likes">Count likes</string>
+    <string name="audio">AUDIO</string>
+    <string name="video">VIDEO</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
+    <string name="description_attach">description attach</string>
+    <string name="date">date</string>
+    <string name="time">time</string>
+    <string name="content">Content</string>
 </resources>

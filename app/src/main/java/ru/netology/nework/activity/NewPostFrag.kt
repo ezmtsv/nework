@@ -281,6 +281,7 @@ class NewPostFrag : Fragment() {
                 selectAttach.visibility = status.groupSelectAttach
                 layMaps.visibility = status.geo
                 listUsers.visibility = status.groupUsers
+                content.visibility = status.groupContent
             }
 
         }

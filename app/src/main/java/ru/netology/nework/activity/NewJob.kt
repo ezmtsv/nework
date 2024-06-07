@@ -74,6 +74,8 @@ class NewJob : Fragment() {
         viewModelUser.dataState.observe(viewLifecycleOwner) {
             binding?.progressLoad?.isVisible = it.loadingJob
             if (it.error403) showBar("Ошибка авторизации,отказано в доступе!")
+            if (it.error404) showBar("Запись не найдена!")
+            if (it.error400) showBar("Не указана дата или некорректно введены данные!")
             if (it.error) showBar("Проверьте ваше подключение к сети!")
             if (!it.loadingJob && lastStateLoading) findNavController().navigateUp()
             lastStateLoading = it.loadingJob
