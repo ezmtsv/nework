@@ -27,7 +27,7 @@
                 android:layout_marginStart="@dimen/min_space"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/avatar_user" />
+                tools:srcCompat="@drawable/avatar_new_user_24" />
 
             <TextView
                 android:id="@+id/author"

@@ -2,7 +2,6 @@ package ru.netology.nework.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,22 +26,22 @@ import ru.netology.nework.databinding.EventViewBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Event
 import ru.netology.nework.error.UnknownError
-import ru.netology.nework.players.MPlayer
-import ru.netology.nework.util.AndroidUtils
 import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.EventsViewModel
+import ru.netology.nework.viewmodel.MediaViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 import javax.inject.Inject
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class EventView : Fragment() {
     @Inject
     lateinit var yakit: YaKit
-    private var audioPl: MPlayer? = null
     var binding: EventViewBinding? = null
 
     private val viewModelEvents: EventsViewModel by viewModels()
     private val viewModelUsers: UsersViewModel by viewModels()
+    private val viewModelMedia: MediaViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,35 +75,14 @@ class EventView : Fragment() {
                 }
 
                 override fun playVideo(url: String) {
-                    binding?.videoView?.apply {
-                        setMediaController(MediaController(context))
-                        setVideoURI(
-                            Uri.parse(url)
-                        )
-                        setOnPreparedListener {
-                            start()
-                        }
-                    }
+                    viewModelMedia.playVideo(url, binding?.videoView!!)
                 }
 
                 override fun playAudio(url: String) {
-                    if (audioPl == null) {
-                        audioPl = MPlayer()
-                    }
                     if (binding?.playAudio!!.isChecked) {
-                        audioPl?.play(url, object : MPlayer.GetInfo {
-                            override fun getDuration(dut: Int) {
-                                if (dut != 0) binding?.duration!!.text =
-                                    AndroidUtils.getTimeTrack(dut)
-                            }
-
-                            override fun onCompletionPlay() {
-                                audioPl?.stopPlayer()
-                            }
-
-                        })
+                        viewModelMedia.playAudio(url)
                     } else {
-                        audioPl?.pausePlayer()
+                        viewModelMedia.pauseAudio()
                     }
                 }
 
@@ -142,6 +119,11 @@ class EventView : Fragment() {
 
         viewModelUsers.listUsers.observe(viewLifecycleOwner) {}
 
+        viewModelMedia.duration.observe(viewLifecycleOwner){
+            if(it != "STOP") binding?.duration!!.text = it
+            else binding?.playAudio?.isChecked = false
+        }
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_share, menu)
@@ -163,6 +145,7 @@ class EventView : Fragment() {
 
                     android.R.id.home -> {
                         println("home")
+                        viewModelMedia.stopAudio()
                         findNavController().navigateUp()
                         true
                     }
@@ -173,6 +156,10 @@ class EventView : Fragment() {
         }, viewLifecycleOwner)
 
         return binding?.root
+    }
+
+    fun stopMedia() {
+        viewModelMedia.stopAudio()
     }
 
     private var curFrag: CurrentShowFragment? = null
@@ -199,12 +186,11 @@ class EventView : Fragment() {
 
     override fun onStop() {
         yakit.stopMapView()
-        audioPl?.stopPlayer()
         super.onStop()
     }
 
-    override fun onDestroy() {
-        audioPl?.stopPlayer()
-        super.onDestroy()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//    }
+
 }

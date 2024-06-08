@@ -129,6 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="@id/bottom_navigation"
             app:menu="@menu/posts_screen_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

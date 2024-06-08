@@ -226,5 +226,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:menu="@menu/menu_new_event" />
+        app:menu="@menu/menu_new_event"
+        tools:ignore="@id/bottom_navigation_new_event"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

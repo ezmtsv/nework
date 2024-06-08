@@ -47,5 +47,7 @@
         android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/min_space"
         android:layout_marginEnd="@dimen/min_space"
-        app:menu="@menu/posts_screen_menu" />
+        app:menu="@menu/posts_screen_menu"
+        tools:ignore="@id/bottom_navigation_users"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

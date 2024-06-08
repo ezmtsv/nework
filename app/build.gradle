@@ -80,18 +80,19 @@ dependencies {
     def room_version = "2.6.0-alpha02"
     def imagepicker_version = "2.1"
     def maps_yandex_version = "4.5.1-lite"
+    def photo_latest_version = "2.1.4"
 
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation 'androidx.fragment:fragment-ktx:1.7.0'
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
+    implementation 'androidx.fragment:fragment-ktx:1.7.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.8.1"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
     implementation 'com.google.android.material:material:1.12.0'
@@ -115,4 +116,5 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.yandex.android:maps.mobile:$maps_yandex_version"
+    implementation "com.github.chrisbanes:PhotoView:2.3.0"
 }

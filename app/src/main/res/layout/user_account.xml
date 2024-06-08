@@ -43,7 +43,8 @@
                 android:layout_marginTop="@dimen/min_space"
                 android:layout_marginBottom="@dimen/min_space"
                 app:layout_constraintTop_toBottomOf="@id/image_avatar"
-                app:menu="@menu/menu_jobs_wall" />
+                app:menu="@menu/menu_jobs_wall"
+                tools:ignore="@id/wall_jobs_navigation"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_posts"

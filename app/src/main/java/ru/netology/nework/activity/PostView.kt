@@ -2,7 +2,6 @@ package ru.netology.nework.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -10,7 +9,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.MediaController
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,10 +26,9 @@ import ru.netology.nework.databinding.PostViewBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dto.Post
 import ru.netology.nework.error.UnknownError
-import ru.netology.nework.players.MPlayer
-import ru.netology.nework.util.AndroidUtils
 import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
+import ru.netology.nework.viewmodel.MediaViewModel
 import ru.netology.nework.viewmodel.PostsViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 import javax.inject.Inject
@@ -39,7 +36,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 class PostView : Fragment() {
-    private var audioPl: MPlayer? = null
+    private val viewModelMedia: MediaViewModel by viewModels()
+
     @Inject
     lateinit var yakit: YaKit
     override fun onCreateView(
@@ -81,37 +79,15 @@ class PostView : Fragment() {
                         }
 
                         override fun playAudio(link: String) {
-                            if (audioPl == null) {
-                                audioPl = MPlayer()
-                            }
                             if (binding.playAudio.isChecked) {
-                                audioPl?.play(link, object : MPlayer.GetInfo {
-                                    override fun getDuration(dut: Int) {
-                                        if (dut != 0) binding.duration.text =
-                                            AndroidUtils.getTimeTrack(dut)
-                                    }
-
-                                    override fun onCompletionPlay() {
-                                        audioPl?.stopPlayer()
-                                    }
-
-                                })
+                                viewModelMedia.playAudio(link)
                             } else {
-                                audioPl?.pausePlayer()
+                                viewModelMedia.pauseAudio()
                             }
                         }
 
                         override fun playVideo(link: String) {
-                            binding.videoView.apply {
-                                setMediaController(MediaController(context))
-                                setVideoURI(
-                                    Uri.parse(link)
-                                )
-                                setOnPreparedListener {
-                                    start()
-                                }
-                            }
-
+                            viewModelMedia.playVideo(link, binding.videoView)
                         }
 
                         override fun openSpacePhoto(post: Post) {
@@ -140,6 +116,11 @@ class PostView : Fragment() {
 
         viewModelUsers.listUsers.observe(viewLifecycleOwner) {}
 
+        viewModelMedia.duration.observe(viewLifecycleOwner) {
+            if (it != "STOP") binding.duration.text = it
+            else binding.playAudio.isChecked = false
+        }
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_share, menu)
@@ -164,6 +145,7 @@ class PostView : Fragment() {
 
                     android.R.id.home -> {
                         println("home")
+                        viewModelMedia.stopAudio()
                         findNavController().navigateUp()
                         true
                     }
@@ -176,6 +158,10 @@ class PostView : Fragment() {
 
 
         return binding.root
+    }
+
+    fun stopMedia() {
+        viewModelMedia.stopAudio()
     }
 
     private var curFrag: CurrentShowFragment? = null
@@ -202,13 +188,11 @@ class PostView : Fragment() {
 
     override fun onStop() {
         yakit.stopMapView()
-        audioPl?.stopPlayer()
         super.onStop()
     }
 
-    override fun onDestroy() {
-        audioPl?.stopPlayer()
-        super.onDestroy()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//    }
 }
 

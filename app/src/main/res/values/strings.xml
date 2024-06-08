@@ -83,4 +83,6 @@
     <string name="date">date</string>
     <string name="time">time</string>
     <string name="content">Content</string>
+    <string name="cur_time">Now</string>
+    <string name="format_date">__.__.____</string>
 </resources>

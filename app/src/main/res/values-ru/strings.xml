@@ -84,4 +84,6 @@
     <string name="date">Дата</string>
     <string name="time">Время</string>
     <string name="content">Content</string>
+    <string name="cur_time">НВ</string>
+    <string name="format_date">__.__.____</string>
 </resources>

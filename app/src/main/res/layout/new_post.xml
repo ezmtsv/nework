@@ -165,5 +165,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:menu="@menu/menu_new_post" />
+        app:menu="@menu/menu_new_post"
+        tools:ignore="@id/bottom_navigation_new_post"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

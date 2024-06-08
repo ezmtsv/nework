@@ -207,4 +207,20 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         val currentFragment = supportFragmentManager.currentNavigationFragment
         if (currentFragment is UserAccount) currentFragment.getIdJob(id)
     }
+
+    override fun onBackPressed(){
+
+        when(val currentFragment = supportFragmentManager.currentNavigationFragment){
+            is EventView ->{
+//                println("BACK EventView")
+                currentFragment.stopMedia()
+            }
+            is PostView ->{
+//                println("BACK PostView")
+                currentFragment.stopMedia()
+            }
+        }
+        super.onBackPressed()
+
+    }
 }
