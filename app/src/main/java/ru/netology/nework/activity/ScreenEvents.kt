@@ -8,10 +8,16 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.netology.nework.R
 import ru.netology.nework.activity.AppActivity.Companion.eventArg
 import ru.netology.nework.activity.AppActivity.Companion.idArg
@@ -32,6 +38,7 @@ class ScreenEvents : Fragment() {
 
     var binding: ScreenEventsBinding? = null
     val viewModelEvent: EventsViewModel by viewModels()
+    private val viewModelAuth: AuthViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -110,9 +117,39 @@ class ScreenEvents : Fragment() {
                 }
             }
         })
+
         binding?.listEvents?.adapter = adapterEvents
-        viewModelEvent.events.observe(viewLifecycleOwner) { list ->
-            adapterEvents.submitList(list)
+
+//        viewModelEvent.events.observe(viewLifecycleOwner) { list ->
+//            adapterEvents.submitList(list)
+//        }
+
+        fun reload() {
+            Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
+                .setAction(R.string.retry_loading) { adapterEvents.refresh() }
+                .show()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModelEvent.events.collectLatest(adapterEvents::submitData)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapterEvents.loadStateFlow.collectLatest { state ->
+                    binding?.swipeRefreshLayout?.isRefreshing =
+                        state.refresh is LoadState.Loading ||
+                                state.prepend is LoadState.Loading ||
+                                state.append is LoadState.Loading
+                    if (state.refresh is LoadState.Error) reload()
+                }
+            }
+        }
+
+        viewModelAuth.authState.observe(viewLifecycleOwner) { _ ->
+            adapterEvents.refresh()
         }
 
         viewModelEvent.dataState.observe(viewLifecycleOwner) { state ->
@@ -120,16 +157,14 @@ class ScreenEvents : Fragment() {
             binding?.swipeRefreshLayout?.isRefreshing = state.refreshing
 
             if (state.errorNetWork) {
-                Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.retry_loading) { viewModelEvent.loadEvents() }
-                    .show()
+                reload()
             }
 
             if (state.error403) {
                 userAuth = false
                 myID = null
                 showBar("Ошибка авторизации, выполните вход")
-                viewModelEvent.loadEvents()
+//                viewModelEvent.loadEvents()
             }
 
 //            if(!state.statusAuth){
@@ -139,7 +174,8 @@ class ScreenEvents : Fragment() {
         }
 
         binding?.swipeRefreshLayout?.setOnRefreshListener {
-            viewModelEvent.loadEvents()
+//            viewModelEvent.loadEvents()
+            adapterEvents.refresh()
         }
         binding?.swipeRefreshLayout?.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -197,9 +233,9 @@ class ScreenEvents : Fragment() {
         super.onResume()
     }
 
-    override fun onStart() {
-        viewModelEvent.loadEvents()
-        super.onStart()
-    }
+//    override fun onStart() {
+////        viewModelEvent.loadEvents()
+//        super.onStart()
+//    }
 
 }

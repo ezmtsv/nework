@@ -17,6 +17,7 @@ import ru.netology.nework.adapter.AdapterUsersList
 import ru.netology.nework.adapter.ListenerSelectionUser
 import ru.netology.nework.databinding.ScreenUsersBinding
 import ru.netology.nework.dto.UserResponse
+import ru.netology.nework.viewmodel.AuthViewModel
 import ru.netology.nework.viewmodel.UsersViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -24,6 +25,7 @@ import ru.netology.nework.viewmodel.UsersViewModel
 
 class ScreenUsers : Fragment() {
     var binding: ScreenUsersBinding? = null
+    private val viewModelAuth: AuthViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,7 +95,9 @@ class ScreenUsers : Fragment() {
             android.R.color.holo_red_light,
         )
 
-
+        viewModelAuth.authState.observe(viewLifecycleOwner) { _ ->
+            adapter.submitList(viewModel.listUsers.value)
+        }
 
         binding?.bottomNavigationUsers?.setOnItemSelectedListener { item ->
             when (item.itemId) {

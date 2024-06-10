@@ -5,18 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import ru.netology.nework.dto.Attachment
 import ru.netology.nework.dto.Post
 import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.media.Media
-import ru.netology.nework.media.PhotoModel
 import ru.netology.nework.model.FeedModelState
 import ru.netology.nework.repository.PostsRepository
+import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import javax.inject.Inject
 
 
@@ -28,24 +32,19 @@ class PostsViewModel @Inject constructor(
 //    private val repoUsers: UsersRepository,
 ) : ViewModel() {
 
-//    private val noPhoto = PhotoModel()
-//    private val _photo = MutableLiveData(noPhoto)
-//    val photo: LiveData<PhotoModel>
-//        get() = _photo
-//    private val _typeAttach = MutableLiveData<AttachmentType?>()
-//    val typeAttach: LiveData<AttachmentType?>
-//        get() = _typeAttach
+//    val data: LiveData<List<Post>> = repository.postsDb
+//        .asLiveData(Dispatchers.IO)
 
-    val data: LiveData<List<Post>> = repository.postsBd
-        .asLiveData(Dispatchers.IO)
+//    val data: Flow<PagingData<Post>> = repository.postsDb
+//        .flowOn(Dispatchers.Default)
 
-//    private val _location = MutableLiveData<Point>()
-//    val location: LiveData<Point>
-//        get() = _location
-//
-//    private val _newStatusViewsModel = MutableLiveData<StatusModelViews>()
-//    val newStatusViewsModel: LiveData<StatusModelViews>
-//        get() = _newStatusViewsModel
+
+    val data = repository.postsDb.map { post ->
+        post.map { it.copy(postOwner = it.authorId == myID) }
+    }
+        .cachedIn(viewModelScope)
+        .flowOn(Dispatchers.Default)
+
 
     private val _userWall = MutableLiveData<List<Post>>()
     val userWall: LiveData<List<Post>>
@@ -55,25 +54,34 @@ class PostsViewModel @Inject constructor(
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
+    val receivedPosts: LiveData<List<Post>>
+        get() = repository.postsFlow.asLiveData(Dispatchers.Default)
 
-//    init {
+    init {
 //        loadPosts()
-//    }
+        getPosts()
+    }
 
-    fun loadPosts() {
-        _dataState.value = FeedModelState(loading = true)
+    private fun getPosts() {
         viewModelScope.launch {
-            try {
-                repository.getPosts()
-                _dataState.value = FeedModelState()
-            } catch (e: Exception) {
-                if (e.javaClass.name == "ru.netology.nework.error.ApiError403") {
-                    _dataState.value = FeedModelState(error403 = true)
-                } else if (e.javaClass.name == "ru.netology.nework.error.NetworkError")
-                    _dataState.value = FeedModelState(errorNetWork = true)
-            }
+            repository.getPostsDB()
         }
     }
+
+//    fun loadPosts() {
+//        _dataState.value = FeedModelState(loading = true)
+//        viewModelScope.launch {
+//            try {
+//                repository.getPosts()
+//                _dataState.value = FeedModelState()
+//            } catch (e: Exception) {
+//                if (e.javaClass.name == "ru.netology.nework.error.ApiError403") {
+//                    _dataState.value = FeedModelState(error403 = true)
+//                } else if (e.javaClass.name == "ru.netology.nework.error.NetworkError")
+//                    _dataState.value = FeedModelState(errorNetWork = true)
+//            }
+//        }
+//    }
 
     fun getUserPosts(id: Long) {
         _dataState.value = FeedModelState(loading = true)
@@ -133,7 +141,7 @@ class PostsViewModel @Inject constructor(
 
     fun like(post: Post, like: Boolean) {
         _dataState.value = FeedModelState(loading = true)
-        println("post ${post.id}")
+//        println("post ${post.id}")
         viewModelScope.launch {
             try {
                 repository.likePost(post.id, like)
@@ -187,6 +195,10 @@ class PostsViewModel @Inject constructor(
         list?.let { _userWall.value = it }
 
     }
+
+//    fun getPost(id: Long) {
+//
+//    }
 
 //    fun setTypeAttach(attach: AttachmentType?) {
 //        _typeAttach.value = attach

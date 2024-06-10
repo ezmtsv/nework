@@ -39,7 +39,7 @@ class AdapterPostView @Inject constructor(
     fun bind(post: Post) {
         //       yandexMapsKitFactory = MapKitFactory.getInstance()
 //        mapView = binding.map
-        println("post Id ${post.id} postAttach ${post.attachment}")
+//        println("post Id ${post.id} postAttach ${post.attachment}")
 //        println("post likeOwnerIds ${post.likeOwnerIds}, post mentionIds ${post.mentionIds}, users ${post.users}")
         binding.apply {
             author.text = post.author
@@ -61,10 +61,12 @@ class AdapterPostView @Inject constructor(
             layMaps.visibility = View.GONE
             play.visibility = View.GONE
             post.coords?.let {
-                layMaps.visibility = View.VISIBLE
-                val startLocation = Point(post.coords.lat!!, post.coords.longCr!!)
-                yakit.moveToStartLocation(startLocation)
-                yakit.setMarkerInStartLocation(startLocation)
+                if (it.lat != 0.0 && it.longCr != 0.0) {
+                    layMaps.visibility = View.VISIBLE
+                    val startLocation = Point(post.coords.lat!!, post.coords.longCr!!)
+                    yakit.moveToStartLocation(startLocation)
+                    yakit.setMarkerInStartLocation(startLocation)
+                }
             }
 
             imageView.setOnClickListener {

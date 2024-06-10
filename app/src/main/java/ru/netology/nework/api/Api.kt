@@ -1,6 +1,5 @@
 package ru.netology.nework.api
 
-import com.google.gson.annotations.SerializedName
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -22,80 +21,80 @@ interface ApiService {
     // one user (Wall)
     @GET("/api/{authorId}/wall")
     suspend fun getPostsUser(@Path("authorId") authorId: Long): Response<List<Post>>
+//
+//    @GET("/api/{authorId}/wall/{id}/newer")
+//    suspend fun getPostsUserNewer(
+//        @Path("authorId") authorId: Long,
+//        @Path("id") id: Long
+//    ): Response<List<Post>>
+//
+//    @GET("/api/{authorId}/wall/{id}/before")
+//    suspend fun getPostsUserBefore(
+//        @Path("authorId") authorId: Long,
+//        @Path("id") id: Long,
+//        @Query("count") count: Int,
+//    ): Response<List<Post>>
+//
+//    @GET("/api/{authorId}/wall/{id}/after")
+//    suspend fun getPostsUserAfter(
+//        @Path("authorId") authorId: Long,
+//        @Path("id") id: Long,
+//        @Query("count") count: Int,
+//    ): Response<List<Post>>
+//
+//    @GET("/api/{authorId}/wall/{id}")
+//    suspend fun getPostsUserId(
+//        @Path("authorId") authorId: Long,
+//        @Path("id") id: Long
+//    ): Response<Post>
+//
+//    @GET("/api/{authorId}/wall/latest")
+//    suspend fun getPostsUserLatest(
+//        @Path("authorId") authorId: Long,
+//        @Query("count") count: Int,
+//    ): Response<List<Post>>
 
-    @GET("/api/{authorId}/wall/{id}/newer")
-    suspend fun getPostsUserNewer(
-        @Path("authorId") authorId: Long,
-        @Path("id") id: Long
-    ): Response<List<Post>>
-
-    @GET("/api/{authorId}/wall/{id}/before")
-    suspend fun getPostsUserBefore(
-        @Path("authorId") authorId: Long,
-        @Path("id") id: Long,
-        @Query("count") count: Int,
-    ): Response<List<Post>>
-
-    @GET("/api/{authorId}/wall/{id}/after")
-    suspend fun getPostsUserAfter(
-        @Path("authorId") authorId: Long,
-        @Path("id") id: Long,
-        @Query("count") count: Int,
-    ): Response<List<Post>>
-
-    @GET("/api/{authorId}/wall/{id}")
-    suspend fun getPostsUserId(
-        @Path("authorId") authorId: Long,
-        @Path("id") id: Long
-    ): Response<Post>
-
-    @GET("/api/{authorId}/wall/latest")
-    suspend fun getPostsUserLatest(
-        @Path("authorId") authorId: Long,
-        @Query("count") count: Int,
-    ): Response<List<Post>>
-
-    @POST("/api/{authorId}/wall/{id}/likes")
-    suspend fun likeById(@Path("id") id: Long): Response<Post>
-
-    @DELETE("/api/{authorId}/wall/{id}/likes")
-    suspend fun removeById(@Path("id") id: Long): Response<Post>
+//    @POST("/api/{authorId}/wall/{id}/likes")
+//    suspend fun likeById(@Path("id") id: Long): Response<Post>
+//
+//    @DELETE("/api/{authorId}/wall/{id}/likes")
+//    suspend fun removeById(@Path("id") id: Long): Response<Post>
 
 
-    //My Wall
-    @GET("/api/my/wall")
-    suspend fun getMyWall(): Response<List<Post>>
-
-    @GET("/api/my/wall/{id}/newer")
-    suspend fun getMyWallNewer(@Path("id") id: Long): Response<List<Post>>
-
-    @GET("/api/my/wall/{id}/before")
-    suspend fun getMyPostsBefore(
-        @Path("id") id: Long,
-        @Query("count") count: Int,
-    ): Response<List<Post>>
-
-    @GET("/api/my/wall/{id}/after")
-    suspend fun getMyPostsAfter(
-        @Path("id") id: Long,
-        @Query("count") count: Int,
-    ): Response<List<Post>>
-
-    @GET("/api/my/wall/{id}")
-    suspend fun getPostsUserId(
-        @Path("id") id: Long
-    ): Response<Post>
-
-    @GET("/api/my/wall/latest")
-    suspend fun getMyPostsLatest(
-        @Query("count") count: Int,
-    ): Response<List<Post>>
-
-    @POST("/api/my/wall/{id}/likes")
-    suspend fun likeMyById(@Path("id") id: Long): Response<Post>
-
-    @DELETE("/api/my/wall/{id}/likes")
-    suspend fun removeMyById(@Path("id") id: Long): Response<Post>
+//    //My Wall
+//    @GET("/api/my/wall")
+//    suspend fun getMyWall(): Response<List<Post>>
+//
+//    @GET("/api/my/wall/{id}/newer")
+//    suspend fun getMyWallNewer(@Path("id") id: Long): Response<List<Post>>
+//
+//    @GET("/api/my/wall/{id}/before")
+//    suspend fun getMyPostsBefore(
+//        @Path("id") id: Long,
+//        @Query("count") count: Int,
+//    ): Response<List<Post>>
+//
+//    @GET("/api/my/wall/{id}/after")
+//    suspend fun getMyPostsAfter(
+//        @Path("id") id: Long,
+//        @Query("count") count: Int,
+//    ): Response<List<Post>>
+//
+//    @GET("/api/my/wall/{id}")
+//    suspend fun getPostsUserId(
+//        @Path("id") id: Long
+//    ): Response<Post>
+//
+//    @GET("/api/my/wall/latest")
+//    suspend fun getMyPostsLatest(
+//        @Query("count") count: Int,
+//    ): Response<List<Post>>
+//
+//    @POST("/api/my/wall/{id}/likes")
+//    suspend fun likeMyById(@Path("id") id: Long): Response<Post>
+//
+//    @DELETE("/api/my/wall/{id}/likes")
+//    suspend fun removeMyById(@Path("id") id: Long): Response<Post>
 
 
     // Users
@@ -125,8 +124,8 @@ interface ApiService {
     @GET("/api/posts")
     suspend fun getPosts(): Response<List<Post>>
 
-    @GET("/api/posts/{id}/newer")
-    suspend fun getPostsNewer(@Path("id") id: Long): Response<List<Post>>
+//    @GET("/api/posts/{id}/newer")
+//    suspend fun getPostsNewer(@Path("id") id: Long): Response<List<Post>>
 
     @GET("/api/posts/{id}/before")
     suspend fun getPostsBefore(
@@ -140,10 +139,10 @@ interface ApiService {
         @Query("count") count: Int,
     ): Response<List<Post>>
 
-    @GET("/api/posts/{id}")
-    suspend fun getPostsId(
-        @Path("id") id: Long
-    ): Response<Post>
+//    @GET("/api/posts/{id}")
+//    suspend fun getPostsId(
+//        @Path("id") id: Long
+//    ): Response<Post>
 
     @GET("/api/posts/latest")
     suspend fun getPostsLatest(
@@ -204,5 +203,22 @@ interface ApiService {
     suspend fun sendEvent(
         @Body event: Event
     ): Response<Event>
+
+    @GET("/api/events/{id}/before")
+    suspend fun getEventsBefore(
+        @Path("id") id: Long,
+        @Query("count") count: Int,
+    ): Response<List<Event>>
+
+    @GET("/api/events/{id}/after")
+    suspend fun getEventsAfter(
+        @Path("id") id: Long,
+        @Query("count") count: Int,
+    ): Response<List<Event>>
+
+    @GET("/api/events/latest")
+    suspend fun getEventsLatest(
+        @Query("count") count: Int,
+    ): Response<List<Event>>
 
 }

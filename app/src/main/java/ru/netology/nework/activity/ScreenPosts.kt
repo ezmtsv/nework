@@ -8,12 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.netology.nework.R
-import ru.netology.nework.activity.AppActivity.Companion.idArg
 import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.adapter.AdapterScreenPosts
 import ru.netology.nework.adapter.OnIteractionListener
@@ -24,13 +28,15 @@ import ru.netology.nework.viewmodel.AuthViewModel.Companion.DIALOG_IN
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import ru.netology.nework.viewmodel.AuthViewModel.Companion.userAuth
 import ru.netology.nework.viewmodel.PostsViewModel
-
+import androidx.paging.LoadState
+import ru.netology.nework.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @AndroidEntryPoint
 
 class ScreenPosts : Fragment() {
     val viewModel: PostsViewModel by viewModels()
+    private val viewModelAuth: AuthViewModel by viewModels()
     var binding: ScreenPostsBinding? = null
 
     override fun onCreateView(
@@ -68,7 +74,7 @@ class ScreenPosts : Fragment() {
             }
 
             override fun onShare(post: Post) {
-                val txtShare = (post.attachment?.url?: post.content).toString()
+                val txtShare = (post.attachment?.url ?: post.content).toString()
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, txtShare)
@@ -100,32 +106,55 @@ class ScreenPosts : Fragment() {
                 findNavController().navigate(
                     R.id.postView,
                     Bundle().apply {
-                        idArg = post.id
+                        postArg = post
                     }
                 )
             }
 
         })
+
+        fun reload() {
+            Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
+                .setAction(R.string.retry_loading) { adapter.refresh() }
+                .show()
+        }
+
         binding?.list?.adapter = adapter
 
 //binding?.list?.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->  }
 
-
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-//            val newPost = adapter.currentList.size < posts.size
-            adapter.submitList(posts)
-//            if (newPost) binding?.list?.smoothScrollToPosition(0)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.data.collectLatest(adapter::submitData)
+            }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                adapter.loadStateFlow.collectLatest { state ->
+                    binding?.swipeRefreshLayout?.isRefreshing =
+                        state.refresh is LoadState.Loading ||
+                                state.prepend is LoadState.Loading ||
+                                state.append is LoadState.Loading
+                    if (state.refresh is LoadState.Error) reload()
+                }
+            }
+        }
+
+        viewModelAuth.authState.observe(viewLifecycleOwner) { _ ->
+            adapter.refresh()
+        }
+
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding?.progress?.isVisible = state.loading
             binding?.swipeRefreshLayout?.isRefreshing = state.refreshing
-
-            if (state.errorNetWork) {
-                Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
-                    .show()
-            }
+//            if (state.errorNetWork) {
+////                Snackbar.make(binding?.root!!, R.string.error_loading, Snackbar.LENGTH_LONG)
+////                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+////                    .show()
+////                reload()
+//            }
 
             if (state.error403) {
                 userAuth = false
@@ -144,7 +173,8 @@ class ScreenPosts : Fragment() {
         }
 
         binding?.swipeRefreshLayout?.setOnRefreshListener {
-            viewModel.loadPosts()
+//            viewModel.loadPosts()
+            adapter.refresh()
         }
         binding?.swipeRefreshLayout?.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -155,7 +185,8 @@ class ScreenPosts : Fragment() {
         binding?.bottomNavigation?.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_posts -> {
-                    viewModel.loadPosts()
+//                    viewModel.loadPosts()
+//                    adapter.refresh()
                     true
                 }
 
@@ -200,10 +231,10 @@ class ScreenPosts : Fragment() {
         return binding?.root!!
     }
 
-    override fun onStart() {
-        viewModel.loadPosts()
-        super.onStart()
-    }
+//    override fun onStart() {
+////        viewModel.loadPosts()
+//        super.onStart()
+//    }
 
     override fun onResume() {
         binding?.bottomNavigation?.selectedItemId = R.id.menu_posts

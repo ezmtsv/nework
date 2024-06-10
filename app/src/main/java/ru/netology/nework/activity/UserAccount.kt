@@ -17,13 +17,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import ru.netology.nework.R
-import ru.netology.nework.activity.AppActivity.Companion.idArg
 import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.activity.AppActivity.Companion.userArg
 import ru.netology.nework.adapter.AdapterJobsList
-import ru.netology.nework.adapter.AdapterScreenPosts
+import ru.netology.nework.adapter.AdapterUserPosts
 import ru.netology.nework.adapter.ListenerSelectionJobs
-import ru.netology.nework.adapter.OnIteractionListener
+import ru.netology.nework.adapter.OnUserPostsListener
 import ru.netology.nework.databinding.UserAccountBinding
 import ru.netology.nework.dialog.DialogAuth
 import ru.netology.nework.dialog.DialogSelectRemoveJob
@@ -90,7 +89,7 @@ class UserAccount : Fragment() {
 
         binding.listJobs.adapter = adapterJobs
 
-        val adapterPosts = AdapterScreenPosts(object : OnIteractionListener {
+        val adapterPosts = AdapterUserPosts(object : OnUserPostsListener {
             override fun onLike(post: Post) {
                 if (AuthViewModel.userAuth) {
                     viewModelPosts.like(post, !post.likedByMe)
@@ -131,7 +130,7 @@ class UserAccount : Fragment() {
                 findNavController().navigate(
                     R.id.postView,
                     Bundle().apply {
-                        idArg = post.id
+                        postArg = post
                     }
                 )
             }
@@ -141,7 +140,7 @@ class UserAccount : Fragment() {
         binding.listPosts.adapter = adapterPosts
 
         fun showListJobs(status: Boolean) {
-            if(status){
+            if (status) {
                 binding.listPosts.visibility = View.GONE
                 binding.listJobs.visibility = View.VISIBLE
             } else {
@@ -150,18 +149,6 @@ class UserAccount : Fragment() {
             }
         }
 
-//        val manager = LinearLayoutManager(context)
-//        binding.listPosts.layoutManager = manager
-//        binding.listPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-////                println("layoutManager.findFirstCompletelyVisibleItemPosition() ${manager.findFirstCompletelyVisibleItemPosition()}")
-//                when(manager.findFirstCompletelyVisibleItemPosition()){
-//                    0 -> binding.imageAvatar.visibility = View.VISIBLE
-//                    else -> binding.imageAvatar.visibility = View.GONE
-//                }
-//            }
-//        })
         viewModelUser.listUsers.observe(viewLifecycleOwner) { users ->
             viewModelUser.takeUser(users.find { it.id == idUser })
         }
@@ -181,7 +168,7 @@ class UserAccount : Fragment() {
         viewModelUser.statusShowListJobs.observe(viewLifecycleOwner) {
             if (it.statusShowListJobs) {
                 showListJobs(true)
-                if(myID == idUser) {
+                if (myID == idUser) {
                     binding.fab.visibility = SHOW
                 }
             } else {
@@ -202,9 +189,13 @@ class UserAccount : Fragment() {
             }
         }
 
-        viewModelPosts.data.observe(viewLifecycleOwner) { posts ->
+        viewModelPosts.receivedPosts.observe(viewLifecycleOwner) { posts ->
             viewModelPosts.takePosts(posts.filter { it.authorId == idUser })
         }
+
+//        viewModelPosts.data.observe(viewLifecycleOwner) { posts ->
+//            viewModelPosts.takePosts(posts.filter { it.authorId == idUser })
+//        }
 
         viewModelUser.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading

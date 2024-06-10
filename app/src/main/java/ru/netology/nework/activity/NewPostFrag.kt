@@ -102,7 +102,7 @@ class NewPostFrag : Fragment() {
             viewModelLays.location.value?.let { yakit.moveToStartLocation(it) }
             viewModelLays.location.value?.let { yakit.setMarkerInStartLocation(it) }
         }
-
+        @Suppress("DEPRECATION")
         binding.map.map?.addInputListener(inputListener)
 
         if (post != null && viewModelLays.newStatusViewsModel.value!!.statusNewPost) {
@@ -473,6 +473,7 @@ class NewPostFrag : Fragment() {
         )
     }
 
+    @Suppress("DEPRECATION")
     fun uploadStream(mediaModel: MediaModel): MultipartBody.Part {
         val inputStream = mediaModel.uri?.let { context?.contentResolver?.openInputStream(it) }
         return MultipartBody.Part.createFormData(
@@ -512,6 +513,7 @@ class NewPostFrag : Fragment() {
     private fun Context.toast(message: CharSequence) =
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
+    @Suppress("DEPRECATION")
     private fun Fragment.vibratePhone() {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         vibrator.vibrate(VibrationEffect.createOneShot(70, VibrationEffect.DEFAULT_AMPLITUDE))

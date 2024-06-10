@@ -35,6 +35,7 @@ class YaKit @Inject constructor(
         mapView?.onStart()
     }
 
+    @Suppress("DEPRECATION")
     fun moveToStartLocation(point: Point) {
         mapView?.map?.move(
             CameraPosition(point, zoomValue, 0.0f, 0.0f),
@@ -43,6 +44,7 @@ class YaKit @Inject constructor(
         )
     }
 
+    @Suppress("DEPRECATION")
     fun setMarkerInStartLocation(startLocation: Point) {
         val marker = R.drawable.ic_pin_black_png // Добавляем ссылку на картинку
         mapObjectCollection =

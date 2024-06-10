@@ -5,9 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import ru.netology.nework.dto.Attachment
@@ -17,6 +21,7 @@ import ru.netology.nework.media.Media
 import ru.netology.nework.model.FeedModelState
 import ru.netology.nework.repository.EventsRepository
 import ru.netology.nework.repository.PostsRepository
+import ru.netology.nework.viewmodel.AuthViewModel.Companion.myID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,27 +32,49 @@ class EventsViewModel @Inject constructor(
     private val repositoryPosts: PostsRepository
 ) : ViewModel() {
 
-    val events: LiveData<List<Event>> = repositoryEvents.eventsDb
-        .asLiveData(Dispatchers.IO)
+//    val events: LiveData<List<Event>> = repositoryEvents.eventsDb
+//        .asLiveData(Dispatchers.IO)
+
+    val events = repositoryEvents.eventsDb
+        .map {event ->
+            event.map {
+                it.copy(eventOwner = it.authorId == myID)
+            }
+        }
+        .cachedIn(viewModelScope)
+        .flowOn(Dispatchers.Default)
+
+    val receivedEvents: LiveData<List<Event>>
+        get() = repositoryEvents.eventsFlow.asLiveData(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    fun loadEvents() {
-        _dataState.value = FeedModelState(loading = true)
+    init {
+        getEvents()
+    }
+
+    private fun getEvents() {
         viewModelScope.launch {
-            try {
-                repositoryEvents.getEvents()
-                _dataState.value = FeedModelState()
-            } catch (e: Exception) {
-                if (e.javaClass.name == "ru.netology.nework.error.ApiError403") {
-                    _dataState.value = FeedModelState(error403 = true)
-                } else if (e.javaClass.name == "ru.netology.nework.error.NetworkError")
-                    _dataState.value = FeedModelState(errorNetWork = true)
-            }
+            repositoryEvents.getEventsDB()
         }
     }
+
+//    fun loadEvents() {
+//        _dataState.value = FeedModelState(loading = true)
+//        viewModelScope.launch {
+//            try {
+//                repositoryEvents.getEvents()
+//                _dataState.value = FeedModelState()
+//            } catch (e: Exception) {
+//                if (e.javaClass.name == "ru.netology.nework.error.ApiError403") {
+//                    _dataState.value = FeedModelState(error403 = true)
+//                } else if (e.javaClass.name == "ru.netology.nework.error.NetworkError")
+//                    _dataState.value = FeedModelState(errorNetWork = true)
+//            }
+//        }
+//    }
 
     fun likeEvent(event: Event, like: Boolean) {
         _dataState.value = FeedModelState(loading = true)

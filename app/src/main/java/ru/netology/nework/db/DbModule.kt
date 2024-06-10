@@ -8,8 +8,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ru.netology.nework.dao.EventDao
+import ru.netology.nework.dao.EventRemoteKeyDao
 import ru.netology.nework.dao.JobDao
 import ru.netology.nework.dao.PostDao
+import ru.netology.nework.dao.PostRemoteKeyDao
 import ru.netology.nework.dao.UserDao
 import javax.inject.Singleton
 
@@ -49,4 +51,16 @@ class DbModule {
     fun provideEventDao(
         appDb: AppDb
     ): EventDao = appDb.eventDao()
+
+    @Singleton
+    @Provides
+    fun provideRemoteKeyDao(
+        appDb: AppDb
+    ): PostRemoteKeyDao = appDb.postRemoteKeyDao()
+
+    @Singleton
+    @Provides
+    fun provideRemoteKeyEventDao(
+        appDb: AppDb
+    ): EventRemoteKeyDao = appDb.eventRemoteKeyDao()
 }

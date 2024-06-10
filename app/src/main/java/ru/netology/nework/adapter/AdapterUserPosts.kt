@@ -1,11 +1,11 @@
 package ru.netology.nework.adapter
 
+import androidx.recyclerview.widget.ListAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +16,7 @@ import ru.netology.nework.enumeration.AttachmentType
 import ru.netology.nework.util.AndroidUtils.getTimePublish
 import ru.netology.nework.viewmodel.AuthViewModel
 
-interface OnIteractionListener {
+interface OnUserPostsListener {
     fun onLike(post: Post)
     fun onShare(post: Post)
     fun onEdit(post: Post)
@@ -24,26 +24,26 @@ interface OnIteractionListener {
     fun openCardPost(post: Post)
 }
 
-class AdapterScreenPosts(
-    private val onIteractionListener: OnIteractionListener
-) : PagingDataAdapter<Post, PostViewHolder>(PostDiffCallback()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+class AdapterUserPosts(
+    private val onUserPostsListener: OnUserPostsListener
+) : ListAdapter<Post, UserPostViewHolder>(UserPostDiffCallback()) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserPostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onIteractionListener)
+        return UserPostViewHolder(binding, onUserPostsListener)
     }
 
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserPostViewHolder, position: Int) {
         val post = getItem(position)
         holder.bind(post)
     }
+
 }
 
-class PostViewHolder(
+class UserPostViewHolder(
     private val binding: CardPostBinding,
-    private val onIteractionListener: OnIteractionListener,
+    private val onUserPostsListener: OnUserPostsListener,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post?) {
-//        println("Post ${post?.id}")
         post?.let {
             binding.apply {
                 author.text = post.author
@@ -52,10 +52,10 @@ class PostViewHolder(
                 icLike.isChecked = post.likedByMe
                 icLike.text = post.likeOwnerIds?.count().toString()
                 icLike.setOnClickListener {
-                    onIteractionListener.onLike(post)
+                    onUserPostsListener.onLike(post)
                 }
                 icShare.setOnClickListener {
-                    onIteractionListener.onShare(post)
+                    onUserPostsListener.onShare(post)
                 }
                 imageView.visibility = View.GONE
                 playAudio.visibility = View.GONE
@@ -82,7 +82,7 @@ class PostViewHolder(
                                 .timeout(180_000)
                                 .into(imageView)
                             play.setOnClickListener {
-                                onIteractionListener.openCardPost(post)
+                                onUserPostsListener.openCardPost(post)
                             }
                         }
 
@@ -101,7 +101,7 @@ class PostViewHolder(
                     .into(avatar)
 
                 root.setOnClickListener {
-                    onIteractionListener.openCardPost(post)
+                    onUserPostsListener.openCardPost(post)
                 }
 //                menu.isVisible = post.authorId == AuthViewModel.myID && AuthViewModel.userAuth
                 menu.isVisible = post.postOwner && AuthViewModel.userAuth
@@ -112,12 +112,12 @@ class PostViewHolder(
                         setOnMenuItemClickListener { menuItem ->
                             when (menuItem.itemId) {
                                 R.id.edit -> {
-                                    onIteractionListener.onEdit(post)
+                                    onUserPostsListener.onEdit(post)
                                     true
                                 }
 
                                 R.id.remove -> {
-                                    onIteractionListener.onRemove(post)
+                                    onUserPostsListener.onRemove(post)
                                     true
                                 }
 
@@ -131,7 +131,7 @@ class PostViewHolder(
     }
 }
 
-class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
+class UserPostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem.id == newItem.id
     }
@@ -139,5 +139,6 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
         return oldItem == newItem
     }
+
 
 }

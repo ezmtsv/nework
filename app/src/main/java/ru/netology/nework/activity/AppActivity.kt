@@ -1,16 +1,13 @@
 package ru.netology.nework.activity
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 
 import androidx.appcompat.app.ActionBar
@@ -65,15 +62,16 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         imageView = ImageView(this)
         imageView?.setImageResource(R.drawable.icon_person_24)
 
-        val foregroundColorSpan = ForegroundColorSpan(Color.WHITE)
-        val spannableString = SpannableString(getString(R.string.app_name))
-        spannableString.setSpan(
-            foregroundColorSpan,
-            0,
-            spannableString.length,
-            Spannable.SPAN_INCLUSIVE_INCLUSIVE
-        )
+//        val foregroundColorSpan = ForegroundColorSpan(Color.WHITE)
+//        val spannableString = SpannableString(getString(R.string.app_name))
+//        spannableString.setSpan(
+//            foregroundColorSpan,
+//            0,
+//            spannableString.length,
+//            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+//        )
 
+        this@AppActivity.onBackPressedDispatcher.addCallback(this@AppActivity, callback)
 
         val lp = ActionBar.LayoutParams(
             ActionBar.LayoutParams.WRAP_CONTENT,
@@ -83,8 +81,9 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         actionBar?.apply {
             setDisplayShowCustomEnabled(true)
             setCustomView(imageView, lp)
-            title = spannableString
+//            title = spannableString
         }
+
 
         imageView?.setOnClickListener {
             PopupMenu(this, it).apply {
@@ -188,7 +187,6 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
     }
 
     override fun getCurFragmentDetach() {
-
         actionBar.apply {
             title = getString(R.string.app_name)
             imageView?.visibility = View.VISIBLE
@@ -208,19 +206,40 @@ class AppActivity : AppCompatActivity(), DialogAuth.ReturnSelection, CurrentShow
         if (currentFragment is UserAccount) currentFragment.getIdJob(id)
     }
 
-    override fun onBackPressed(){
 
-        when(val currentFragment = supportFragmentManager.currentNavigationFragment){
-            is EventView ->{
-//                println("BACK EventView")
-                currentFragment.stopMedia()
+    //    override fun onBackPressed() {
+//
+//        when (val currentFragment = supportFragmentManager.currentNavigationFragment) {
+//            is EventView -> {
+////                println("BACK EventView")
+//                currentFragment.stopMedia()
+//            }
+//
+//            is PostView -> {
+////                println("BACK PostView")
+//                currentFragment.stopMedia()
+//            }
+//        }
+//        super.onBackPressed()
+//
+//    }
+    private val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            when (val currentFragment = supportFragmentManager.currentNavigationFragment) {
+                is EventView -> {
+                    currentFragment.stopMedia()
+                }
+
+                is PostView -> {
+                    currentFragment.stopMedia()
+                }
+
+                is ScreenPosts -> {
+                    finish()
+                }
+//                else->{println("currentFragment $currentFragment")}
             }
-            is PostView ->{
-//                println("BACK PostView")
-                currentFragment.stopMedia()
-            }
+            findNavController(R.id.nav_host_fragment).navigateUp()
         }
-        super.onBackPressed()
-
     }
 }

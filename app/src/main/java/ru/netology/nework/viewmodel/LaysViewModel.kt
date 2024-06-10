@@ -194,6 +194,7 @@ class LaysViewModel @Inject constructor(
         } else {
             _newStatusViewsModel.value = status?.copy(
                 statusViewUsers = !_newStatusViewsModel.value?.statusViewUsers!!,
+                groupContent = SHOW,
                 groupUsers = HIDE
             )
         }
@@ -219,6 +220,7 @@ class LaysViewModel @Inject constructor(
         } else {
             _newStatusViewsModel.value = status?.copy(
                 statusViewMaps = !_newStatusViewsModel.value?.statusViewMaps!!,
+                groupContent = SHOW,
                 geo = HIDE
             )
 
@@ -234,7 +236,7 @@ class LaysViewModel @Inject constructor(
                 groupUsers = HIDE,
                 geo = HIDE,
                 groupDateEvent = SHOW,
-                groupContent = SHOW,
+                groupContent = HIDE,
                 statusDateEvent = !_newStatusViewsModel.value?.statusDateEvent!!,
                 statusViewMaps = false,
                 statusViewImage = false,
@@ -243,6 +245,7 @@ class LaysViewModel @Inject constructor(
         } else {
             _newStatusViewsModel.value = status?.copy(
                 statusDateEvent = !_newStatusViewsModel.value?.statusDateEvent!!,
+                groupContent = SHOW,
                 groupDateEvent = HIDE
             )
         }
@@ -385,7 +388,7 @@ class LaysViewModel @Inject constructor(
                 eventOwner = true,
             )
 
-        return _event.value
+       return _event.value
     }
 
     fun getPost(text: String): Post? {

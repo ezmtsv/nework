@@ -80,7 +80,8 @@ dependencies {
     def room_version = "2.6.0-alpha02"
     def imagepicker_version = "2.1"
     def maps_yandex_version = "4.5.1-lite"
-    def photo_latest_version = "2.1.4"
+    def paging_version = "3.3.0"
+    def room_paging_version = "2.6.1"
 
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
@@ -117,4 +118,6 @@ dependencies {
     implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.yandex.android:maps.mobile:$maps_yandex_version"
     implementation "com.github.chrisbanes:PhotoView:2.3.0"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.room:room-paging:$room_paging_version"
 }

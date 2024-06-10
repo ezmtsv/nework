@@ -1,17 +1,26 @@
 package ru.netology.nework.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.netology.nework.api.ApiService
 import ru.netology.nework.dao.PostDao
+import ru.netology.nework.dao.PostRemoteKeyDao
+import ru.netology.nework.db.AppDb
 import ru.netology.nework.dto.Post
 import ru.netology.nework.dto.User
 import ru.netology.nework.entity.PostEntity
@@ -28,23 +37,38 @@ import javax.inject.Inject
 class PostsRepositoryImp @Inject constructor(
     private val apiService: ApiService,
     private val dao: PostDao,
+    postRemoteKeyDao: PostRemoteKeyDao,
+    appDb: AppDb,
+) : PostsRepository {
 
-    ) : PostsRepository {
-    //    private val data: MutableLiveData<List<Post>> = MutableLiveData()
+    private val _postsFlow = MutableStateFlow(emptyList<Post>())
+    override val postsFlow: Flow<List<Post>>
+        get() = _postsFlow.asStateFlow()
+
     private val _posts = dao.getAllPosts().map(List<PostEntity>::toDto)
-    override val postsBd: Flow<List<Post>>
-        get() = _posts
+//    override val postsDb: Flow<List<Post>>
+//        get() = _posts
 
-//    private val _userWall: MutableLiveData<List<Post>> = MutableLiveData()
-//    override val userWall: LiveData<List<Post>>
-//        get() = _userWall
 
-//    private var userId = 0L
-//    private val _userWall = dao.getUserWall(userId).map(List<PostEntity>::toDto)
+    @OptIn(ExperimentalPagingApi::class)
+    override val postsDb: Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(
+            pageSize = 5,
+            enablePlaceholders = false,
+            initialLoadSize = 10,
+        ),
+        pagingSourceFactory = { dao.getPagingSource() },
+        remoteMediator = PostRemoteMediator(
+            service = apiService,
+            postDao = dao,
+            postRemoteKeyDao = postRemoteKeyDao,
+            db = appDb,
 
-//    private val _userWall = MutableStateFlow<List<Post>>(emptyList())
-//    override val userWall: Flow<List<Post>>
-//        get() = _userWall
+            )
+    ).flow
+        .map {
+            it.map(PostEntity::toDto)
+        }
 
     override suspend fun getPosts() {
         try {
@@ -77,13 +101,6 @@ class PostsRepositoryImp @Inject constructor(
             throw UnknownError
         }
     }
-
-    override suspend fun getPostDb(id: Long): Post =
-        try {
-            dao.getPostById(id).single().toDto()
-        } catch (e: Exception) {
-            throw DbError
-        }
 
     override suspend fun getUserPosts(id: Long) {
         try {
@@ -119,7 +136,7 @@ class PostsRepositoryImp @Inject constructor(
         }
     }
 
-    override suspend fun likePost(id: Long, like: Boolean) {
+    override suspend fun likePost(id: Long, like: Boolean): Post {
         try {
             if (like) {
 
@@ -137,7 +154,8 @@ class PostsRepositoryImp @Inject constructor(
                 dao.insert(
                     PostEntity.fromDto(post)
                 )
-            } else dislikePost(id)
+                return post
+            } else return dislikePost(id)
 
         } catch (e: IOException) {
             throw NetworkError
@@ -148,9 +166,10 @@ class PostsRepositoryImp @Inject constructor(
         } catch (e: Exception) {
             throw UnknownError
         }
+
     }
 
-    private suspend fun dislikePost(id: Long) {
+    private suspend fun dislikePost(id: Long): Post {
         try {
             val response = apiService.dislikePostsId(id)
 
@@ -165,7 +184,7 @@ class PostsRepositoryImp @Inject constructor(
             dao.insert(
                 PostEntity.fromDto(post)
             )
-
+            return post
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: ApiError403) {
@@ -260,30 +279,6 @@ class PostsRepositoryImp @Inject constructor(
         }
     }
 
-//    override suspend fun upload(upload: MediaUpload): Media {
-//        try {
-//            val media = MultipartBody.Part.createFormData(
-//                "file", upload.file?.name, upload.file?.asRequestBody()!!
-//            )
-//            println("upload media ${media.headers}")
-//            val response = apiService.upload(media)
-//            if (!response.isSuccessful) {
-//                when (response.code()) {
-//                    403 -> throw ApiError403(response.code().toString())
-//                    415 -> throw ApiError415(response.code().toString())
-//                    else -> throw ApiError(response.code(), response.message())
-//                }
-//            }
-//            return response.body() ?: throw ApiError(response.code(), response.message())
-//        } catch (e: ApiError403) {
-//            throw ApiError403("403")
-//        } catch (e: ApiError415) {
-//            throw ApiError415("415")
-//        } catch (e: Exception) {
-//            throw UnknownError
-//        }
-//    }
-
 
     override suspend fun upload(media: MultipartBody.Part): Media {
         try {
@@ -346,6 +341,12 @@ class PostsRepositoryImp @Inject constructor(
             }
         } catch (e: Exception) {
             throw DbError
+        }
+    }
+
+    override suspend fun getPostsDB() {
+        dao.getAllPosts().flowOn(Dispatchers.IO).collect { posts ->
+            _postsFlow.update { posts.toDto() }
         }
     }
 

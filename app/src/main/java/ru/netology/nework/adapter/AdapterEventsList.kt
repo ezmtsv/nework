@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.netology.nework.R
@@ -28,7 +28,7 @@ interface OnEventsListener{
 
 class AdapterEventsList(
     private val onEventsListener: OnEventsListener
-) : ListAdapter<Event, EventViewHolder>(EventDiffCallBack()) {
+) : PagingDataAdapter<Event, EventViewHolder>(EventDiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val binding =
             CardEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,7 +37,7 @@ class AdapterEventsList(
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = getItem(position)
-        holder.bind(event)
+        holder.bind(event!!)
     }
 }
 

@@ -16,8 +16,8 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import ru.netology.nework.R
-import ru.netology.nework.activity.AppActivity.Companion.idArg
 import ru.netology.nework.activity.AppActivity.Companion.listUserArg
+import ru.netology.nework.activity.AppActivity.Companion.postArg
 import ru.netology.nework.activity.AppActivity.Companion.uriArg
 import ru.netology.nework.adapter.AdapterPostView
 import ru.netology.nework.adapter.OnIteractionListenerPostView
@@ -48,78 +48,82 @@ class PostView : Fragment() {
         val viewModel: PostsViewModel by viewModels()
         val viewModelUsers: UsersViewModel by viewModels()
         val binding = PostViewBinding.inflate(layoutInflater)
-        val idPost = arguments?.idArg
-        var txtShare = ""
+        val post = arguments?.postArg
+        val txtShare = (post?.attachment?.url ?: post?.content).toString()
 
 
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            val post = posts.find { it.id == idPost }
-            txtShare = (post?.attachment?.url ?: post?.content).toString()
-            post?.let {
-                container?.context?.let { _ ->
-                    AdapterPostView(binding, object : OnIteractionListenerPostView {
-                        override fun onLike(post: Post) {
-                            if (userAuth) {
-                                viewModel.like(post, !post.likedByMe)
-                            } else {
-                                DialogAuth.newInstance(
-                                    AuthViewModel.DIALOG_IN,
-                                    "Для установки лайков нужна нужно авторизоваться"
-                                )
-                                    .show(childFragmentManager, "TAG")
-                            }
-                        }
-
-                        override fun onEdit(post: Post) {
-
-                        }
-
-                        override fun onRemove(post: Post) {
-
-                        }
-
-                        override fun playAudio(link: String) {
-                            if (binding.playAudio.isChecked) {
-                                viewModelMedia.playAudio(link)
-                            } else {
-                                viewModelMedia.pauseAudio()
-                            }
-                        }
-
-                        override fun playVideo(link: String) {
-                            viewModelMedia.playVideo(link, binding.videoView)
-                        }
-
-                        override fun openSpacePhoto(post: Post) {
-                            findNavController().navigate(
-                                R.id.spacePhoto,
-                                Bundle().apply {
-                                    uriArg = post.attachment?.url
-                                }
-                            )
-                        }
-
-                        override fun showUsers(users: List<Long>?) {
-                            //val list = viewModelUsers.selectUsers(listOf(65, 66, 67, 68, 69, 70))
-                            val list = users?.let { viewModelUsers.selectUsers(it) }
-                            findNavController().navigate(
-                                R.id.tmpFrag,
-                                Bundle().apply {
-                                    listUserArg = list
-                                }
-                            )
-                        }
-                    }, yakit).bind(post)
+        val adapter = container?.context?.let { _ ->
+            AdapterPostView(binding, object : OnIteractionListenerPostView {
+                override fun onLike(post: Post) {
+                    if (userAuth) {
+                        viewModel.like(post, !post.likedByMe)
+                    } else {
+                        DialogAuth.newInstance(
+                            AuthViewModel.DIALOG_IN,
+                            "Для установки лайков нужна нужно авторизоваться"
+                        )
+                            .show(childFragmentManager, "TAG")
+                    }
                 }
+
+                override fun onEdit(post: Post) {
+
+                }
+
+                override fun onRemove(post: Post) {
+
+                }
+
+                override fun playAudio(link: String) {
+                    if (binding.playAudio.isChecked) {
+                        viewModelMedia.playAudio(link)
+                    } else {
+                        viewModelMedia.pauseAudio()
+                    }
+                }
+
+                override fun playVideo(link: String) {
+                    viewModelMedia.playVideo(link, binding.videoView)
+                }
+
+                override fun openSpacePhoto(post: Post) {
+                    findNavController().navigate(
+                        R.id.spacePhoto,
+                        Bundle().apply {
+                            uriArg = post.attachment?.url
+                        }
+                    )
+                }
+
+                override fun showUsers(users: List<Long>?) {
+                    //val list = viewModelUsers.selectUsers(listOf(65, 66, 67, 68, 69, 70))
+                    val list = users?.let { viewModelUsers.selectUsers(it) }
+                    findNavController().navigate(
+                        R.id.tmpFrag,
+                        Bundle().apply {
+                            listUserArg = list
+                        }
+                    )
+                }
+            }, yakit)
+        }
+
+
+        viewModelUsers.listUsers.observe(viewLifecycleOwner) {}
+
+        viewModel.receivedPosts.observe(viewLifecycleOwner) { posts ->
+            val _post = posts.find { it.id == post?.id }
+            _post?.let {
+                adapter?.bind(_post)
             }
         }
 
-        viewModelUsers.listUsers.observe(viewLifecycleOwner) {}
 
         viewModelMedia.duration.observe(viewLifecycleOwner) {
             if (it != "STOP") binding.duration.text = it
             else binding.playAudio.isChecked = false
         }
+
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

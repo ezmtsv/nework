@@ -109,7 +109,7 @@ class EventView : Fragment() {
                 }
             })
         }
-        viewModelEvents.events.observe(viewLifecycleOwner) { events ->
+        viewModelEvents.receivedEvents.observe(viewLifecycleOwner) { events ->
             val event = events.find { it.id == idEvent }
             txtShare = (event?.attachment?.url ?: event?.content).toString()
             event?.let {

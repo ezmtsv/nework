@@ -36,8 +36,8 @@ class AdapterEventView @Inject constructor(
     @SuppressLint("ClickableViewAccessibility")
     fun bind(event: Event) {
         with(binding) {
-
-//println("event $event")
+//            println("eventOwner ${event.eventOwner}")
+//            println("event $event")
             author.text = event.author
             published.text = AndroidUtils.getTimePublish(event.published)
             infoDate.text = event.typeMeeting.toString()
@@ -71,10 +71,13 @@ class AdapterEventView @Inject constructor(
                 .circleCrop()
                 .into(avatar)
             event.coords?.let {
-                layMaps.visibility = View.VISIBLE
-                val startLocation = Point(event.coords.lat!!, event.coords.longCr!!)
-                yakit.moveToStartLocation(startLocation)
-                yakit.setMarkerInStartLocation(startLocation)
+                if (it.lat != 0.0 && it.longCr != 0.0) {
+                    layMaps.visibility = View.VISIBLE
+                    val startLocation = Point(event.coords.lat!!, event.coords.longCr!!)
+                    yakit.moveToStartLocation(startLocation)
+                    yakit.setMarkerInStartLocation(startLocation)
+                }
+
             }
 
             imageView.setOnClickListener {

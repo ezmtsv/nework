@@ -7,13 +7,17 @@ import androidx.room.TypeConverters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.netology.nework.dao.EventDao
+import ru.netology.nework.dao.EventRemoteKeyDao
 import ru.netology.nework.dao.JobDao
 import ru.netology.nework.dao.PostDao
+import ru.netology.nework.dao.PostRemoteKeyDao
 import ru.netology.nework.dao.UserDao
 import ru.netology.nework.dto.UserPreview
 import ru.netology.nework.entity.EventEntity
+import ru.netology.nework.entity.EventRemoteKeyEntity
 import ru.netology.nework.entity.JobEntity
 import ru.netology.nework.entity.PostEntity
+import ru.netology.nework.entity.PostRemoteKeyEntity
 import ru.netology.nework.entity.UserResponseEntity
 import java.lang.reflect.Type
 
@@ -25,7 +29,9 @@ import java.lang.reflect.Type
     entities = [PostEntity::class,
         UserResponseEntity::class,
         JobEntity::class,
-        EventEntity::class],
+        EventEntity::class,
+        PostRemoteKeyEntity::class,
+        EventRemoteKeyEntity::class],
     version = 1
 )
 abstract class AppDb : RoomDatabase() {
@@ -33,6 +39,8 @@ abstract class AppDb : RoomDatabase() {
     abstract fun jobDao(): JobDao
     abstract fun userDao(): UserDao
     abstract fun eventDao(): EventDao
+    abstract fun postRemoteKeyDao(): PostRemoteKeyDao
+    abstract fun eventRemoteKeyDao(): EventRemoteKeyDao
 }
 
 class DataConvertorList {
