@@ -20,10 +20,10 @@
                 android:id="@+id/content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/content"
-                android:minWidth="@dimen/wide_text_field"
-                android:inputType="textMultiLine"
                 android:autofillHints="textEvent"
+                android:hint="@string/content"
+                android:inputType="textMultiLine"
+                android:minWidth="@dimen/wide_text_field"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,9 +40,9 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="@dimen/common_spacing"
                 android:layout_marginTop="@dimen/common_spacing"
+                android:contentDescription="@string/description_attach"
                 app:layout_constraintStart_toStartOf="@id/content"
                 app:layout_constraintTop_toBottomOf="@id/content"
-                android:contentDescription="@string/description_attach"
                 tools:srcCompat="@drawable/avatar_user" />
 
             <TextView
@@ -108,8 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                app:layout_constraintTop_toBottomOf="@id/content"
                 android:contentDescription="@string/description_attach"
+                app:layout_constraintTop_toBottomOf="@id/content"
                 tools:srcCompat="@tools:sample/avatars[2]" />
 
             <Button
@@ -135,8 +135,9 @@
                 android:id="@+id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="150dp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/photo"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -150,8 +151,8 @@
         android:layout_height="350dp"
         android:layout_gravity="bottom"
         android:layout_marginTop="@dimen/min_space"
-        android:visibility="gone"
-        android:layout_marginBottom="70dp">
+        android:layout_marginBottom="70dp"
+        android:visibility="gone">
 
         <com.yandex.mapkit.mapview.MapView
             android:id="@+id/map"
@@ -167,5 +168,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/menu_new_post"
-        tools:ignore="@id/bottom_navigation_new_post"/>
+        tools:ignore="@id/bottom_navigation_new_post" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
